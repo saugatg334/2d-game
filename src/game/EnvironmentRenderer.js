@@ -224,20 +224,28 @@ export class EnvironmentRenderer {
     if (startX >= viewLeft && startX <= viewRight) {
       const gy = this.terrain.getTerrainYAt(startX);
 
-      // Steel Overhead Highway Gantry Posts
+      // Lattice Steel Overhead Highway Gantry Structure
       this.structGraphics.fillStyle(0x566573, 1);
       this.structGraphics.fillRect(startX - 90, gy - 110, 8, 110);
       this.structGraphics.fillRect(startX + 90, gy - 110, 8, 110);
-      this.structGraphics.fillRect(startX - 94, gy - 110, 196, 10);
+      this.structGraphics.fillRect(startX - 94, gy - 110, 196, 12);
+      // Lattice Crosshatch Lines
+      this.structGraphics.lineStyle(1.5, 0xbdc3c7, 0.8);
+      for (let lx = startX - 90; lx <= startX + 80; lx += 20) {
+        this.structGraphics.beginPath();
+        this.structGraphics.moveTo(lx, gy - 110);
+        this.structGraphics.lineTo(lx + 15, gy - 98);
+        this.structGraphics.strokePath();
+      }
 
       // Green Signboard ("KHOKANA ➔ NIJGADH")
       this.structGraphics.fillStyle(0x1e8449, 1);
-      this.structGraphics.fillRect(startX - 95, gy - 140, 190, 28);
+      this.structGraphics.fillRect(startX - 95, gy - 142, 190, 30);
       this.structGraphics.lineStyle(2, 0xffffff, 1);
-      this.structGraphics.strokeRect(startX - 93, gy - 138, 186, 24);
+      this.structGraphics.strokeRect(startX - 93, gy - 140, 186, 26);
 
-      // Add crisp signboard text
-      this.getText(startX, gy - 126, 'KHOKANA ➔ NIJGADH', {
+      // Crisp signboard text & subtitle
+      this.getText(startX, gy - 128, 'KHOKANA ➔ NIJGADH', {
         fontSize: '13px', fontStyle: 'bold', color: '#ffffff', fontFamily: 'monospace'
       });
 
@@ -312,7 +320,7 @@ export class EnvironmentRenderer {
     }
   }
 
-  // C. ROAD-CUT HILL SECTION & CONCRETE/GABION RETAINING WALLS (350m - 850m)
+  // C. P0-4: ENGINEERED HILL-CUT SECTION & CONCRETE/GABION RETAINING WALLS (350m - 850m)
   drawHillCutAndRetainingWalls(viewLeft, viewRight) {
     if (this.hillCutEnd < viewLeft || this.hillCutStart > viewRight) return;
 
@@ -326,57 +334,103 @@ export class EnvironmentRenderer {
         const y1 = seg.startY;
         const y2 = seg.endY;
 
-        // 1. Concrete Gabion Retaining Wall Base (36px wall behind road edge)
-        this.structGraphics.fillStyle(0x95a5a6, 0.95);
-        this.structGraphics.beginPath();
-        this.structGraphics.moveTo(seg.startX, y1 - 10);
-        this.structGraphics.lineTo(seg.endX, y2 - 10);
-        this.structGraphics.lineTo(seg.endX, y2 - 44);
-        this.structGraphics.lineTo(seg.startX, y1 - 44);
-        this.structGraphics.closePath();
-        this.structGraphics.fillPath();
-
-        // Concrete Wall Grid / Mortar Joints
-        this.structGraphics.lineStyle(1, 0x7f8c8d, 0.7);
-        this.structGraphics.beginPath();
-        this.structGraphics.moveTo(seg.startX, y1 - 27);
-        this.structGraphics.lineTo(seg.endX, y2 - 27);
-        this.structGraphics.strokePath();
-
-        // 2. Exposed Hill Cut Slope above retaining wall
-        this.nearTreeGraphics.fillStyle(0x6e5b4b, 0.65);
+        // 1. Excavated Mountain Rock Face behind retaining wall (Layered Rock Strata)
+        this.nearTreeGraphics.fillStyle(0x5d4037, 0.85);
         this.nearTreeGraphics.beginPath();
         this.nearTreeGraphics.moveTo(seg.startX, y1 - 44);
         this.nearTreeGraphics.lineTo(seg.endX, y2 - 44);
-        this.nearTreeGraphics.lineTo(seg.endX, y2 - 110);
-        this.nearTreeGraphics.lineTo(seg.startX, y1 - 110);
+        this.nearTreeGraphics.lineTo(seg.endX, y2 - 125);
+        this.nearTreeGraphics.lineTo(seg.startX, y1 - 125);
         this.nearTreeGraphics.closePath();
         this.nearTreeGraphics.fillPath();
+
+        // Geological Rock Strata & Ledge Lines
+        this.nearTreeGraphics.lineStyle(1.5, 0x7a6b5c, 0.7);
+        this.nearTreeGraphics.beginPath();
+        this.nearTreeGraphics.moveTo(seg.startX, y1 - 70);
+        this.nearTreeGraphics.lineTo(seg.endX, y2 - 85);
+        this.nearTreeGraphics.moveTo(seg.startX, y1 - 100);
+        this.nearTreeGraphics.lineTo(seg.endX, y2 - 110);
+        this.nearTreeGraphics.strokePath();
+
+        // Shotcrete & Rockfall Protection Netting Crosshatch Wire Grid
+        this.nearTreeGraphics.lineStyle(1, 0x95a5a6, 0.35);
+        for (let gx = seg.startX; gx < seg.endX; gx += 20) {
+          this.nearTreeGraphics.beginPath();
+          this.nearTreeGraphics.moveTo(gx, y1 - 44);
+          this.nearTreeGraphics.lineTo(gx + 20, y1 - 125);
+          this.nearTreeGraphics.strokePath();
+        }
+
+        // 2. Stepped Concrete Gabion Retaining Wall Base (38px wall)
+        this.structGraphics.fillStyle(0x95a5a6, 1);
+        this.structGraphics.beginPath();
+        this.structGraphics.moveTo(seg.startX, y1 - 10);
+        this.structGraphics.lineTo(seg.endX, y2 - 10);
+        this.structGraphics.lineTo(seg.endX, y2 - 46);
+        this.structGraphics.lineTo(seg.startX, y1 - 46);
+        this.structGraphics.closePath();
+        this.structGraphics.fillPath();
+
+        // Gabion Box Wire Mesh Grid & Mortar Joints
+        this.structGraphics.lineStyle(1.2, 0x566573, 0.75);
+        this.structGraphics.beginPath();
+        this.structGraphics.moveTo(seg.startX, y1 - 28);
+        this.structGraphics.lineTo(seg.endX, y2 - 28);
+        this.structGraphics.strokePath();
+
+        // Drainage Weep-Holes along wall base
+        for (let wx = seg.startX + 25; wx < seg.endX; wx += 45) {
+          this.structGraphics.fillStyle(0x2c3e50, 1);
+          this.structGraphics.fillCircle(wx, y1 - 18, 2.5);
+        }
+
+        // Concrete Wall Top Cap
+        this.structGraphics.fillStyle(0xbdc3c7, 1);
+        this.structGraphics.fillRect(seg.startX, y1 - 48, seg.endX - seg.startX, 4);
       }
     }
 
-    // Hill Cut Roadside Warning Sign
-    const signX = 450;
-    if (signX >= viewLeft && signX <= viewRight) {
-      const sy = this.terrain.getTerrainYAt(signX);
+    // Hill Cut Roadside Warning Sign 1 ("SLOW - HILL CUT")
+    const signX1 = 420;
+    if (signX1 >= viewLeft && signX1 <= viewRight) {
+      const sy = this.terrain.getTerrainYAt(signX1);
       this.structGraphics.fillStyle(0x7f8c8d, 1);
-      this.structGraphics.fillRect(signX - 2, sy - 45, 4, 45);
-      // Yellow Diamond Warning Board
+      this.structGraphics.fillRect(signX1 - 2, sy - 45, 4, 45);
       this.structGraphics.fillStyle(0xf4d03f, 1);
       this.structGraphics.beginPath();
-      this.structGraphics.moveTo(signX, sy - 68);
-      this.structGraphics.lineTo(signX + 18, sy - 45);
-      this.structGraphics.lineTo(signX, sy - 22);
-      this.structGraphics.lineTo(signX - 18, sy - 45);
+      this.structGraphics.moveTo(signX1, sy - 68);
+      this.structGraphics.lineTo(signX1 + 18, sy - 45);
+      this.structGraphics.lineTo(signX1, sy - 22);
+      this.structGraphics.lineTo(signX1 - 18, sy - 45);
       this.structGraphics.closePath();
       this.structGraphics.fillPath();
-      this.getText(signX, sy - 45, 'CUT', {
+      this.getText(signX1, sy - 45, 'CUT', {
+        fontSize: '9px', fontStyle: 'bold', color: '#1a252f', fontFamily: 'monospace'
+      });
+    }
+
+    // Hill Cut Roadside Warning Sign 2 ("ROCKFALL ZONE")
+    const signX2 = 700;
+    if (signX2 >= viewLeft && signX2 <= viewRight) {
+      const sy = this.terrain.getTerrainYAt(signX2);
+      this.structGraphics.fillStyle(0x7f8c8d, 1);
+      this.structGraphics.fillRect(signX2 - 2, sy - 45, 4, 45);
+      this.structGraphics.fillStyle(0xf4d03f, 1);
+      this.structGraphics.beginPath();
+      this.structGraphics.moveTo(signX2, sy - 68);
+      this.structGraphics.lineTo(signX2 + 18, sy - 45);
+      this.structGraphics.lineTo(signX2, sy - 22);
+      this.structGraphics.lineTo(signX2 - 18, sy - 45);
+      this.structGraphics.closePath();
+      this.structGraphics.fillPath();
+      this.getText(signX2, sy - 45, 'ROCK', {
         fontSize: '9px', fontStyle: 'bold', color: '#1a252f', fontFamily: 'monospace'
       });
     }
   }
 
-  // D. CONCRETE BOX GIRDER MEGA-VIADUCT BRIDGE (900m - 1150m)
+  // D. P0-2: CONCRETE BOX GIRDER MEGA-VIADUCT BRIDGE (900m - 1150m)
   drawConcreteViaductBridge(viewLeft, viewRight) {
     if (this.bridgeEnd < viewLeft || this.bridgeStart > viewRight) return;
 
@@ -395,64 +449,105 @@ export class EnvironmentRenderer {
         this.structGraphics.beginPath();
         this.structGraphics.moveTo(seg.startX, y1);
         this.structGraphics.lineTo(seg.endX, y2);
-        this.structGraphics.lineTo(seg.endX, y2 + 22);
-        this.structGraphics.lineTo(seg.startX, y1 + 22);
+        this.structGraphics.lineTo(seg.endX, y2 + 24);
+        this.structGraphics.lineTo(seg.startX, y1 + 24);
         this.structGraphics.closePath();
         this.structGraphics.fillPath();
 
-        // Parapet Concrete Barrier Wall
-        this.structGraphics.fillStyle(0xbdc3c7, 0.9);
-        this.structGraphics.fillRect(seg.startX, y1 - 16, seg.endX - seg.startX, 6);
-        this.structGraphics.fillStyle(0x2c3e50, 1);
+        // Parapet Concrete Barrier Wall & Anti-Glare Fencing
+        this.structGraphics.fillStyle(0xbdc3c7, 0.95);
+        this.structGraphics.fillRect(seg.startX, y1 - 18, seg.endX - seg.startX, 7);
+
+        // Anti-Glare Vertical Fence Slats along Bridge Parapet
+        this.structGraphics.lineStyle(1.5, 0x7f8c8d, 0.8);
+        for (let fx = seg.startX; fx < seg.endX; fx += 15) {
+          this.structGraphics.beginPath();
+          this.structGraphics.moveTo(fx, y1 - 18);
+          this.structGraphics.lineTo(fx, y1 - 25);
+          this.structGraphics.strokePath();
+        }
       }
     }
 
-    // 2. Massive Concrete Bridge Piers / Columns down into Deep River Valley
+    // 2. Hammerhead / Y-Shaped Concrete Bridge Piers down into Deep River Valley
     const pierPositions = [950, 1050, 1120];
     pierPositions.forEach(px => {
       if (px >= viewLeft && px <= viewRight) {
         const py = this.terrain.getTerrainYAt(px);
-        // Concrete Pier Cap
+
+        // Structural Bearing Rubber Pads (under deck)
+        this.structGraphics.fillStyle(0x1a252f, 1);
+        this.structGraphics.fillRect(px - 14, py + 24, 8, 4);
+        this.structGraphics.fillRect(px + 6, py + 24, 8, 4);
+
+        // Flared Hammerhead / Y-Shaped Concrete Pier Cap
         this.structGraphics.fillStyle(0x95a5a6, 1);
-        this.structGraphics.fillRect(px - 18, py + 22, 36, 14);
-        // Vertical Pier Tower
+        this.structGraphics.beginPath();
+        this.structGraphics.moveTo(px - 24, py + 28);
+        this.structGraphics.lineTo(px + 24, py + 28);
+        this.structGraphics.lineTo(px + 14, py + 44);
+        this.structGraphics.lineTo(px - 14, py + 44);
+        this.structGraphics.closePath();
+        this.structGraphics.fillPath();
+
+        // Vertical Concrete Pier Shaft / Column Tower
         this.structGraphics.fillStyle(0x7f8c8d, 1);
-        this.structGraphics.fillRect(px - 12, py + 36, 24, 180);
+        this.structGraphics.fillRect(px - 12, py + 44, 24, 180);
+        // Pier Column Side Highlights
+        this.structGraphics.fillStyle(0xbdc3c7, 0.6);
+        this.structGraphics.fillRect(px - 12, py + 44, 4, 180);
 
         // Deep Valley River Stream below
-        this.nearTreeGraphics.fillStyle(0x2980b9, 0.8);
-        this.nearTreeGraphics.fillRect(px - 60, py + 180, 120, 20);
-        this.nearTreeGraphics.fillStyle(0x7fb3d5, 0.5);
-        this.nearTreeGraphics.fillRect(px - 40, py + 184, 80, 6);
+        this.nearTreeGraphics.fillStyle(0x2980b9, 0.85);
+        this.nearTreeGraphics.fillRect(px - 60, py + 180, 120, 22);
+        this.nearTreeGraphics.fillStyle(0x7fb3d5, 0.6);
+        this.nearTreeGraphics.fillRect(px - 40, py + 185, 80, 7);
       }
     });
   }
 
-  // E. MODERN HIGHWAY TWIN-TUBE TUNNEL (1300m - 1600m)
+  // E. P0-3: MODERN HIGHWAY TWIN-TUBE TUNNEL (1300m - 1600m)
   drawHighwayTunnel(viewLeft, viewRight) {
     if (this.tunnelEnd < viewLeft || this.tunnelStart > viewRight) return;
 
-    // 1. Entrance Horseshoe Concrete Portal Arch (1300m)
+    // 1. Entrance Twin-Tube Concrete Portal Arch (1300m)
     if (this.tunnelStart >= viewLeft && this.tunnelStart <= viewRight) {
       const ey = this.terrain.getTerrainYAt(this.tunnelStart);
-      // Outer Reinforced Concrete Frame
+
+      // Secondary Tube Silhouette Portal (Adjacent Lane Background)
+      this.structGraphics.fillStyle(0x7f8c8d, 0.8);
+      this.structGraphics.fillRect(this.tunnelStart - 65, ey - 105, 38, 105);
+      this.structGraphics.fillStyle(0x15202b, 0.9);
+      this.structGraphics.fillCircle(this.tunnelStart - 46, ey - 50, 36);
+
+      // Main Active Driving Tube Reinforced Concrete Arch
       this.structGraphics.fillStyle(0x95a5a6, 1);
-      this.structGraphics.fillRect(this.tunnelStart - 25, ey - 120, 50, 120);
+      this.structGraphics.fillRect(this.tunnelStart - 25, ey - 125, 50, 125);
       // Dark Horseshoe Mouth
       this.structGraphics.fillStyle(0x1a252f, 1);
       this.structGraphics.fillCircle(this.tunnelStart, ey - 55, 48);
 
-      // Tunnel Nameplate Header ("FAST TRACK TUNNEL")
+      // Portal Wingwalls (Connecting Concrete Face)
+      this.structGraphics.fillStyle(0xbdc3c7, 1);
+      this.structGraphics.fillRect(this.tunnelStart - 75, ey - 125, 12, 125);
+
+      // Illuminated Tunnel Header Signboard ("FAST TRACK TUNNEL #1")
       this.structGraphics.fillStyle(0x2c3e50, 1);
-      this.structGraphics.fillRect(this.tunnelStart - 65, ey - 110, 130, 18);
+      this.structGraphics.fillRect(this.tunnelStart - 75, ey - 115, 150, 20);
       this.structGraphics.fillStyle(0xf4d03f, 1);
-      this.structGraphics.fillRect(this.tunnelStart - 62, ey - 108, 124, 2);
-      this.getText(this.tunnelStart, ey - 99, 'FAST TRACK TUNNEL', {
+      this.structGraphics.fillRect(this.tunnelStart - 72, ey - 113, 144, 2);
+      this.getText(this.tunnelStart, ey - 103, 'FAST TRACK TUNNEL', {
         fontSize: '10px', fontStyle: 'bold', color: '#f4d03f', fontFamily: 'monospace'
       });
+
+      // Overhead Lane Control Signal Lamps (Green Arrow over active, Red X over secondary)
+      this.structGraphics.fillStyle(0x27ae60, 1);
+      this.structGraphics.fillCircle(this.tunnelStart, ey - 88, 4); // Green Arrow Active
+      this.structGraphics.fillStyle(0xc0392b, 1);
+      this.structGraphics.fillCircle(this.tunnelStart - 46, ey - 88, 4); // Red X Secondary
     }
 
-    // 2. Tunnel Interior Semi-Translucent Dark Roof & Ceiling LED Lighting (Depth 12, pure visual)
+    // 2. Tunnel Interior Wall Panels, Jet Fans & Ceiling LED Light Cones (Depth 12, pure visual)
     const segments = this.terrain.getSegments();
     if (segments) {
       this.fgGraphics.fillStyle(0x15202b, 0.78); // Semi-dark ceiling overlay
@@ -460,31 +555,48 @@ export class EnvironmentRenderer {
         if (seg.startX >= this.tunnelStart && seg.endX <= this.tunnelEnd) {
           if (seg.startX < viewLeft || seg.endX > viewRight) continue;
 
+          // Ceiling Overlay Polygon
           this.fgGraphics.beginPath();
-          this.fgGraphics.moveTo(seg.startX, seg.startY - 110);
-          this.fgGraphics.lineTo(seg.endX, seg.endY - 110);
+          this.fgGraphics.moveTo(seg.startX, seg.startY - 115);
+          this.fgGraphics.lineTo(seg.endX, seg.endY - 115);
           this.fgGraphics.lineTo(seg.endX, seg.endY - 20);
           this.fgGraphics.lineTo(seg.startX, seg.startY - 20);
           this.fgGraphics.closePath();
           this.fgGraphics.fillPath();
 
-          // Continuous Ceiling Sodium/LED Light Fixtures every 40m
+          // Ceiling Ventilation Jet-Fan Cylinders every 80m
+          if (Math.floor(seg.startX / 80) % 2 === 0) {
+            this.fgGraphics.fillStyle(0x7f8c8d, 1);
+            this.fgGraphics.fillRect(seg.startX - 10, seg.startY - 112, 20, 8);
+            this.fgGraphics.fillStyle(0x566573, 1);
+            this.fgGraphics.fillCircle(seg.startX - 8, seg.startY - 108, 3);
+            this.fgGraphics.fillStyle(0x15202b, 0.78);
+          }
+
+          // Continuous Ceiling Sodium/LED Fixtures & Light Cones every 40m
           if (Math.floor(seg.startX / 40) % 2 === 0) {
             this.fgGraphics.fillStyle(0xf4d03f, 1);
-            this.fgGraphics.fillCircle(seg.startX, seg.startY - 105, 4);
-            this.fgGraphics.fillStyle(0xfef9e7, 0.35);
-            this.fgGraphics.fillCircle(seg.startX, seg.startY - 105, 14);
+            this.fgGraphics.fillCircle(seg.startX, seg.startY - 108, 4);
+            // Angled Light Beam Cone down to road
+            this.fgGraphics.fillStyle(0xfef9e7, 0.18);
+            this.fgGraphics.beginPath();
+            this.fgGraphics.moveTo(seg.startX - 4, seg.startY - 104);
+            this.fgGraphics.lineTo(seg.startX + 4, seg.startY - 104);
+            this.fgGraphics.lineTo(seg.startX + 28, seg.startY - 20);
+            this.fgGraphics.lineTo(seg.startX - 28, seg.startY - 20);
+            this.fgGraphics.closePath();
+            this.fgGraphics.fillPath();
             this.fgGraphics.fillStyle(0x15202b, 0.78);
           }
         }
       }
     }
 
-    // 3. Exit Horseshoe Concrete Portal Arch (1600m)
+    // 3. Exit Twin-Tube Horseshoe Concrete Portal Arch (1600m)
     if (this.tunnelEnd >= viewLeft && this.tunnelEnd <= viewRight) {
       const exY = this.terrain.getTerrainYAt(this.tunnelEnd);
       this.structGraphics.fillStyle(0x95a5a6, 1);
-      this.structGraphics.fillRect(this.tunnelEnd - 25, exY - 120, 50, 120);
+      this.structGraphics.fillRect(this.tunnelEnd - 25, exY - 125, 50, 125);
       // Bright Daylight Exit Opening
       this.structGraphics.fillStyle(0xeaecee, 0.95);
       this.structGraphics.fillCircle(this.tunnelEnd, exY - 55, 48);

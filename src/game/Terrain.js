@@ -245,8 +245,8 @@ export class Terrain {
 
     if (this.segments.length > 0) {
       if (isExpressway) {
-        // Paved Shoulder Sub-base (Width: 28px)
-        this.graphics.lineStyle(28, shoulderColor, 1);
+        // Paved Shoulder Sub-base (Width: 30px)
+        this.graphics.lineStyle(30, shoulderColor, 1);
         this.graphics.beginPath();
         this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY);
         for (const seg of this.segments) {
@@ -254,35 +254,80 @@ export class Terrain {
         }
         this.graphics.strokePath();
 
-        // Main Controlled-Access Asphalt Surface (Width: 20px)
-        this.graphics.lineStyle(20, roadColor, 1);
+        // Shoulder Hash Markings / Rumble Strips (Width: 1.5px)
+        this.graphics.lineStyle(1.5, 0x566573, 0.6);
+        for (let i = 0; i < this.segments.length; i += 2) {
+          const seg = this.segments[i];
+          const midX = (seg.startX + seg.endX) / 2;
+          const midY = (seg.startY + seg.endY) / 2;
+          this.graphics.beginPath();
+          this.graphics.moveTo(midX - 5, midY + 11);
+          this.graphics.lineTo(midX + 5, midY + 14);
+          this.graphics.strokePath();
+        }
+
+        // Main Controlled-Access Asphalt Surface (Width: 22px)
+        this.graphics.lineStyle(22, roadColor, 1);
         this.graphics.beginPath();
         this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY);
         for (const seg of this.segments) {
           this.graphics.lineTo(seg.endX, seg.endY);
         }
         this.graphics.strokePath();
+
+        // Concrete Jersey Median Divider (Top edge visual barrier)
+        this.graphics.lineStyle(6, 0x95a5a6, 1);
+        this.graphics.beginPath();
+        this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY - 14);
+        for (const seg of this.segments) {
+          this.graphics.lineTo(seg.endX, seg.endY - 14);
+        }
+        this.graphics.strokePath();
+
+        // Jersey Median Top Cap
+        this.graphics.lineStyle(2, 0xbdc3c7, 1);
+        this.graphics.beginPath();
+        this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY - 17);
+        for (const seg of this.segments) {
+          this.graphics.lineTo(seg.endX, seg.endY - 17);
+        }
+        this.graphics.strokePath();
+
+        // Jersey Barrier Block Seams & Reflector Dots
+        for (let i = 0; i < this.segments.length; i += 2) {
+          const seg = this.segments[i];
+          if (Math.floor(seg.startX / 60) % 2 === 0) {
+            this.graphics.lineStyle(1.5, 0x566573, 0.8);
+            this.graphics.beginPath();
+            this.graphics.moveTo(seg.startX, seg.startY - 11);
+            this.graphics.lineTo(seg.startX, seg.startY - 17);
+            this.graphics.strokePath();
+            // Yellow reflector dot on median
+            this.graphics.fillStyle(0xf4d03f, 1);
+            this.graphics.fillCircle(seg.startX, seg.startY - 14, 1.5);
+          }
+        }
 
         // Solid White Outer Highway Edge Line (Top Edge)
-        this.graphics.lineStyle(3.5, edgeColor, 1);
+        this.graphics.lineStyle(3, edgeColor, 1);
         this.graphics.beginPath();
-        this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY - 9);
+        this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY - 10);
         for (const seg of this.segments) {
-          this.graphics.lineTo(seg.endX, seg.endY - 9);
+          this.graphics.lineTo(seg.endX, seg.endY - 10);
         }
         this.graphics.strokePath();
 
         // Solid White Outer Highway Edge Line (Bottom Edge)
         this.graphics.lineStyle(2, 0xd5dbdb, 0.9);
         this.graphics.beginPath();
-        this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY + 9);
+        this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY + 10);
         for (const seg of this.segments) {
-          this.graphics.lineTo(seg.endX, seg.endY + 9);
+          this.graphics.lineTo(seg.endX, seg.endY + 10);
         }
         this.graphics.strokePath();
 
-        // Center Yellow Dash Lane Markings along Segment Slope
-        this.graphics.lineStyle(3.5, dashColor, 0.95);
+        // Center Double Yellow Dash Lane Markings along Segment Slope
+        this.graphics.lineStyle(2, dashColor, 0.95);
         for (let i = 0; i < this.segments.length; i += 2) {
           const seg = this.segments[i];
           const midX = (seg.startX + seg.endX) / 2;
@@ -291,9 +336,16 @@ export class Terrain {
           const dx = Math.cos(angle) * 16;
           const dy = Math.sin(angle) * 16;
 
+          // Line 1
           this.graphics.beginPath();
-          this.graphics.moveTo(midX - dx, midY - dy);
-          this.graphics.lineTo(midX + dx, midY + dy);
+          this.graphics.moveTo(midX - dx, midY - dy - 1.5);
+          this.graphics.lineTo(midX + dx, midY + dy - 1.5);
+          this.graphics.strokePath();
+
+          // Line 2
+          this.graphics.beginPath();
+          this.graphics.moveTo(midX - dx, midY - dy + 1.5);
+          this.graphics.lineTo(midX + dx, midY + dy + 1.5);
           this.graphics.strokePath();
         }
       } else {
