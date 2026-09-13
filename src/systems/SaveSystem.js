@@ -21,10 +21,15 @@ class SaveSystem {
     } catch (e) {
       console.warn('SaveSystem: Failed to load save data, using defaults.', e);
     }
-    // Development-only: unlock legendary characters for local testing
+    // Development-only: unlock legendary characters and Fast Track stage for local testing
     // This does NOT affect production builds (import.meta.env.DEV is false in production)
-    if (import.meta.env.DEV && !data.unlockedCharacters.includes('saugat_legendary')) {
-      data.unlockedCharacters = [...data.unlockedCharacters, 'saugat_legendary'];
+    if (import.meta.env.DEV) {
+      if (!data.unlockedCharacters.includes('saugat_legendary')) {
+        data.unlockedCharacters = [...data.unlockedCharacters, 'saugat_legendary'];
+      }
+      if (!data.unlockedStages.includes('ktm_nijgadh_fast_track')) {
+        data.unlockedStages = [...data.unlockedStages, 'ktm_nijgadh_fast_track'];
+      }
     }
     return data;
   }
@@ -91,6 +96,9 @@ class SaveSystem {
   }
 
   isStageUnlocked(id) {
+    if (import.meta.env.DEV && id === 'ktm_nijgadh_fast_track') {
+      return true;
+    }
     return this.data.unlockedStages.includes(id);
   }
 
