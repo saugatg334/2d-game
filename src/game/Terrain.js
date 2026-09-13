@@ -38,7 +38,56 @@ export class Terrain {
     const prevSegment = this.segments[this.segments.length - 1];
     const prevY = prevSegment ? prevSegment.endY : this.groundY;
 
-    // Random terrain type - gentler slopes for better gameplay
+    const isFastTrack = this.scene.stage && (this.scene.stage.id === 'ktm_nijgadh_fast_track' || this.scene.stage.environment === 'fast_track');
+    
+    if (isFastTrack) {
+      // Deterministic section-based Fast Track terrain profile (2500m total distance)
+      const endX = startX + this.segmentWidth;
+      let endY = this.groundY;
+
+      if (endX <= 250) {
+        // Section 1: valley_start (0m - 250m) -> Flat level platform
+        endY = this.groundY;
+      } else if (endX <= 600) {
+        // Section 2: hill_climb (250m - 600m) -> Smooth climbing slope up to -80px
+        const t = (endX - 250) / 350;
+        endY = this.groundY - t * 80;
+      } else if (endX <= 900) {
+        // Section 3: expressway (600m - 900m) -> Gentle rolling hill expressway
+        const t = (endX - 600) / 300;
+        endY = (this.groundY - 80) + Math.sin(t * Math.PI) * 40;
+      } else if (endX <= 1150) {
+        // Section 4: bridge (900m - 1150m) -> Flat level viaduct bridge deck (Slope 0)
+        endY = this.groundY - 40;
+      } else if (endX <= 1300) {
+        // Section 5: tunnel_approach (1150m - 1300m) -> Gentle transition down to -20px
+        const t = (endX - 1150) / 150;
+        endY = (this.groundY - 40) + t * 20;
+      } else if (endX <= 1600) {
+        // Section 6: tunnel (1300m - 1600m) -> Flat level tunnel floor (Slope 0)
+        endY = this.groundY - 20;
+      } else if (endX <= 1750) {
+        // Section 7: tunnel_exit (1600m - 1750m) -> Gentle transition up to -50px
+        const t = (endX - 1600) / 150;
+        endY = (this.groundY - 20) - t * 30;
+      } else if (endX <= 2050) {
+        // Section 8: hill_expressway (1750m - 2050m) -> Makwanpur hill expressway curve
+        const t = (endX - 1750) / 300;
+        endY = (this.groundY - 50) + Math.sin(t * Math.PI) * 30;
+      } else if (endX <= 2350) {
+        // Section 9: terai_transition (2050m - 2350m) -> Gradual descent to Terai plains
+        const t = (endX - 2050) / 300;
+        endY = (this.groundY - 20) + t * 20;
+      } else {
+        // Section 10: nijgadh_finish (2350m - 2500m+) -> Flat level finish platform
+        endY = this.groundY;
+      }
+
+      this.addSegment(startX, prevY, endX, endY, false);
+      return;
+    }
+
+    // Random terrain type for other procedural stages - gentler slopes for better gameplay
     const rand = Math.random();
     let endY, type;
 

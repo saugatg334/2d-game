@@ -22,18 +22,18 @@ export class EnvironmentRenderer {
     this.textPool = [];
     this.activeTexts = [];
 
-    // Gameplay landmark section boundaries across 7200m total stage distance
-    this.hillCutStart = 1200;
-    this.hillCutEnd = 2600;
+    // Gameplay landmark section boundaries across 2500m total stage distance
+    this.hillCutStart = 350;
+    this.hillCutEnd = 850;
 
-    this.bridgeStart = 2800;
-    this.bridgeEnd = 4200;
+    this.bridgeStart = 900;
+    this.bridgeEnd = 1150;
 
-    this.tunnelStart = 4400;
-    this.tunnelEnd = 5600;
+    this.tunnelStart = 1300;
+    this.tunnelEnd = 1600;
 
-    this.teraiStart = 5800;
-    this.finishX = 7000;
+    this.teraiStart = 2050;
+    this.finishX = 2450;
   }
 
   // Update loop called from GameScene
@@ -76,8 +76,8 @@ export class EnvironmentRenderer {
     const w = this.scene.scale.width;
     const h = this.scene.scale.height;
 
-    // A. Sky Gradient Transition (Kathmandu foothill blue -> Mahabharat -> Terai golden horizon)
-    const t = Math.min(1, Math.max(0, cameraX / 7200));
+    // A. Sky Gradient Transition (Khokana foothill blue -> Mahabharat -> Terai golden horizon)
+    const t = Math.min(1, Math.max(0, cameraX / 2500));
     const skyTop = 0x5b9bd5;
     const skyBottom = t > 0.7 ? 0xfadbd8 : (t > 0.4 ? 0xd4efdf : 0xa9cce3);
 
@@ -102,7 +102,7 @@ export class EnvironmentRenderer {
       this.farHimalayaGraphics.lineTo(baseX + 220, h * 0.45);
       this.farHimalayaGraphics.lineTo(baseX + 380, h * 0.22); // Peak 1
       this.farHimalayaGraphics.lineTo(baseX + 500, h * 0.40);
-      this.farHimalayaGraphics.lineTo(baseX + 680, h * 0.18); // Peak 2 (Ganesh/Langtang style)
+      this.farHimalayaGraphics.lineTo(baseX + 680, h * 0.18); // Peak 2 (Langtang / Ganesh massif style)
       this.farHimalayaGraphics.lineTo(baseX + 820, h * 0.38);
       this.farHimalayaGraphics.lineTo(baseX + 960, h * 0.25); // Peak 3
       this.farHimalayaGraphics.lineTo(baseX + 1120, h * 0.50);
@@ -218,9 +218,9 @@ export class EnvironmentRenderer {
     this.drawNijgadhFinish(viewLeft, viewRight);
   }
 
-  // A. KATHMANDU / STARTING SECTION (0m - 1000m)
+  // A. KHOKANA / KATHMANDU STARTING SECTION (0m - 250m)
   drawKathmanduStart(viewLeft, viewRight) {
-    const startX = 300;
+    const startX = 200;
     if (startX >= viewLeft && startX <= viewRight) {
       const gy = this.terrain.getTerrainYAt(startX);
 
@@ -230,19 +230,19 @@ export class EnvironmentRenderer {
       this.structGraphics.fillRect(startX + 90, gy - 110, 8, 110);
       this.structGraphics.fillRect(startX - 94, gy - 110, 196, 10);
 
-      // Green Nepali Expressway Signboard ("KATHMANDU -> NIJGADH")
+      // Green Signboard ("KHOKANA ➔ NIJGADH")
       this.structGraphics.fillStyle(0x1e8449, 1);
       this.structGraphics.fillRect(startX - 95, gy - 140, 190, 28);
       this.structGraphics.lineStyle(2, 0xffffff, 1);
       this.structGraphics.strokeRect(startX - 93, gy - 138, 186, 24);
 
       // Add crisp signboard text
-      this.getText(startX, gy - 126, 'KATHMANDU ➔ NIJGADH', {
+      this.getText(startX, gy - 126, 'KHOKANA ➔ NIJGADH', {
         fontSize: '13px', fontStyle: 'bold', color: '#ffffff', fontFamily: 'monospace'
       });
 
-      // Milestone Post at Start (GAME KM 0)
-      const msX = 150;
+      // Milestone Post at Start
+      const msX = 100;
       if (msX >= viewLeft && msX <= viewRight) {
         const msY = this.terrain.getTerrainYAt(msX);
         this.structGraphics.fillStyle(0xf4f6f7, 1);
@@ -261,7 +261,7 @@ export class EnvironmentRenderer {
     const segments = this.terrain.getSegments();
     if (!segments) return;
 
-    // Continuous W-Beam Steel Guardrail (Height: 12px above road)
+    // Continuous W-Beam Steel Guardrail (Height: 11px above road)
     this.structGraphics.lineStyle(3, 0xd5dbdb, 0.95);
     for (let i = 0; i < segments.length; i += 2) {
       const seg = segments[i];
@@ -296,23 +296,23 @@ export class EnvironmentRenderer {
       }
     }
 
-    // In-game Progression Distance Milestones ("KM 1" to "KM 7")
-    for (let km = 1; km <= 7; km++) {
-      const mX = km * 1000;
+    // In-game Progression Distance Milestones every 500m ("KM 0.5", "KM 1.0", "KM 1.5", "KM 2.0")
+    for (let kmVal = 0.5; kmVal <= 2.0; kmVal += 0.5) {
+      const mX = kmVal * 1000;
       if (mX >= viewLeft && mX <= viewRight) {
         const mY = this.terrain.getTerrainYAt(mX);
         this.structGraphics.fillStyle(0xf4f6f7, 1);
-        this.structGraphics.fillRoundedRect(mX - 10, mY - 26, 20, 26, 4);
+        this.structGraphics.fillRoundedRect(mX - 12, mY - 26, 24, 26, 4);
         this.structGraphics.fillStyle(0x1e8449, 1);
-        this.structGraphics.fillRoundedRect(mX - 10, mY - 26, 20, 9, 4);
-        this.getText(mX, mY - 10, `KM ${km}`, {
-          fontSize: '9px', fontStyle: 'bold', color: '#2c3e50', fontFamily: 'monospace'
+        this.structGraphics.fillRoundedRect(mX - 12, mY - 26, 24, 9, 4);
+        this.getText(mX, mY - 10, `KM ${kmVal.toFixed(1)}`, {
+          fontSize: '8px', fontStyle: 'bold', color: '#2c3e50', fontFamily: 'monospace'
         });
       }
     }
   }
 
-  // C. ROAD-CUT HILL SECTION & CONCRETE/GABION RETAINING WALLS (1200m - 2600m)
+  // C. ROAD-CUT HILL SECTION & CONCRETE/GABION RETAINING WALLS (350m - 850m)
   drawHillCutAndRetainingWalls(viewLeft, viewRight) {
     if (this.hillCutEnd < viewLeft || this.hillCutStart > viewRight) return;
 
@@ -356,7 +356,7 @@ export class EnvironmentRenderer {
     }
 
     // Hill Cut Roadside Warning Sign
-    const signX = 1350;
+    const signX = 450;
     if (signX >= viewLeft && signX <= viewRight) {
       const sy = this.terrain.getTerrainYAt(signX);
       this.structGraphics.fillStyle(0x7f8c8d, 1);
@@ -376,14 +376,14 @@ export class EnvironmentRenderer {
     }
   }
 
-  // D. CONCRETE BOX GIRDER MEGA-VIADUCT BRIDGE (2800m - 4200m)
+  // D. CONCRETE BOX GIRDER MEGA-VIADUCT BRIDGE (900m - 1150m)
   drawConcreteViaductBridge(viewLeft, viewRight) {
     if (this.bridgeEnd < viewLeft || this.bridgeStart > viewRight) return;
 
     const segments = this.terrain.getSegments();
     if (!segments) return;
 
-    // 1. Concrete Box-Girder Deck Slab beneath road surface
+    // 1. Concrete Box-Girder Deck Slab beneath road surface (No collision, pure visual)
     this.structGraphics.fillStyle(0x2c3e50, 1);
     for (const seg of segments) {
       if (seg.startX >= this.bridgeStart && seg.endX <= this.bridgeEnd) {
@@ -407,8 +407,8 @@ export class EnvironmentRenderer {
       }
     }
 
-    // 2. Massive Concrete Bridge Piers / Columns down into Deep Valley
-    const pierPositions = [2950, 3250, 3550, 3850, 4150];
+    // 2. Massive Concrete Bridge Piers / Columns down into Deep River Valley
+    const pierPositions = [950, 1050, 1120];
     pierPositions.forEach(px => {
       if (px >= viewLeft && px <= viewRight) {
         const py = this.terrain.getTerrainYAt(px);
@@ -419,7 +419,7 @@ export class EnvironmentRenderer {
         this.structGraphics.fillStyle(0x7f8c8d, 1);
         this.structGraphics.fillRect(px - 12, py + 36, 24, 180);
 
-        // Deep Valley River / Water Stream below
+        // Deep Valley River Stream below
         this.nearTreeGraphics.fillStyle(0x2980b9, 0.8);
         this.nearTreeGraphics.fillRect(px - 60, py + 180, 120, 20);
         this.nearTreeGraphics.fillStyle(0x7fb3d5, 0.5);
@@ -428,11 +428,11 @@ export class EnvironmentRenderer {
     });
   }
 
-  // E. MODERN HIGHWAY TWIN-TUBE TUNNEL (4400m - 5600m)
+  // E. MODERN HIGHWAY TWIN-TUBE TUNNEL (1300m - 1600m)
   drawHighwayTunnel(viewLeft, viewRight) {
     if (this.tunnelEnd < viewLeft || this.tunnelStart > viewRight) return;
 
-    // 1. Entrance Horseshoe Concrete Portal Arch (4400m)
+    // 1. Entrance Horseshoe Concrete Portal Arch (1300m)
     if (this.tunnelStart >= viewLeft && this.tunnelStart <= viewRight) {
       const ey = this.terrain.getTerrainYAt(this.tunnelStart);
       // Outer Reinforced Concrete Frame
@@ -442,7 +442,7 @@ export class EnvironmentRenderer {
       this.structGraphics.fillStyle(0x1a252f, 1);
       this.structGraphics.fillCircle(this.tunnelStart, ey - 55, 48);
 
-      // Tunnel Nameplate Header ("FAST TRACK TUNNEL #1")
+      // Tunnel Nameplate Header ("FAST TRACK TUNNEL")
       this.structGraphics.fillStyle(0x2c3e50, 1);
       this.structGraphics.fillRect(this.tunnelStart - 65, ey - 110, 130, 18);
       this.structGraphics.fillStyle(0xf4d03f, 1);
@@ -452,7 +452,7 @@ export class EnvironmentRenderer {
       });
     }
 
-    // 2. Tunnel Interior Semi-Translucent Dark Roof & Ceiling LED Lighting (Depth 12)
+    // 2. Tunnel Interior Semi-Translucent Dark Roof & Ceiling LED Lighting (Depth 12, pure visual)
     const segments = this.terrain.getSegments();
     if (segments) {
       this.fgGraphics.fillStyle(0x15202b, 0.78); // Semi-dark ceiling overlay
@@ -480,7 +480,7 @@ export class EnvironmentRenderer {
       }
     }
 
-    // 3. Exit Horseshoe Concrete Portal Arch (5600m)
+    // 3. Exit Horseshoe Concrete Portal Arch (1600m)
     if (this.tunnelEnd >= viewLeft && this.tunnelEnd <= viewRight) {
       const exY = this.terrain.getTerrainYAt(this.tunnelEnd);
       this.structGraphics.fillStyle(0x95a5a6, 1);
@@ -491,7 +491,7 @@ export class EnvironmentRenderer {
     }
   }
 
-  // F. NIJGADH / TERAI FINISH SECTION (6800m - 7200m)
+  // F. NIJGADH / TERAI FINISH SECTION (2350m - 2500m)
   drawNijgadhFinish(viewLeft, viewRight) {
     if (this.finishX >= viewLeft && this.finishX <= viewRight) {
       const gy = this.terrain.getTerrainYAt(this.finishX);
@@ -502,7 +502,7 @@ export class EnvironmentRenderer {
       this.structGraphics.fillRect(this.finishX + 90, gy - 110, 8, 110);
       this.structGraphics.fillRect(this.finishX - 94, gy - 110, 196, 10);
 
-      // Destination Signboard ("NIJGADH / BARA - END OF FAST TRACK")
+      // Destination Signboard ("NIJGADH / BARA ➔ END")
       this.structGraphics.fillStyle(0x1e8449, 1);
       this.structGraphics.fillRect(this.finishX - 95, gy - 140, 190, 28);
       this.structGraphics.lineStyle(2, 0xffffff, 1);
@@ -512,7 +512,7 @@ export class EnvironmentRenderer {
         fontSize: '13px', fontStyle: 'bold', color: '#ffffff', fontFamily: 'monospace'
       });
 
-      // Milestone Post at Finish (GAME KM 7)
+      // Milestone Post at Finish
       const msX = this.finishX - 35;
       this.structGraphics.fillStyle(0xf4f6f7, 1);
       this.structGraphics.fillRoundedRect(msX - 10, gy - 24, 20, 24, 4);

@@ -9,7 +9,7 @@ const stageSpecs = [
   ['mustang_road', 'Mustang Road', 'Mustang', 'dry_mountain', 'rocky', 3500, 3, 'diamonds', 30],
   ['himalayan_route', 'Himalayan Route', 'Himalayas', 'snow_mountain', 'steep_hills', 4000, 4, 'diamonds', 50],
   ['khokana', 'Khokana Village Road', 'Khokana', 'village', 'valley', 2900, 2, 'coins', 300],
-  ['ktm_nijgadh_fast_track', 'Kathmandu-Nijgadh Fast Track', 'Khokana to Nijgadh', 'fast_track', 'expressway', 7200, 3, 'diamonds', 20],
+  ['ktm_nijgadh_fast_track', 'Kathmandu–Nijgadh Fast Track', 'Khokana → Nijgadh', 'fast_track', 'expressway', 2500, 3, 'diamonds', 20],
   ['nijgadh_fast_track', 'Nijgadh Fast Track', 'Nijgadh, Bara', 'fast_track', 'expressway', 3400, 3, 'diamonds', 22],
   ['nijgadh_hetauda', 'Nijgadh-Hetauda', 'Bara to Makwanpur', 'terai', 'rolling_hills', 3000, 2, 'coins', 400],
   ['hetauda_hills', 'Hetauda Hills', 'Hetauda', 'hills', 'steep_hills', 3100, 3, 'coins', 450],
@@ -83,17 +83,18 @@ function createStage([id, name, location, environment, profile, distance, diffic
     unlock: { type: unlockType, amount: unlockAmount }
   };
   if (id === 'ktm_nijgadh_fast_track') {
+    stage.description = "A gameplay representation inspired by Nepal's 72.5 km Kathmandu–Nijgadh Fast Track expressway project, connecting Khokana to Nijgadh through high-speed bridges, hill cuts, and twin tunnels.";
     stage.terrain.sections = [
-      'expressway_straight',
-      'climbing_section',
-      'downhill_section',
-      'bridge',
-      'tunnel_entrance',
-      'tunnel_interior',
-      'tunnel_exit',
-      'valley_section',
-      'terai_transition',
-      'nijgadh_finish'
+      { name: 'valley_start', length: 250, profile: 'flat_start' },
+      { name: 'hill_climb', length: 350, profile: 'gentle_up' },
+      { name: 'expressway', length: 300, profile: 'gentle_rolling' },
+      { name: 'bridge', length: 250, profile: 'level_bridge' },
+      { name: 'tunnel_approach', length: 150, profile: 'gentle_down' },
+      { name: 'tunnel', length: 300, profile: 'level_tunnel' },
+      { name: 'tunnel_exit', length: 150, profile: 'gentle_up' },
+      { name: 'hill_expressway', length: 300, profile: 'gentle_rolling' },
+      { name: 'terai_transition', length: 300, profile: 'gentle_down' },
+      { name: 'nijgadh_finish', length: 150, profile: 'flat_finish' }
     ];
   }
   return stage;
