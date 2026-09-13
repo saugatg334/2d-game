@@ -185,8 +185,14 @@ export class Terrain {
       this.graphics.fillPath();
     }
 
+    // Check if stage is an expressway/fast-track
+    const isExpressway = this.theme && (this.theme.environment === 'fast_track' || this.theme.environment === 'highway');
+    const roadColor = isExpressway ? 0x2c3e50 : 0x5d4037;
+    const edgeColor = isExpressway ? 0xffffff : 0x8d6e63;
+    const dashColor = isExpressway ? 0xf1c40f : 0xffeb3b;
+
     // Draw road surface (top layer)
-    this.graphics.lineStyle(8, 0x5d4037, 1);
+    this.graphics.lineStyle(10, roadColor, 1);
     if (this.segments.length > 0) {
       this.graphics.beginPath();
       this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY);
@@ -196,37 +202,27 @@ export class Terrain {
       this.graphics.strokePath();
     }
 
-    // Draw road edges (lighter lines on sides of road)
-    this.graphics.lineStyle(3, 0x8d6e63, 0.8);
+    // Draw road edge line (solid white/light line on edge of road)
+    this.graphics.lineStyle(2, edgeColor, 0.9);
     if (this.segments.length > 0) {
-      // Left edge
       this.graphics.beginPath();
       this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY - 4);
       for (const seg of this.segments) {
         this.graphics.lineTo(seg.endX, seg.endY - 4);
       }
       this.graphics.strokePath();
-      // Right edge
-      this.graphics.beginPath();
-      this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY + 4);
-      for (const seg of this.segments) {
-        this.graphics.lineTo(seg.endX, seg.endY + 4);
-      }
-      this.graphics.strokePath();
     }
 
-    // Draw road center dashes
-    this.graphics.lineStyle(2, 0xffeb3b, 0.6);
+    // Draw road center lane dashes
+    this.graphics.lineStyle(2, dashColor, 0.8);
     for (let i = 0; i < this.segments.length; i += 2) {
       const seg = this.segments[i];
-      if (seg.type === 'flat' || Math.random() > 0.5) {
-        const midX = (seg.startX + seg.endX) / 2;
-        const midY = (seg.startY + seg.endY) / 2;
-        this.graphics.beginPath();
-        this.graphics.moveTo(midX - 10, midY);
-        this.graphics.lineTo(midX + 10, midY);
-        this.graphics.strokePath();
-      }
+      const midX = (seg.startX + seg.endX) / 2;
+      const midY = (seg.startY + seg.endY) / 2;
+      this.graphics.beginPath();
+      this.graphics.moveTo(midX - 12, midY);
+      this.graphics.lineTo(midX + 12, midY);
+      this.graphics.strokePath();
     }
 
     // Draw grass/ground details on top of road edges
