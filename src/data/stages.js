@@ -61,7 +61,7 @@ const themes = {
   urban: ['#87ceeb', '#556b2f', '#696969', '#808080', '#daa520'],
   hills: ['#87ceeb', '#2e8b57', '#8fbc8f', '#4682b4', '#32cd32'],
   highway: ['#87ceeb', '#556b2f', '#696969', '#808080', '#daa520'],
-  fast_track: ['#9bd7ef', '#527a55', '#555b61', '#6f7f8a', '#d9a441'],
+  fast_track: ['#85c1e9', '#1e8449', '#2c3e50', '#2980b9', '#f1c40f'],
   terai: ['#f5d08a', '#6b8e23', '#a0522d', '#b8860b', '#daa520'],
   dry_mountain: ['#ffb36b', '#8b4513', '#a0522d', '#cd853f', '#d2691e'],
   snow_mountain: ['#b0e0e6', '#f0f8ff', '#e0ffff', '#708090', '#00ced1'],

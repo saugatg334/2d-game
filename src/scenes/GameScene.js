@@ -6,6 +6,7 @@ import { vehicles } from '../data/vehicles.js';
 import { Vehicle } from '../game/Vehicle.js';
 import { Terrain } from '../game/Terrain.js';
 import { Collectibles } from '../game/Collectibles.js';
+import { EnvironmentRenderer } from '../game/EnvironmentRenderer.js';
 import { device } from '../utils/device.js';
 
 export class GameScene extends Phaser.Scene {
@@ -64,6 +65,7 @@ export class GameScene extends Phaser.Scene {
 
     this.terrain = new Terrain(this, this.stage.theme);
     this.terrain.generate(this.stage.targetDistance + 1000);
+    this.environmentRenderer = new EnvironmentRenderer(this, this.terrain, this.stage);
 
     // Place vehicle on the starting platform
     const startX = 200;
@@ -280,6 +282,9 @@ export class GameScene extends Phaser.Scene {
     this.checkGameConditions();
     this.terrain.generateAhead(this.cameras.main.scrollX);
     this.terrain.cleanup(this.cameras.main.scrollX);
+    if (this.environmentRenderer) {
+      this.environmentRenderer.update(this.cameras.main.scrollX, this.cameras.main.scrollY);
+    }
   }
 
   readInput() {
