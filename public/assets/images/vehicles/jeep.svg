@@ -1,12 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="160" height="90" viewBox="0 0 160 90">
-  <rect x="15" y="25" width="130" height="45" rx="5" fill="#27ae60"/>
-  <rect x="25" y="10" width="90" height="25" rx="5" fill="#2ecc71"/>
-  <rect x="30" y="15" width="35" height="18" rx="3" fill="#85c1e9"/>
-  <rect x="70" y="15" width="35" height="18" rx="3" fill="#85c1e9"/>
-  <line x1="65" y1="10" x2="65" y2="35" stroke="#1a1a1a" stroke-width="4"/>
-  <circle cx="45" cy="75" r="16" fill="#1a1a1a"/>
-  <circle cx="45" cy="75" r="9" fill="#7f8c8d"/>
-  <circle cx="115" cy="75" r="16" fill="#1a1a1a"/>
-  <circle cx="115" cy="75" r="9" fill="#7f8c8d"/>
-  <rect x="140" y="35" width="6" height="25" rx="2" fill="#2c3e50"/>
+  <!-- Mountain Jeep Body (Side View, facing right) -->
+  <!-- Chassis Base & Underbody -->
+  <rect x="20" y="52" width="120" height="10" rx="3" fill="#1b2631"/>
+  <!-- Lower Body Shell -->
+  <path d="M 18 55 L 22 36 L 125 36 L 142 42 L 140 55 Z" fill="#1e8449" stroke="#145a32" stroke-width="1.5"/>
+  <!-- Front Hood & Grille Nose -->
+  <path d="M 90 36 L 132 36 L 140 44 L 90 44 Z" fill="#27ae60"/>
+  <!-- Front Headlight & Bumper Bar -->
+  <circle cx="138" cy="42" r="4" fill="#f1c40f" stroke="#ffffff" stroke-width="1"/>
+  <rect x="138" y="48" width="10" height="8" rx="2" fill="#7f8c8d"/>
+  <!-- Open Cab Roll Cage & Windshield Frame -->
+  <path d="M 45 36 L 45 18 L 92 18 L 102 36 Z" fill="none" stroke="#2c3e50" stroke-width="4.5" stroke-linejoin="round"/>
+  <!-- Blue Tinted Windshield -->
+  <path d="M 86 35 L 94 20 L 100 20 L 90 35 Z" fill="#85c1e9" opacity="0.85"/>
+  <!-- Soft Top Canvas Roof -->
+  <path d="M 42 17 L 94 17 L 90 22 L 44 22 Z" fill="#d35400"/>
+  <!-- Door Panel & Side Details -->
+  <rect x="52" y="38" width="32" height="15" rx="2" fill="none" stroke="#145a32" stroke-width="1.5"/>
+  <!-- Nepali Flag Emblem on Door -->
+  <path d="M 56 42 L 62 42 L 57 46 L 62 46 L 56 50 Z" fill="#dc7633"/>
+  <!-- Rear Spare Tire Mount -->
+  <rect x="12" y="32" width="8" height="20" rx="2" fill="#2c3e50"/>
+  <!-- Front & Rear Wheel Arch Cutouts -->
+  <path d="M 32 58 A 16 16 0 0 1 60 58" fill="none" stroke="#145a32" stroke-width="2"/>
+  <path d="M 102 58 A 16 16 0 0 1 130 58" fill="none" stroke="#145a32" stroke-width="2"/>
 </svg>

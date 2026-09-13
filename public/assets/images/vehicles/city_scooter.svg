@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90" viewBox="0 0 160 90">
+  <!-- Nepali City Scooter Body (Side View, facing right) -->
+  <!-- Rear Body Cowl -->
+  <path d="M 30 46 Q 30 32 55 32 L 80 40 L 78 58 L 35 58 Z" fill="#e74c3c" stroke="#c0392b" stroke-width="1.5"/>
+  <path d="M 40 38 Q 55 36 68 42" stroke="#f1948a" stroke-width="2" fill="none"/>
+  <!-- Floorboard -->
+  <rect x="70" y="52" width="25" height="7" rx="2" fill="#2c3e50"/>
+  <!-- Front Apron / Shield -->
+  <path d="M 85 54 L 105 32 Q 112 28 108 24 L 96 28 L 82 50 Z" fill="#e74c3c" stroke="#c0392b" stroke-width="1.5"/>
+  <!-- Curved Inner Shield -->
+  <path d="M 88 48 Q 98 34 100 28" stroke="#f1948a" stroke-width="2" fill="none"/>
+  <!-- Plush Dual Seat -->
+  <path d="M 40 30 Q 58 28 76 36 L 74 42 L 38 38 Z" fill="#2c3e50" stroke="#1a252f" stroke-width="1"/>
+  <line x1="58" y1="30" x2="56" y2="40" stroke="#7f8c8d" stroke-width="1"/>
+  <!-- Handlebars & Headlight Cowl -->
+  <rect x="96" y="18" width="16" height="10" rx="3" fill="#e74c3c"/>
+  <circle cx="110" cy="23" r="4.5" fill="#f1c40f" stroke="#ffffff" stroke-width="1"/>
+  <!-- Front Mudguard -->
+  <path d="M 100 52 Q 115 50 118 60 L 106 60 Z" fill="#c0392b"/>
+  <!-- Rear Rack & Taillight -->
+  <rect x="24" y="36" width="10" height="3" rx="1" fill="#7f8c8d"/>
+  <rect x="25" y="40" width="5" height="6" rx="1" fill="#e74c3c"/>
+</svg>

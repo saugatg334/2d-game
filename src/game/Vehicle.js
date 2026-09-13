@@ -37,10 +37,20 @@ export class Vehicle {
     this.graphics = scene.add.graphics();
     this.wheelGraphics = scene.add.graphics();
 
-    // Store character texture info for driver rendering
+    // Store vehicle & character texture info for rendering
+    this.vehicleTextureKey = options.vehicleTextureKey || null;
+    this.vehicleSprite = null;
     this.characterTextureKey = options.characterTextureKey || null;
     this.characterSprite = null;
     this.missingAssets = options.missingAssets || new Set();
+
+    // Create vehicle sprite if texture is available
+    if (this.vehicleTextureKey && scene.textures.exists(this.vehicleTextureKey) && !this.missingAssets.has(this.vehicleTextureKey)) {
+      this.vehicleSprite = scene.add.image(0, 0, this.vehicleTextureKey);
+      this.vehicleSprite.setOrigin(0.5, 0.5);
+      this.vehicleSprite.setDisplaySize(this.width * 1.35, this.height * 1.35);
+      this.vehicleSprite.setDepth(5);
+    }
 
     // Create character sprite if texture is available
     if (this.characterTextureKey && scene.textures.exists(this.characterTextureKey) && !this.missingAssets.has(this.characterTextureKey)) {
@@ -201,7 +211,8 @@ export class Vehicle {
 
     // Update character sprite position to follow vehicle
     if (this.characterSprite) {
-      this.characterSprite.setPosition(this.x, this.y - hh * 0.5);
+      const driverPos = rotatePoint(-hw * 0.05, -hh * 0.5);
+      this.characterSprite.setPosition(driverPos.x, driverPos.y);
       this.characterSprite.setRotation(this.rotation);
     }
 
@@ -209,217 +220,225 @@ export class Vehicle {
     this.graphics.fillStyle(0x000000, 0.3);
     this.graphics.fillEllipse(this.x, this.y + hh + 8, this.width * 1.2, 12);
 
-    // Draw exhaust pipe
-    const exhaustPos = rotatePoint(-hw * 0.9, hh * 0.2);
-    this.graphics.fillStyle(0x444444, 1);
-    this.graphics.fillCircle(exhaustPos.x, exhaustPos.y, 6);
-    this.graphics.fillStyle(0x333333, 1);
-    this.graphics.fillCircle(exhaustPos.x, exhaustPos.y, 4);
+    const hasSprite = this.vehicleSprite && this.scene.textures.exists(this.vehicleTextureKey) && !this.missingAssets.has(this.vehicleTextureKey);
 
-    // Draw suspension arms
-    this.graphics.lineStyle(6, 0x333333, 1);
-    const frontSusTop = rotatePoint(hw * 0.15, hh * 0.6);
-    const frontWheelCenter = rotatePoint(hw * 0.75, hh + this.wheelRadius * 0.3);
-    this.graphics.beginPath();
-    this.graphics.moveTo(frontSusTop.x, frontSusTop.y);
-    this.graphics.lineTo(frontWheelCenter.x, frontWheelCenter.y);
-    this.graphics.strokePath();
-    const rearSusTop = rotatePoint(-hw * 0.15, hh * 0.6);
-    const rearWheelCenter = rotatePoint(-hw * 0.75, hh + this.wheelRadius * 0.3);
-    this.graphics.beginPath();
-    this.graphics.moveTo(rearSusTop.x, rearSusTop.y);
-    this.graphics.lineTo(rearWheelCenter.x, rearWheelCenter.y);
-    this.graphics.strokePath();
+    if (hasSprite) {
+      this.vehicleSprite.setPosition(this.x, this.y);
+      this.vehicleSprite.setRotation(this.rotation);
+      this.vehicleSprite.setVisible(true);
+    } else {
+      // Draw exhaust pipe
+      const exhaustPos = rotatePoint(-hw * 0.9, hh * 0.2);
+      this.graphics.fillStyle(0x444444, 1);
+      this.graphics.fillCircle(exhaustPos.x, exhaustPos.y, 6);
+      this.graphics.fillStyle(0x333333, 1);
+      this.graphics.fillCircle(exhaustPos.x, exhaustPos.y, 4);
 
-    // Draw chassis
-    const chassisCorners = [
-      { x: -hw * 0.9, y: hh * 0.8 },
-      { x: hw * 0.9, y: hh * 0.8 },
-      { x: hw * 0.85, y: -hh * 0.1 },
-      { x: -hw * 0.85, y: -hh * 0.1 }
-    ].map(c => rotatePoint(c.x, c.y));
-    this.graphics.fillStyle(0x2c3e50, 1);
-    this.graphics.beginPath();
-    this.graphics.moveTo(chassisCorners[0].x, chassisCorners[0].y);
-    for (let i = 1; i < chassisCorners.length; i++) {
-      this.graphics.lineTo(chassisCorners[i].x, chassisCorners[i].y);
-    }
-    this.graphics.closePath();
-    this.graphics.fillPath();
+      // Draw suspension arms
+      this.graphics.lineStyle(6, 0x333333, 1);
+      const frontSusTop = rotatePoint(hw * 0.15, hh * 0.6);
+      const frontWheelCenter = rotatePoint(hw * 0.75, hh + this.wheelRadius * 0.3);
+      this.graphics.beginPath();
+      this.graphics.moveTo(frontSusTop.x, frontSusTop.y);
+      this.graphics.lineTo(frontWheelCenter.x, frontWheelCenter.y);
+      this.graphics.strokePath();
+      const rearSusTop = rotatePoint(-hw * 0.15, hh * 0.6);
+      const rearWheelCenter = rotatePoint(-hw * 0.75, hh + this.wheelRadius * 0.3);
+      this.graphics.beginPath();
+      this.graphics.moveTo(rearSusTop.x, rearSusTop.y);
+      this.graphics.lineTo(rearWheelCenter.x, rearWheelCenter.y);
+      this.graphics.strokePath();
 
-    // Draw main body
-    const bodyCorners = [
-      { x: -hw * 0.85, y: hh * 0.5 },
-      { x: hw * 0.85, y: hh * 0.5 },
-      { x: hw * 0.75, y: -hh * 0.3 },
-      { x: -hw * 0.75, y: -hh * 0.3 }
-    ].map(c => rotatePoint(c.x, c.y));
-    this.graphics.fillStyle(0xc0392b, 1);
-    this.graphics.beginPath();
-    this.graphics.moveTo(bodyCorners[0].x, bodyCorners[0].y);
-    for (let i = 1; i < bodyCorners.length; i++) {
-      this.graphics.lineTo(bodyCorners[i].x, bodyCorners[i].y);
-    }
-    this.graphics.closePath();
-    this.graphics.fillPath();
+      // Draw chassis
+      const chassisCorners = [
+        { x: -hw * 0.9, y: hh * 0.8 },
+        { x: hw * 0.9, y: hh * 0.8 },
+        { x: hw * 0.85, y: -hh * 0.1 },
+        { x: -hw * 0.85, y: -hh * 0.1 }
+      ].map(c => rotatePoint(c.x, c.y));
+      this.graphics.fillStyle(0x2c3e50, 1);
+      this.graphics.beginPath();
+      this.graphics.moveTo(chassisCorners[0].x, chassisCorners[0].y);
+      for (let i = 1; i < chassisCorners.length; i++) {
+        this.graphics.lineTo(chassisCorners[i].x, chassisCorners[i].y);
+      }
+      this.graphics.closePath();
+      this.graphics.fillPath();
 
-    // Body highlight
-    const bodyHighlight = [
-      { x: -hw * 0.6, y: hh * 0.3 },
-      { x: hw * 0.6, y: hh * 0.3 },
-      { x: hw * 0.55, y: -hh * 0.1 },
-      { x: -hw * 0.55, y: -hh * 0.1 }
-    ].map(c => rotatePoint(c.x, c.y));
-    this.graphics.fillStyle(0xe74c3c, 0.5);
-    this.graphics.beginPath();
-    this.graphics.moveTo(bodyHighlight[0].x, bodyHighlight[0].y);
-    for (let i = 1; i < bodyHighlight.length; i++) {
-      this.graphics.lineTo(bodyHighlight[i].x, bodyHighlight[i].y);
-    }
-    this.graphics.closePath();
-    this.graphics.fillPath();
+      // Draw main body
+      const bodyCorners = [
+        { x: -hw * 0.85, y: hh * 0.5 },
+        { x: hw * 0.85, y: hh * 0.5 },
+        { x: hw * 0.75, y: -hh * 0.3 },
+        { x: -hw * 0.75, y: -hh * 0.3 }
+      ].map(c => rotatePoint(c.x, c.y));
+      this.graphics.fillStyle(0xc0392b, 1);
+      this.graphics.beginPath();
+      this.graphics.moveTo(bodyCorners[0].x, bodyCorners[0].y);
+      for (let i = 1; i < bodyCorners.length; i++) {
+        this.graphics.lineTo(bodyCorners[i].x, bodyCorners[i].y);
+      }
+      this.graphics.closePath();
+      this.graphics.fillPath();
 
-    // Draw hood
-    const hoodCorners = [
-      { x: hw * 0.35, y: hh * 0.4 },
-      { x: hw * 0.8, y: hh * 0.35 },
-      { x: hw * 0.7, y: -hh * 0.4 },
-      { x: hw * 0.4, y: -hh * 0.45 }
-    ].map(c => rotatePoint(c.x, c.y));
-    this.graphics.fillStyle(0xe74c3c, 1);
-    this.graphics.beginPath();
-    this.graphics.moveTo(hoodCorners[0].x, hoodCorners[0].y);
-    for (let i = 1; i < hoodCorners.length; i++) {
-      this.graphics.lineTo(hoodCorners[i].x, hoodCorners[i].y);
-    }
-    this.graphics.closePath();
-    this.graphics.fillPath();
+      // Body highlight
+      const bodyHighlight = [
+        { x: -hw * 0.6, y: hh * 0.3 },
+        { x: hw * 0.6, y: hh * 0.3 },
+        { x: hw * 0.55, y: -hh * 0.1 },
+        { x: -hw * 0.55, y: -hh * 0.1 }
+      ].map(c => rotatePoint(c.x, c.y));
+      this.graphics.fillStyle(0xe74c3c, 0.5);
+      this.graphics.beginPath();
+      this.graphics.moveTo(bodyHighlight[0].x, bodyHighlight[0].y);
+      for (let i = 1; i < bodyHighlight.length; i++) {
+        this.graphics.lineTo(bodyHighlight[i].x, bodyHighlight[i].y);
+      }
+      this.graphics.closePath();
+      this.graphics.fillPath();
 
-    // Hood scoop
-    const hoodScoop = rotatePoint(hw * 0.55, -hh * 0.05);
-    this.graphics.fillStyle(0x1a1a1a, 1);
-    this.graphics.fillRoundedRect(hoodScoop.x - 10, hoodScoop.y - 4, 20, 8, 3);
-
-    // Draw cabin
-    const cabinCorners = [
-      { x: -hw * 0.5, y: -hh * 0.25 },
-      { x: hw * 0.35, y: -hh * 0.25 },
-      { x: hw * 0.3, y: -hh * 0.85 },
-      { x: -hw * 0.45, y: -hh * 0.85 }
-    ].map(c => rotatePoint(c.x, c.y));
-    this.graphics.fillStyle(0x1a252f, 1);
-    this.graphics.beginPath();
-    this.graphics.moveTo(cabinCorners[0].x, cabinCorners[0].y);
-    for (let i = 1; i < cabinCorners.length; i++) {
-      this.graphics.lineTo(cabinCorners[i].x, cabinCorners[i].y);
-    }
-    this.graphics.closePath();
-    this.graphics.fillPath();
-
-    // Draw windshield
-    const windshieldCorners = [
-      { x: hw * 0.15, y: -hh * 0.3 },
-      { x: hw * 0.28, y: -hh * 0.78 },
-      { x: -hw * 0.1, y: -hh * 0.78 },
-      { x: -hw * 0.15, y: -hh * 0.3 }
-    ].map(c => rotatePoint(c.x, c.y));
-    this.graphics.fillStyle(0x85c1e9, 0.85);
-    this.graphics.beginPath();
-    this.graphics.moveTo(windshieldCorners[0].x, windshieldCorners[0].y);
-    for (let i = 1; i < windshieldCorners.length; i++) {
-      this.graphics.lineTo(windshieldCorners[i].x, windshieldCorners[i].y);
-    }
-    this.graphics.closePath();
-    this.graphics.fillPath();
-
-    // Windshield reflection
-    const windshieldReflect = [
-      { x: hw * 0.2, y: -hh * 0.4 },
-      { x: hw * 0.25, y: -hh * 0.6 },
-      { x: hw * 0.1, y: -hh * 0.6 },
-      { x: hw * 0.08, y: -hh * 0.4 }
-    ].map(c => rotatePoint(c.x, c.y));
-    this.graphics.fillStyle(0xffffff, 0.3);
-    this.graphics.beginPath();
-    this.graphics.moveTo(windshieldReflect[0].x, windshieldReflect[0].y);
-    for (let i = 1; i < windshieldReflect.length; i++) {
-      this.graphics.lineTo(windshieldReflect[i].x, windshieldReflect[i].y);
-    }
-    this.graphics.closePath();
-    this.graphics.fillPath();
-
-    // Draw rear window
-    const rearWindowCorners = [
-      { x: -hw * 0.2, y: -hh * 0.3 },
-      { x: -hw * 0.1, y: -hh * 0.78 },
-      { x: -hw * 0.4, y: -hh * 0.78 },
-      { x: -hw * 0.4, y: -hh * 0.3 }
-    ].map(c => rotatePoint(c.x, c.y));
-    this.graphics.fillStyle(0x85c1e9, 0.7);
-    this.graphics.beginPath();
-    this.graphics.moveTo(rearWindowCorners[0].x, rearWindowCorners[0].y);
-    for (let i = 1; i < rearWindowCorners.length; i++) {
-      this.graphics.lineTo(rearWindowCorners[i].x, rearWindowCorners[i].y);
-    }
-    this.graphics.closePath();
-    this.graphics.fillPath();
-
-    // Draw driver head (only if no character sprite)
-    if (!this.characterSprite) {
-      const driverHead = rotatePoint(-hw * 0.05, -hh * 0.6);
-      this.graphics.fillStyle(0xf5cba7, 1);
-      this.graphics.fillCircle(driverHead.x, driverHead.y, 10);
+      // Draw hood
+      const hoodCorners = [
+        { x: hw * 0.35, y: hh * 0.4 },
+        { x: hw * 0.8, y: hh * 0.35 },
+        { x: hw * 0.7, y: -hh * 0.4 },
+        { x: hw * 0.4, y: -hh * 0.45 }
+      ].map(c => rotatePoint(c.x, c.y));
       this.graphics.fillStyle(0xe74c3c, 1);
       this.graphics.beginPath();
-      this.graphics.arc(driverHead.x, driverHead.y - 3, 11, Math.PI, 0);
+      this.graphics.moveTo(hoodCorners[0].x, hoodCorners[0].y);
+      for (let i = 1; i < hoodCorners.length; i++) {
+        this.graphics.lineTo(hoodCorners[i].x, hoodCorners[i].y);
+      }
+      this.graphics.closePath();
       this.graphics.fillPath();
-      this.graphics.fillStyle(0x2c3e50, 0.8);
+
+      // Hood scoop
+      const hoodScoop = rotatePoint(hw * 0.55, -hh * 0.05);
+      this.graphics.fillStyle(0x1a1a1a, 1);
+      this.graphics.fillRoundedRect(hoodScoop.x - 10, hoodScoop.y - 4, 20, 8, 3);
+
+      // Draw cabin
+      const cabinCorners = [
+        { x: -hw * 0.5, y: -hh * 0.25 },
+        { x: hw * 0.35, y: -hh * 0.25 },
+        { x: hw * 0.3, y: -hh * 0.85 },
+        { x: -hw * 0.45, y: -hh * 0.85 }
+      ].map(c => rotatePoint(c.x, c.y));
+      this.graphics.fillStyle(0x1a252f, 1);
       this.graphics.beginPath();
-      this.graphics.arc(driverHead.x + 2, driverHead.y - 2, 8, -Math.PI * 0.8, Math.PI * 0.2);
+      this.graphics.moveTo(cabinCorners[0].x, cabinCorners[0].y);
+      for (let i = 1; i < cabinCorners.length; i++) {
+        this.graphics.lineTo(cabinCorners[i].x, cabinCorners[i].y);
+      }
+      this.graphics.closePath();
       this.graphics.fillPath();
+
+      // Draw windshield
+      const windshieldCorners = [
+        { x: hw * 0.15, y: -hh * 0.3 },
+        { x: hw * 0.28, y: -hh * 0.78 },
+        { x: -hw * 0.1, y: -hh * 0.78 },
+        { x: -hw * 0.15, y: -hh * 0.3 }
+      ].map(c => rotatePoint(c.x, c.y));
+      this.graphics.fillStyle(0x85c1e9, 0.85);
+      this.graphics.beginPath();
+      this.graphics.moveTo(windshieldCorners[0].x, windshieldCorners[0].y);
+      for (let i = 1; i < windshieldCorners.length; i++) {
+        this.graphics.lineTo(windshieldCorners[i].x, windshieldCorners[i].y);
+      }
+      this.graphics.closePath();
+      this.graphics.fillPath();
+
+      // Windshield reflection
+      const windshieldReflect = [
+        { x: hw * 0.2, y: -hh * 0.4 },
+        { x: hw * 0.25, y: -hh * 0.6 },
+        { x: hw * 0.1, y: -hh * 0.6 },
+        { x: hw * 0.08, y: -hh * 0.4 }
+      ].map(c => rotatePoint(c.x, c.y));
+      this.graphics.fillStyle(0xffffff, 0.3);
+      this.graphics.beginPath();
+      this.graphics.moveTo(windshieldReflect[0].x, windshieldReflect[0].y);
+      for (let i = 1; i < windshieldReflect.length; i++) {
+        this.graphics.lineTo(windshieldReflect[i].x, windshieldReflect[i].y);
+      }
+      this.graphics.closePath();
+      this.graphics.fillPath();
+
+      // Draw rear window
+      const rearWindowCorners = [
+        { x: -hw * 0.2, y: -hh * 0.3 },
+        { x: -hw * 0.1, y: -hh * 0.78 },
+        { x: -hw * 0.4, y: -hh * 0.78 },
+        { x: -hw * 0.4, y: -hh * 0.3 }
+      ].map(c => rotatePoint(c.x, c.y));
+      this.graphics.fillStyle(0x85c1e9, 0.7);
+      this.graphics.beginPath();
+      this.graphics.moveTo(rearWindowCorners[0].x, rearWindowCorners[0].y);
+      for (let i = 1; i < rearWindowCorners.length; i++) {
+        this.graphics.lineTo(rearWindowCorners[i].x, rearWindowCorners[i].y);
+      }
+      this.graphics.closePath();
+      this.graphics.fillPath();
+
+      // Draw driver head (only if no character sprite)
+      if (!this.characterSprite) {
+        const driverHead = rotatePoint(-hw * 0.05, -hh * 0.6);
+        this.graphics.fillStyle(0xf5cba7, 1);
+        this.graphics.fillCircle(driverHead.x, driverHead.y, 10);
+        this.graphics.fillStyle(0xe74c3c, 1);
+        this.graphics.beginPath();
+        this.graphics.arc(driverHead.x, driverHead.y - 3, 11, Math.PI, 0);
+        this.graphics.fillPath();
+        this.graphics.fillStyle(0x2c3e50, 0.8);
+        this.graphics.beginPath();
+        this.graphics.arc(driverHead.x + 2, driverHead.y - 2, 8, -Math.PI * 0.8, Math.PI * 0.2);
+        this.graphics.fillPath();
+      }
+
+      // Draw headlights
+      const headlightPos = rotatePoint(hw * 0.82, -hh * 0.2);
+      this.graphics.fillStyle(0xf1c40f, 1);
+      this.graphics.fillCircle(headlightPos.x, headlightPos.y, 7);
+      this.graphics.fillStyle(0xfff9c4, 0.8);
+      this.graphics.fillCircle(headlightPos.x, headlightPos.y, 4);
+      this.graphics.fillStyle(0xffffff, 0.5);
+      this.graphics.fillCircle(headlightPos.x - 1, headlightPos.y - 1, 2);
+
+      const headlight2Pos = rotatePoint(hw * 0.82, hh * 0.15);
+      this.graphics.fillStyle(0xf1c40f, 1);
+      this.graphics.fillCircle(headlight2Pos.x, headlight2Pos.y, 6);
+      this.graphics.fillStyle(0xfff9c4, 0.8);
+      this.graphics.fillCircle(headlight2Pos.x, headlight2Pos.y, 3);
+
+      // Draw taillights
+      const taillightPos = rotatePoint(-hw * 0.85, -hh * 0.1);
+      this.graphics.fillStyle(0xc0392b, 1);
+      this.graphics.fillCircle(taillightPos.x, taillightPos.y, 5);
+      this.graphics.fillStyle(0xff6b6b, 0.6);
+      this.graphics.fillCircle(taillightPos.x, taillightPos.y, 3);
+
+      // Draw bumpers
+      this.graphics.lineStyle(5, 0x7f8c8d, 1);
+      this.graphics.beginPath();
+      this.graphics.moveTo(rotatePoint(hw * 0.7, hh * 0.65).x, rotatePoint(hw * 0.7, hh * 0.65).y);
+      this.graphics.lineTo(rotatePoint(hw * 0.92, hh * 0.55).x, rotatePoint(hw * 0.92, hh * 0.55).y);
+      this.graphics.strokePath();
+      this.graphics.beginPath();
+      this.graphics.moveTo(rotatePoint(-hw * 0.7, hh * 0.65).x, rotatePoint(-hw * 0.7, hh * 0.65).y);
+      this.graphics.lineTo(rotatePoint(-hw * 0.92, hh * 0.55).x, rotatePoint(-hw * 0.92, hh * 0.55).y);
+      this.graphics.strokePath();
+
+      // Draw roll cage
+      this.graphics.lineStyle(2, 0x7f8c8d, 0.8);
+      const rackFront = rotatePoint(hw * 0.25, -hh * 0.8);
+      const rackRear = rotatePoint(-hw * 0.35, -hh * 0.8);
+      this.graphics.beginPath();
+      this.graphics.moveTo(rackFront.x, rackFront.y);
+      this.graphics.lineTo(rackRear.x, rackRear.y);
+      this.graphics.strokePath();
     }
-
-    // Draw headlights
-    const headlightPos = rotatePoint(hw * 0.82, -hh * 0.2);
-    this.graphics.fillStyle(0xf1c40f, 1);
-    this.graphics.fillCircle(headlightPos.x, headlightPos.y, 7);
-    this.graphics.fillStyle(0xfff9c4, 0.8);
-    this.graphics.fillCircle(headlightPos.x, headlightPos.y, 4);
-    this.graphics.fillStyle(0xffffff, 0.5);
-    this.graphics.fillCircle(headlightPos.x - 1, headlightPos.y - 1, 2);
-
-    const headlight2Pos = rotatePoint(hw * 0.82, hh * 0.15);
-    this.graphics.fillStyle(0xf1c40f, 1);
-    this.graphics.fillCircle(headlight2Pos.x, headlight2Pos.y, 6);
-    this.graphics.fillStyle(0xfff9c4, 0.8);
-    this.graphics.fillCircle(headlight2Pos.x, headlight2Pos.y, 3);
-
-    // Draw taillights
-    const taillightPos = rotatePoint(-hw * 0.85, -hh * 0.1);
-    this.graphics.fillStyle(0xc0392b, 1);
-    this.graphics.fillCircle(taillightPos.x, taillightPos.y, 5);
-    this.graphics.fillStyle(0xff6b6b, 0.6);
-    this.graphics.fillCircle(taillightPos.x, taillightPos.y, 3);
-
-    // Draw bumpers
-    this.graphics.lineStyle(5, 0x7f8c8d, 1);
-    this.graphics.beginPath();
-    this.graphics.moveTo(rotatePoint(hw * 0.7, hh * 0.65).x, rotatePoint(hw * 0.7, hh * 0.65).y);
-    this.graphics.lineTo(rotatePoint(hw * 0.92, hh * 0.55).x, rotatePoint(hw * 0.92, hh * 0.55).y);
-    this.graphics.strokePath();
-    this.graphics.beginPath();
-    this.graphics.moveTo(rotatePoint(-hw * 0.7, hh * 0.65).x, rotatePoint(-hw * 0.7, hh * 0.65).y);
-    this.graphics.lineTo(rotatePoint(-hw * 0.92, hh * 0.55).x, rotatePoint(-hw * 0.92, hh * 0.55).y);
-    this.graphics.strokePath();
-
-    // Draw roll cage
-    this.graphics.lineStyle(2, 0x7f8c8d, 0.8);
-    const rackFront = rotatePoint(hw * 0.25, -hh * 0.8);
-    const rackRear = rotatePoint(-hw * 0.35, -hh * 0.8);
-    this.graphics.beginPath();
-    this.graphics.moveTo(rackFront.x, rackFront.y);
-    this.graphics.lineTo(rackRear.x, rackRear.y);
-    this.graphics.strokePath();
 
     // Draw wheels
     this.drawWheel(this.frontWheel.x, this.frontWheel.y, this.wheelRadius);
@@ -483,6 +502,9 @@ export class Vehicle {
   destroy() {
     this.graphics.destroy();
     this.wheelGraphics.destroy();
+    if (this.vehicleSprite) {
+      this.vehicleSprite.destroy();
+    }
     if (this.characterSprite) {
       this.characterSprite.destroy();
     }
