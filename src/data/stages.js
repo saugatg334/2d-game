@@ -9,7 +9,7 @@ const stageSpecs = [
   ['mustang_road', 'Mustang Road', 'Mustang', 'dry_mountain', 'rocky', 3500, 3, 'diamonds', 30],
   ['himalayan_route', 'Himalayan Route', 'Himalayas', 'snow_mountain', 'steep_hills', 4000, 4, 'diamonds', 50],
   ['khokana', 'Khokana Village Road', 'Khokana', 'village', 'valley', 2900, 2, 'coins', 300],
-  ['ktm_nijgadh_fast_track', 'Kathmandu-Nijgadh Fast Track', 'Khokana to Nijgadh', 'fast_track', 'expressway', 3600, 3, 'diamonds', 20],
+  ['ktm_nijgadh_fast_track', 'Kathmandu-Nijgadh Fast Track', 'Khokana to Nijgadh', 'fast_track', 'expressway', 7200, 3, 'diamonds', 20],
   ['nijgadh_fast_track', 'Nijgadh Fast Track', 'Nijgadh, Bara', 'fast_track', 'expressway', 3400, 3, 'diamonds', 22],
   ['nijgadh_hetauda', 'Nijgadh-Hetauda', 'Bara to Makwanpur', 'terai', 'rolling_hills', 3000, 2, 'coins', 400],
   ['hetauda_hills', 'Hetauda Hills', 'Hetauda', 'hills', 'steep_hills', 3100, 3, 'coins', 450],

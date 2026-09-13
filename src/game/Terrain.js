@@ -147,28 +147,32 @@ export class Terrain {
     const mountainColor = this.theme ? parseInt(this.theme.mountainColor.replace('#', '0x')) : 0x6b8e23;
     const accentColor = this.theme ? parseInt(this.theme.accentColor.replace('#', '0x')) : 0x228b22;
 
-    // Draw mountains in far background
-    this.graphics.fillStyle(mountainColor, 0.3);
-    for (let i = 0; i < this.segments.length; i += 4) {
-      const seg = this.segments[i];
-      const mh = 120 + Math.sin(seg.startX * 0.005) * 60;
-      this.graphics.fillTriangle(
-        seg.startX - 50, seg.startY + 50,
-        seg.startX + 80, seg.startY - mh,
-        seg.startX + 200, seg.startY + 50
-      );
-    }
+    // Draw mountains and hills only if NOT an expressway/fast_track (handled by EnvironmentRenderer)
+    const isExpressway = this.theme && (this.theme.environment === 'fast_track' || this.theme.environment === 'highway');
+    if (!isExpressway) {
+      // Draw mountains in far background
+      this.graphics.fillStyle(mountainColor, 0.3);
+      for (let i = 0; i < this.segments.length; i += 4) {
+        const seg = this.segments[i];
+        const mh = 120 + Math.sin(seg.startX * 0.005) * 60;
+        this.graphics.fillTriangle(
+          seg.startX - 50, seg.startY + 50,
+          seg.startX + 80, seg.startY - mh,
+          seg.startX + 200, seg.startY + 50
+        );
+      }
 
-    // Draw hills in background
-    this.graphics.fillStyle(hillColor, 0.5);
-    for (let i = 0; i < this.segments.length; i += 3) {
-      const seg = this.segments[i];
-      const hillHeight = 60 + Math.sin(seg.startX * 0.01) * 35;
-      this.graphics.fillTriangle(
-        seg.startX - 30, seg.startY + 20,
-        seg.startX + 50, seg.startY - hillHeight,
-        seg.startX + 120, seg.startY + 20
-      );
+      // Draw hills in background
+      this.graphics.fillStyle(hillColor, 0.5);
+      for (let i = 0; i < this.segments.length; i += 3) {
+        const seg = this.segments[i];
+        const hillHeight = 60 + Math.sin(seg.startX * 0.01) * 35;
+        this.graphics.fillTriangle(
+          seg.startX - 30, seg.startY + 20,
+          seg.startX + 50, seg.startY - hillHeight,
+          seg.startX + 120, seg.startY + 20
+        );
+      }
     }
 
     // Draw ground fill (main terrain body)
@@ -185,58 +189,105 @@ export class Terrain {
       this.graphics.fillPath();
     }
 
-    // Check if stage is an expressway/fast-track
-    const isExpressway = this.theme && (this.theme.environment === 'fast_track' || this.theme.environment === 'highway');
-    const roadColor = isExpressway ? 0x2c3e50 : 0x5d4037;
+    const roadColor = isExpressway ? 0x1a252f : 0x5d4037;
+    const shoulderColor = isExpressway ? 0x34495e : 0x4e342e;
     const edgeColor = isExpressway ? 0xffffff : 0x8d6e63;
-    const dashColor = isExpressway ? 0xf1c40f : 0xffeb3b;
+    const dashColor = isExpressway ? 0xf4d03f : 0xffeb3b;
 
-    // Draw road surface (top layer)
-    this.graphics.lineStyle(10, roadColor, 1);
     if (this.segments.length > 0) {
-      this.graphics.beginPath();
-      this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY);
-      for (const seg of this.segments) {
-        this.graphics.lineTo(seg.endX, seg.endY);
+      if (isExpressway) {
+        // Paved Shoulder Sub-base (Width: 28px)
+        this.graphics.lineStyle(28, shoulderColor, 1);
+        this.graphics.beginPath();
+        this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY);
+        for (const seg of this.segments) {
+          this.graphics.lineTo(seg.endX, seg.endY);
+        }
+        this.graphics.strokePath();
+
+        // Main Controlled-Access Asphalt Surface (Width: 20px)
+        this.graphics.lineStyle(20, roadColor, 1);
+        this.graphics.beginPath();
+        this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY);
+        for (const seg of this.segments) {
+          this.graphics.lineTo(seg.endX, seg.endY);
+        }
+        this.graphics.strokePath();
+
+        // Solid White Outer Highway Edge Line (Top Edge)
+        this.graphics.lineStyle(3.5, edgeColor, 1);
+        this.graphics.beginPath();
+        this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY - 9);
+        for (const seg of this.segments) {
+          this.graphics.lineTo(seg.endX, seg.endY - 9);
+        }
+        this.graphics.strokePath();
+
+        // Solid White Outer Highway Edge Line (Bottom Edge)
+        this.graphics.lineStyle(2, 0xd5dbdb, 0.9);
+        this.graphics.beginPath();
+        this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY + 9);
+        for (const seg of this.segments) {
+          this.graphics.lineTo(seg.endX, seg.endY + 9);
+        }
+        this.graphics.strokePath();
+
+        // Center Yellow Dash Lane Markings along Segment Slope
+        this.graphics.lineStyle(3.5, dashColor, 0.95);
+        for (let i = 0; i < this.segments.length; i += 2) {
+          const seg = this.segments[i];
+          const midX = (seg.startX + seg.endX) / 2;
+          const midY = (seg.startY + seg.endY) / 2;
+          const angle = Math.atan2(seg.endY - seg.startY, seg.endX - seg.startX);
+          const dx = Math.cos(angle) * 16;
+          const dy = Math.sin(angle) * 16;
+
+          this.graphics.beginPath();
+          this.graphics.moveTo(midX - dx, midY - dy);
+          this.graphics.lineTo(midX + dx, midY + dy);
+          this.graphics.strokePath();
+        }
+      } else {
+        // Standard dirt / rural road surface
+        this.graphics.lineStyle(12, roadColor, 1);
+        this.graphics.beginPath();
+        this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY);
+        for (const seg of this.segments) {
+          this.graphics.lineTo(seg.endX, seg.endY);
+        }
+        this.graphics.strokePath();
+
+        this.graphics.lineStyle(2, edgeColor, 0.9);
+        this.graphics.beginPath();
+        this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY - 4);
+        for (const seg of this.segments) {
+          this.graphics.lineTo(seg.endX, seg.endY - 4);
+        }
+        this.graphics.strokePath();
+
+        this.graphics.lineStyle(2, dashColor, 0.8);
+        for (let i = 0; i < this.segments.length; i += 2) {
+          const seg = this.segments[i];
+          const midX = (seg.startX + seg.endX) / 2;
+          const midY = (seg.startY + seg.endY) / 2;
+          this.graphics.beginPath();
+          this.graphics.moveTo(midX - 12, midY);
+          this.graphics.lineTo(midX + 12, midY);
+          this.graphics.strokePath();
+        }
+
+        // Draw grass patches on top of dirt road edges
+        this.graphics.fillStyle(accentColor, 0.6);
+        for (let i = 0; i < this.segments.length; i += 2) {
+          const seg = this.segments[i];
+          const grassX1 = seg.startX + Math.random() * 30;
+          const grassY1 = seg.startY - 8 - Math.random() * 15;
+          this.graphics.fillTriangle(grassX1, grassY1, grassX1 + 5, grassY1 - 12, grassX1 + 10, grassY1);
+          const grassX2 = seg.startX + Math.random() * 30;
+          const grassY2 = seg.startY + 8 + Math.random() * 15;
+          this.graphics.fillTriangle(grassX2, grassY2, grassX2 + 5, grassY2 + 12, grassX2 + 10, grassY2);
+        }
       }
-      this.graphics.strokePath();
-    }
-
-    // Draw road edge line (solid white/light line on edge of road)
-    this.graphics.lineStyle(2, edgeColor, 0.9);
-    if (this.segments.length > 0) {
-      this.graphics.beginPath();
-      this.graphics.moveTo(this.segments[0].startX, this.segments[0].startY - 4);
-      for (const seg of this.segments) {
-        this.graphics.lineTo(seg.endX, seg.endY - 4);
-      }
-      this.graphics.strokePath();
-    }
-
-    // Draw road center lane dashes
-    this.graphics.lineStyle(2, dashColor, 0.8);
-    for (let i = 0; i < this.segments.length; i += 2) {
-      const seg = this.segments[i];
-      const midX = (seg.startX + seg.endX) / 2;
-      const midY = (seg.startY + seg.endY) / 2;
-      this.graphics.beginPath();
-      this.graphics.moveTo(midX - 12, midY);
-      this.graphics.lineTo(midX + 12, midY);
-      this.graphics.strokePath();
-    }
-
-    // Draw grass/ground details on top of road edges
-    this.graphics.fillStyle(accentColor, 0.6);
-    for (let i = 0; i < this.segments.length; i += 2) {
-      const seg = this.segments[i];
-      // Grass patches on left side
-      const grassX1 = seg.startX + Math.random() * 30;
-      const grassY1 = seg.startY - 8 - Math.random() * 15;
-      this.graphics.fillTriangle(grassX1, grassY1, grassX1 + 5, grassY1 - 12, grassX1 + 10, grassY1);
-      // Grass patches on right side
-      const grassX2 = seg.startX + Math.random() * 30;
-      const grassY2 = seg.startY + 8 + Math.random() * 15;
-      this.graphics.fillTriangle(grassX2, grassY2, grassX2 + 5, grassY2 + 12, grassX2 + 10, grassY2);
     }
   }
 
