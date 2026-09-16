@@ -38,18 +38,42 @@ export class EnvironmentRenderer {
     this.textPool = [];
     this.activeTexts = [];
 
-    // Gameplay landmark section boundaries across 2500m total stage distance
+    // ---- P0 Step 4: derive Fast Track section boundaries from the resolved
+    // StagePlan (this.terrain.stagePlan) instead of duplicating them here. ----
+    // bridge / tunnel / terai / finish map to section *roles*; each has a
+    // fallback equal to the original constant so legacy/non-section stages
+    // (and future section-less Fast Track stages) render unchanged.
+    const sections = (this.terrain?.stagePlan?.terrain?.sections) ?? [];
+    const sectionByRole = (role) => sections.find((section) => section.role === role);
+
+    const bridgeSection = sectionByRole('bridge');
+    this.bridgeStart = bridgeSection?.start ?? 900;
+    this.bridgeEnd = bridgeSection?.end ?? 1150;
+
+    const tunnelSection = sectionByRole('tunnel');
+    this.tunnelStart = tunnelSection?.start ?? 1300;
+    this.tunnelEnd = tunnelSection?.end ?? 1600;
+
+    const teraiSection = sectionByRole('terai');
+    this.teraiStart = teraiSection?.start ?? 2050;
+
+    // Keep the existing finish visual placement (a lead-in before the stage end).
+    const FINISH_LEAD = 50;
+    const finishSection = sectionByRole('finish');
+    this.finishX = finishSection ? finishSection.end - FINISH_LEAD : 2450;
+
+    // Terai blend band is centered on the Terai section start (± 100) so the
+    // KTM Fast Track keeps its 1950-2150 band while remaining derived.
+    const TERAI_BLEND_OFFSET = 100;
+    this.teraiBlendStart = this.teraiStart - TERAI_BLEND_OFFSET;
+    this.teraiBlendEnd = this.teraiStart + TERAI_BLEND_OFFSET;
+
+    // The following are DECORATIVE placement offsets, NOT copies of section
+    // boundaries, so they intentionally stay as fixed landmark coordinates:
+    //   hill-cut 350-850, Khokana gantry 200, Fast Track board 860,
+    //   hill-cut signs 420/700, Makwanpur board 560.
     this.hillCutStart = 350;
     this.hillCutEnd = 850;
-
-    this.bridgeStart = 900;
-    this.bridgeEnd = 1150;
-
-    this.tunnelStart = 1300;
-    this.tunnelEnd = 1600;
-
-    this.teraiStart = 2050;
-    this.finishX = 2450;
   }
 
   // Update loop called from GameScene
@@ -93,9 +117,10 @@ export class EnvironmentRenderer {
     const h = this.scene.scale.height;
 
     // A. Sky Gradient Transition (Khokana foothill blue -> Mahabharat -> Terai golden horizon)
-    // P0-3: smooth ~200px transition band (1950-2150) instead of a hard switch at 2050
-    const TERAI_BLEND_START = 1950; // -100 before the terrain boundary
-    const TERAI_BLEND_END = 2150;   // +100 after the terrain boundary
+    // P0-3: smooth ~200px transition band centered on the Terai section start
+    // (derived from the resolved StagePlan in the constructor).
+    const TERAI_BLEND_START = this.teraiBlendStart;
+    const TERAI_BLEND_END = this.teraiBlendEnd;
     const teraiT = Phaser.Math.Clamp(
       (cameraX - TERAI_BLEND_START) / (TERAI_BLEND_END - TERAI_BLEND_START), 0, 1
     );
