@@ -2,6 +2,8 @@
 // Nepali Racer - Procedural Terrain
 // ============================================
 
+import { resolveStagePlan } from './StagePlan.js';
+
 export class Terrain {
   constructor(scene, theme) {
     this.scene = scene;
@@ -13,6 +15,33 @@ export class Terrain {
     this.groundY = scene.scale.height - 100;
     this.startX = 0;
     this.endX = 0;
+
+    // ---- P0 Step 2: data-driven Fast Track section plan ----
+    // The stage plan is resolved ONCE here (pure, no side effects) and stored
+    // for the lifetime of this Terrain instance. It is never re-resolved in
+    // update()/getTerrainYAt()/getTerrainAngleAt()/per-segment loops.
+    //
+    // STAGE-SPACE vs WORLD-X: StagePlan sections are normalized in absolute
+    // stage-space starting at X=0. Terrain's world coordinates already coincide
+    // with stage-space: the flat 0->400 starting platform is added directly in
+    // generate() (see below) and NEVER routed through section selection, and
+    // the section formulas consume absolute segment endX values (which equal
+    // stage-space X). No +/-400 conversion exists or is needed; do not add one.
+    this.stagePlan = resolveStagePlan(scene.stage || null);
+
+    // Fast Track detection via resolved profile/environment only (no hardcoded
+    // stage IDs, so additional Fast Track stages keep working). Note: current
+    // stage data stores terrain.profile='expressway' for Fast Track stages, so
+    // the environment is also accepted until the data migrates to
+    // profile:'fast_track'.
+    const planProfile = this.stagePlan.terrain.profile;
+    const planEnvironment = this.stagePlan.environment;
+    this.isFastTrack = planProfile === 'fast_track' || planEnvironment === 'fast_track';
+
+    // Single source of truth for Fast Track section boundaries. Empty for
+    // legacy/procedural stages AND for Fast Track stages whose data does not
+    // (yet) define sections - those keep using the legacy fallback below.
+    this.fastTrackSections = this.stagePlan.terrain.sections;
   }
 
   // Generate initial terrain
@@ -38,9 +67,27 @@ export class Terrain {
     const prevSegment = this.segments[this.segments.length - 1];
     const prevY = prevSegment ? prevSegment.endY : this.groundY;
 
-    const isFastTrack = this.scene.stage && (this.scene.stage.id === 'ktm_nijgadh_fast_track' || this.scene.stage.environment === 'fast_track');
-    
-    if (isFastTrack) {
+    // P0 Step 2: data-driven Fast Track terrain. The resolved StagePlan
+    // sections are the single source of truth for section boundaries
+    // (see constructor). Legacy/procedural stages (sections: []) fall through
+    // to the original random generation below, unchanged.
+    if (this.isFastTrack && this.fastTrackSections.length > 0) {
+      const endX = startX + this.segmentWidth;
+      const section = this.resolveFastTrackSection(endX);
+      const endY = this.fastTrackSectionY(section, endX);
+      this.addSegment(startX, prevY, endX, endY, false);
+      return;
+    }
+
+    // FAST TRACK FALLBACK (P0 Step 2): Fast Track stages whose stage data does
+    // not (yet) define terrain.sections (today: the 3400m 'nijgadh_fast_track')
+    // have always rendered the hardcoded 2500m section chain below, with the
+    // flat groundY `else` plateau beyond X=2350. That behavior is preserved
+    // verbatim until real section data exists - inventing geometry here would
+    // be a terrain redesign. This chain is the ONLY remaining hardcoded
+    // section-selection logic and exists purely for backward compatibility;
+    // stages WITH plan sections never reach it.
+    if (this.isFastTrack) {
       // Deterministic section-based Fast Track terrain profile (2500m total distance)
       const endX = startX + this.segmentWidth;
       let endY = this.groundY;
@@ -123,6 +170,69 @@ export class Terrain {
     endY = Phaser.Math.Clamp(endY, this.groundY - 150, this.groundY + 80);
 
     this.addSegment(startX, prevY, startX + this.segmentWidth, endY, false);
+  }
+
+  // ---- P0 Step 2: Fast Track section-selection helpers ----
+
+  // Resolve which plan section owns world/stage X (X is a generated SEGMENT
+  // END in stage-space). Deterministic boundary rule, chosen to be EXACTLY
+  // equivalent to the legacy hardcoded chain (`endX <= section.end`, tested in
+  // ascending order): a boundary X belongs to the section ENDING at that X
+  // (right-closed [prevEnd, end] intervals), and anything beyond the last
+  // section end stays in the last (finish) section. A naive half-open
+  // `start <= x < end` rule would NOT be legacy-equivalent: at X=900 and
+  // X=2050 the sine sections land at t=1 (Y=540/570) while the next section's
+  // t=0 base differs (bridge 580 / terai 600), which would change terrain.
+  resolveFastTrackSection(x) {
+    const sections = this.fastTrackSections;
+    if (!Array.isArray(sections) || sections.length === 0) return null;
+    for (let i = 0; i < sections.length; i++) {
+      if (x <= sections[i].end) return sections[i];
+    }
+    return sections[sections.length - 1];
+  }
+
+  // Section elevation shapes - ported 1:1 from the legacy hardcoded chain.
+  // `endX` is the segment end being generated (stage-space); `t` normalizes
+  // position inside the section exactly as before. Selection keys on
+  // section.name first, then section.role, so future Fast Track stages using
+  // the same named sections render identically without new Terrain code.
+  // Unknown sections render flat at groundY (safe default).
+  fastTrackSectionY(section, endX) {
+    if (!section) return this.groundY;
+    const span = section.end - section.start;
+    const t = span > 0 ? (endX - section.start) / span : 0;
+    const role = section.role;
+    const name = section.name || '';
+
+    // Named sections first (exact names from stage data), because derived
+    // roles are coarse: both 'expressway' (amp 40) and 'hill_expressway'
+    // (amp 30) derive role 'expressway', so role must never be tested before
+    // the exact name.
+    if (name === 'valley_start') return this.groundY;
+    if (name === 'hill_climb') return this.groundY - t * 80;
+    if (name === 'expressway') return (this.groundY - 80) + Math.sin(t * Math.PI) * 40;
+    if (name === 'hill_expressway') return (this.groundY - 50) + Math.sin(t * Math.PI) * 30;
+    if (name === 'bridge') return this.groundY - 40;
+    if (name === 'tunnel_approach') return (this.groundY - 40) + t * 20;
+    if (name === 'tunnel') return this.groundY - 20;
+    if (name === 'tunnel_exit') return (this.groundY - 20) - t * 30;
+    if (name === 'terai_transition') return (this.groundY - 20) + t * 20;
+    if (name === 'nijgadh_finish') return this.groundY;
+
+    // Role-based fallback for future Fast Track stages that declare sections
+    // by role only (or with new names). A nameless section with role
+    // 'expressway' uses the plain-expressway curve; use role 'hill' etc. for
+    // other shapes. Unknown shapes render flat at groundY (safe default).
+    if (role === 'start' || role === 'finish') return this.groundY;
+    if (role === 'hill') return this.groundY - t * 80;
+    if (role === 'bridge') return this.groundY - 40;
+    if (role === 'tunnel_approach') return (this.groundY - 40) + t * 20;
+    if (role === 'tunnel') return this.groundY - 20;
+    if (role === 'tunnel_exit') return (this.groundY - 20) - t * 30;
+    if (role === 'terai') return (this.groundY - 20) + t * 20;
+    if (role === 'expressway') return (this.groundY - 80) + Math.sin(t * Math.PI) * 40;
+    return this.groundY;
   }
 
   // Add a terrain segment

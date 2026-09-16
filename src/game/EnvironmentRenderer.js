@@ -871,7 +871,7 @@ export class EnvironmentRenderer {
       this.structGraphics.fillStyle(0xf4f6f7, 1);
       this.structGraphics.fillRect(mpx - 34, my - 66, 68, 3);
       this.structGraphics.lineStyle(1.5, 0xffffff, 0.9);
-      this.structGraphics.strokeRoundRect(mpx - 32, my - 78, 64, 22, 3);
+      this.structGraphics.strokeRoundedRect(mpx - 32, my - 78, 64, 22, 3);
       this.getText(mpx, my - 72, 'MAKWANPUR', {
         fontSize: '9px', fontStyle: 'bold', color: '#ffffff', fontFamily: 'monospace'
       });
