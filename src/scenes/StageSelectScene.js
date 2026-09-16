@@ -31,6 +31,9 @@ export class StageSelectScene extends Phaser.Scene {
 
     this.selectedStage = stages.find(stage => stage.id === saveSystem.getSelectedStage()) || stages[0];
 
+    // F7: if the saved ID was stale/invalid, persist the fallback we resolved to.
+    saveSystem.persistSelectionIfStale('selectedStage', this.selectedStage.id);
+
     this.currencyDisplay = new CurrencyDisplay(this, 30, 30);
     this.currencyDisplay.setCoins(saveSystem.getCoins());
     this.currencyDisplay.setDiamonds(saveSystem.getDiamonds());

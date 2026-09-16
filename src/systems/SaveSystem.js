@@ -21,6 +21,14 @@ class SaveSystem {
       console.warn('SaveSystem: Failed to load save data, using defaults.', e);
       parsed = {};
     }
+    // F7: remember selection values exactly as loaded from disk, so a stale or
+    // invalid saved ID can still be re-persisted even after F1 sanitization
+    // has already repaired it in memory.
+    this._loadedSelections = {
+      selectedCharacter: parsed.selectedCharacter,
+      selectedVehicle: parsed.selectedVehicle,
+      selectedStage: parsed.selectedStage,
+    };
     // F6: migrate legacy/future save structures BEFORE merging with defaults so
     // the migration hook always sees the raw saved shape (a missing
     // schemaVersion would otherwise be masked by the default's value).
@@ -113,6 +121,13 @@ class SaveSystem {
         this.data.schemaVersion = CURRENT_SAVE_VERSION;
       }
       localStorage.setItem(SAVE_KEY, JSON.stringify(this.data));
+      // F7: disk now mirrors memory — mark selections as persisted so fallback
+      // persistence never re-saves an already-corrected value.
+      if (this._loadedSelections) {
+        this._loadedSelections.selectedCharacter = this.data.selectedCharacter;
+        this._loadedSelections.selectedVehicle = this.data.selectedVehicle;
+        this._loadedSelections.selectedStage = this.data.selectedStage;
+      }
       return true;
     } catch (e) {
       console.error('SaveSystem: Failed to save data.', e);
@@ -231,6 +246,20 @@ class SaveSystem {
   setSelectedStage(id) {
     this.data.selectedStage = id;
     this.save();
+  }
+
+  // F7: persist a selection after a scene resolved a stale/invalid saved ID to
+  // its valid fallback. Called once per scene create (never per frame/render).
+  // A valid saved ID matches both memory and the disk-loaded value and returns
+  // without saving; a stale/invalid saved value is corrected and saved once.
+  persistSelectionIfStale(field, resolvedId) {
+    if (typeof resolvedId !== 'string' || resolvedId === '') return false;
+    const loaded = this._loadedSelections ? this._loadedSelections[field] : undefined;
+    if (this.data[field] === resolvedId && loaded === resolvedId) return false;
+    this.data[field] = resolvedId;
+    if (this._loadedSelections) this._loadedSelections[field] = resolvedId;
+    this.save();
+    return true;
   }
 
   // Progress

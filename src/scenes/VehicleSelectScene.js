@@ -31,6 +31,9 @@ export class VehicleSelectScene extends Phaser.Scene {
 
     this.selectedVehicle = vehicles.find(vehicle => vehicle.id === saveSystem.getSelectedVehicle()) || vehicles[0];
 
+    // F7: if the saved ID was stale/invalid, persist the fallback we resolved to.
+    saveSystem.persistSelectionIfStale('selectedVehicle', this.selectedVehicle.id);
+
     this.currencyDisplay = new CurrencyDisplay(this, 30, 30);
     this.currencyDisplay.setCoins(saveSystem.getCoins());
     this.currencyDisplay.setDiamonds(saveSystem.getDiamonds());

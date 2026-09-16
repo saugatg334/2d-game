@@ -31,6 +31,9 @@ export class CharacterSelectScene extends Phaser.Scene {
 
     this.selectedCharacter = characters.find(character => character.id === saveSystem.getSelectedCharacter()) || characters[0];
 
+    // F7: if the saved ID was stale/invalid, persist the fallback we resolved to.
+    saveSystem.persistSelectionIfStale('selectedCharacter', this.selectedCharacter.id);
+
     this.currencyDisplay = new CurrencyDisplay(this, 30, 30);
     this.currencyDisplay.setCoins(saveSystem.getCoins());
     this.currencyDisplay.setDiamonds(saveSystem.getDiamonds());
