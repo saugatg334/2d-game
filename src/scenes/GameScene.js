@@ -7,6 +7,7 @@ import { Vehicle } from '../game/Vehicle.js';
 import { Terrain } from '../game/Terrain.js';
 import { Collectibles } from '../game/Collectibles.js';
 import { EnvironmentRenderer } from '../game/EnvironmentRenderer.js';
+import { resolveVehicleTuning } from '../game/VehicleTuning.js';
 import { device } from '../utils/device.js';
 
 export class GameScene extends Phaser.Scene {
@@ -38,8 +39,16 @@ export class GameScene extends Phaser.Scene {
       bonuses: this.characterData.bonuses || {}
     };
 
+    // P0 Step 6B: resolve fuel-domain tuning ONCE from vehicle stats + character
+    // bonuses (pure resolver, StagePlan-style; never recalculated per frame).
+    // Replaces the hardcoded 100 capacity and the FUEL.CONSUMPTION_RATE literal
+    // in consumeFuel(). The tempo/default_rider pair resolves to exactly the
+    // previous values (capacity 100, base burn 2), so baseline balance is
+    // preserved; non-tempo vehicles now honor their existing fuelConsumption data.
+    this.vehicleTuning = resolveVehicleTuning(this.vehicleData.stats, this.characterData);
+
     this.gameState = {
-      distance: 0, fuel: 100, coins: 0, diamonds: 0,
+      distance: 0, fuel: this.vehicleTuning.fuelCapacity, coins: 0, diamonds: 0,
       score: 0, speed: 0, isGameOver: false, isPaused: false,
       isComplete: false
     };
@@ -183,12 +192,16 @@ export class GameScene extends Phaser.Scene {
 
   updateFuelBar() {
     this.fuelBar.clear();
+    // P0 Step 6B: bar percent now uses the resolved capacity (|| 100 guards any
+    // degenerate 0/negative value so the bar can never see NaN).
+    const capacity = (this.vehicleTuning && this.vehicleTuning.fuelCapacity) || 100;
     const fp = Math.max(0, this.gameState.fuel);
+    const pct = Math.max(0, Math.min(1, fp / capacity));
     let fc = COLORS.SUCCESS;
     if (fp < 30) fc = COLORS.PRIMARY;
     else if (fp < 60) fc = COLORS.WARNING;
     this.fuelBar.fillStyle(fc, 1);
-    this.fuelBar.fillRoundedRect(70, 22, 150 * (fp / 100), 20, 10);
+    this.fuelBar.fillRoundedRect(70, 22, 150 * pct, 20, 10);
   }
 
   createControls() {
@@ -278,7 +291,8 @@ export class GameScene extends Phaser.Scene {
       const coinBonus = this.characterModifiers.bonuses.coinBonus || 0;
       this.gameState.coins += Math.floor(rewards.coins * coinBonus);
       this.gameState.diamonds += rewards.diamonds;
-      this.gameState.fuel = Math.min(100, this.gameState.fuel + rewards.fuel);
+      // P0 Step 6B: clamp fuel pickups to the resolved vehicle capacity (was hardcoded 100).
+      this.gameState.fuel = Math.min(this.vehicleTuning.fuelCapacity, this.gameState.fuel + rewards.fuel);
     }
     this.consumeFuel(delta);
     this.gameState.distance = this.vehicle.getDistance();
@@ -303,15 +317,19 @@ export class GameScene extends Phaser.Scene {
 
   consumeFuel(delta) {
     const dt = delta / 1000;
+    // P0 Step 6B: base burn now comes from the resolved vehicle tuning
+    // (vehicleStats.fuelConsumption, fallback 2 = the old FUEL.CONSUMPTION_RATE).
+    // Throttle/coast multipliers, the character fuelEfficiency formula (applied
+    // exactly once, pre-resolved) and the min/max clamps are unchanged.
+    const baseConsumption = this.vehicleTuning.fuelConsumption;
+    const efficiencyFactor = Math.max(0, 1 - this.vehicleTuning.fuelEfficiency);
     // Only consume fuel when accelerating or moving
     if (this.controls.accelerate && this.vehicle.velocityX > 0) {
-      const fuelEfficiency = this.characterModifiers.bonuses.fuelEfficiency || 0;
-      let consumption = FUEL.CONSUMPTION_RATE * dt * FUEL.ACCELERATION_MULTIPLIER * Math.max(0, 1 - fuelEfficiency);
+      const consumption = baseConsumption * dt * FUEL.ACCELERATION_MULTIPLIER * efficiencyFactor;
       this.gameState.fuel = Math.max(0, this.gameState.fuel - consumption);
     } else if (Math.abs(this.vehicle.velocityX) > 1) {
       // Small consumption when moving (coasting)
-      const fuelEfficiency = this.characterModifiers.bonuses.fuelEfficiency || 0;
-      let consumption = FUEL.CONSUMPTION_RATE * dt * 0.1 * Math.max(0, 1 - fuelEfficiency);
+      const consumption = baseConsumption * dt * 0.1 * efficiencyFactor;
       this.gameState.fuel = Math.max(0, this.gameState.fuel - consumption);
     }
     // No fuel consumption when idle
