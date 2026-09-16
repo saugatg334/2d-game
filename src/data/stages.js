@@ -97,6 +97,24 @@ function createStage([id, name, location, environment, profile, distance, diffic
       { name: 'nijgadh_finish', length: 150, profile: 'flat_finish' }
     ];
   }
+  if (id === 'nijgadh_fast_track') {
+    stage.terrain.sections = [
+      { name: 'valley_start', length: 250 },
+      { name: 'hill_climb', length: 350 },
+      { name: 'expressway', length: 300 },
+      { name: 'bridge', length: 250 },
+      { name: 'tunnel_approach', length: 150 },
+      { name: 'tunnel', length: 300 },
+      { name: 'tunnel_exit', length: 150 },
+      { name: 'hill_expressway', length: 300 },
+      { name: 'terai_transition', length: 300 },
+      { name: 'nijgadh_finish', length: 150 },
+      { name: 'hill_climb', length: 350 },
+      { name: 'expressway', length: 300 },
+      { name: 'bridge', length: 150 },
+      { name: 'nijgadh_finish', length: 100 }
+    ];
+  }
   return stage;
 }
 
