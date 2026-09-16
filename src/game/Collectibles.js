@@ -3,11 +3,23 @@
 // ============================================
 
 export class Collectibles {
-  constructor(scene, terrain) {
+  constructor(scene, terrain, collectibleConfig = null) {
     this.scene = scene;
     this.terrain = terrain;
     this.items = [];
     this.graphics = scene.add.graphics();
+
+    // P0 Step 3: resolved stage collectible chances (from StagePlan). Falls back
+    // to the current defaults (0.7 / 0.2 / 0.1) so behavior is unchanged when no
+    // config is supplied. These are independent probabilities; generate() derives
+    // the cumulative thresholds used for the single per-spawn random draw.
+    const cfg = (collectibleConfig && typeof collectibleConfig === 'object') ? collectibleConfig : {};
+    const fin = (v, fallback) => (typeof v === 'number' && Number.isFinite(v)) ? v : fallback;
+    this.chances = {
+      coinChance: fin(cfg.coinChance, 0.7),
+      fuelChance: fin(cfg.fuelChance, 0.2),
+      diamondChance: fin(cfg.diamondChance, 0.1)
+    };
 
     // Collectible types
     this.types = {
@@ -23,12 +35,19 @@ export class Collectibles {
     const startX = 500;
     const endX = targetDistance;
 
+    // P0 Step 3: cumulative thresholds derived from the stage chances so a single
+    // random draw yields the configured distribution. Defaults (0.7/0.2/0.1)
+    // reproduce the original 0.7 / 0.9 split exactly. Rounding to 9 decimals
+    // removes binary float noise (e.g. 0.7 + 0.2 -> 0.9) and clamps to [0,1].
+    const coinThresh = Math.max(0, Math.min(1, this.chances.coinChance));
+    const fuelThresh = Math.max(coinThresh, Math.min(1, Math.round((this.chances.coinChance + this.chances.fuelChance) * 1e9) / 1e9));
+
     for (let x = startX; x < endX; x += 100 + Math.random() * 200) {
       const rand = Math.random();
       let type;
 
-      if (rand < 0.7) type = 'coin';
-      else if (rand < 0.9) type = 'fuel';
+      if (rand < coinThresh) type = 'coin';
+      else if (rand < fuelThresh) type = 'fuel';
       else type = 'diamond';
 
       const terrainY = this.terrain.getTerrainYAt(x);

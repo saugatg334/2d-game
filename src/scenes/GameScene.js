@@ -67,6 +67,11 @@ export class GameScene extends Phaser.Scene {
     this.terrain.generate(this.stage.targetDistance + 1000);
     this.environmentRenderer = new EnvironmentRenderer(this, this.terrain, this.stage);
 
+    // P0 Step 3: cache stage-specific gravity from the already-resolved plan.
+    // Single gravity source — Vehicle.applyGravity() integration is untouched,
+    // and with current stage data this equals PHYSICS.GRAVITY (980).
+    this.gravity = this.terrain.stagePlan.physics.gravity;
+
     // Place vehicle on the starting platform
     const startX = 200;
     const startY = this.terrain.getTerrainYAt(startX) - this.vehicleData.stats.wheelRadius - this.vehicleData.stats.height * 0.4;
@@ -77,7 +82,7 @@ export class GameScene extends Phaser.Scene {
       characterModifiers: this.characterModifiers
     });
 
-    this.collectibles = new Collectibles(this, this.terrain);
+    this.collectibles = new Collectibles(this, this.terrain, this.terrain.stagePlan.collectibles);
     this.collectibles.generate(this.stage.targetDistance);
 
     this.cameras.main.setBounds(0, -500, this.terrain.getLength() + 1000, this.scale.height + 500);
@@ -259,7 +264,7 @@ export class GameScene extends Phaser.Scene {
     const dt = delta / 1000;
     this.updateAbility(dt);
 
-    this.vehicle.update(this.controls, this.terrain, PHYSICS.GRAVITY, PHYSICS.GROUND_FRICTION, delta);
+    this.vehicle.update(this.controls, this.terrain, this.gravity, PHYSICS.GROUND_FRICTION, delta);
 
     // Update camera to follow vehicle
     const targetScrollX = this.vehicle.x - this.scale.width * 0.3;
