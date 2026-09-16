@@ -56,12 +56,14 @@ export class CurrencyDisplay extends Phaser.GameObjects.Container {
     scene.add.existing(this);
   }
 
+  // F2: defensive display conversion — null/undefined/non-string-safe values
+  // must never crash text rendering. Same output for valid numbers.
   setCoins(amount) {
-    this.coinText.setText(amount.toString());
+    this.coinText.setText(String(amount ?? 0));
   }
 
   setDiamonds(amount) {
-    this.diamondText.setText(amount.toString());
+    this.diamondText.setText(String(amount ?? 0));
   }
 
   update(coins, diamonds) {

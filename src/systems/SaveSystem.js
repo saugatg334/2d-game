@@ -100,13 +100,19 @@ class SaveSystem {
     return this.data.diamonds;
   }
 
+  // F4: guard the write path — a non-finite/non-numeric stored value (or a
+  // bad increment) must never poison arithmetic or persist NaN/Infinity.
+  toSafeNumber(value) {
+    return Number.isFinite(value) ? value : 0;
+  }
+
   addCoins(amount) {
-    this.data.coins += amount;
+    this.data.coins = this.toSafeNumber(this.data.coins) + this.toSafeNumber(amount);
     this.save();
   }
 
   addDiamonds(amount) {
-    this.data.diamonds += amount;
+    this.data.diamonds = this.toSafeNumber(this.data.diamonds) + this.toSafeNumber(amount);
     this.save();
   }
 
@@ -203,7 +209,10 @@ class SaveSystem {
   }
 
   updateBestDistance(distance) {
-    if (distance > this.data.bestDistance) {
+    // F4: normalize a corrupted stored value before comparing; reject
+    // non-finite incoming values so NaN/Infinity can never persist.
+    if (!Number.isFinite(this.data.bestDistance)) this.data.bestDistance = 0;
+    if (Number.isFinite(distance) && distance > this.data.bestDistance) {
       this.data.bestDistance = distance;
       this.save();
       return true;
@@ -212,7 +221,8 @@ class SaveSystem {
   }
 
   updateBestScore(score) {
-    if (score > this.data.bestScore) {
+    if (!Number.isFinite(this.data.bestScore)) this.data.bestScore = 0;
+    if (Number.isFinite(score) && score > this.data.bestScore) {
       this.data.bestScore = score;
       this.save();
       return true;
@@ -237,6 +247,11 @@ class SaveSystem {
   }
 
   setSetting(key, value) {
+    // F3: settings must be a plain object before writing; corrupted/legacy
+    // values are replaced by a copy of the defaults.
+    if (!this.data.settings || typeof this.data.settings !== 'object' || Array.isArray(this.data.settings)) {
+      this.data.settings = { ...defaultPlayerData.settings };
+    }
     this.data.settings[key] = value;
     this.save();
   }
