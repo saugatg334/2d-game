@@ -107,21 +107,43 @@ export class ShopScene extends Phaser.Scene {
     return saveSystem.isStageUnlocked(item.id);
   }
 
+  // F5: validate before any mutation. A purchase needs a valid item id, a
+  // finite non-negative cost, and a recognized currency.
+  isValidPurchase(item) {
+    if (!item || typeof item !== 'object') return false;
+    if (typeof item.id !== 'string' || item.id.trim() === '') return false;
+    if (item.currency !== 'coins' && item.currency !== 'diamonds') return false;
+    return typeof item.cost === 'number' && Number.isFinite(item.cost) && item.cost >= 0;
+  }
+
   buy(item) {
+    // F5: every condition is checked BEFORE any currency is touched, so a
+    // failed/repeated/duplicate purchase can never deduct twice (or at all).
+    if (!this.isValidPurchase(item)) return;
+
+    // Already unlocked: no currency change, no duplicate unlock.
+    if (this.isUnlocked(item)) return;
+
     const enough = item.currency === 'diamonds' ?
       saveSystem.getDiamonds() >= item.cost : saveSystem.getCoins() >= item.cost;
-
-    if (enough) {
-      if (item.currency === 'diamonds') saveSystem.spendDiamonds(item.cost);
-      else saveSystem.spendCoins(item.cost);
-      if (this.currentCategory === 'characters') saveSystem.unlockCharacter(item.id);
-      else if (this.currentCategory === 'vehicles') saveSystem.unlockVehicle(item.id);
-      else saveSystem.unlockStage(item.id);
-      this.currencyDisplay.update(saveSystem.getCoins(), saveSystem.getDiamonds());
-      this.createItems(this.scale.width / 2, this.scale.height / 2 + 20);
-    } else {
+    if (!enough) {
       this.showMsg('Not enough coins/diamonds!');
+      return;
     }
+
+    // All checks passed: deduct first, then unlock only if the deduction
+    // succeeded. spendCoins/spendDiamonds (F4-hardened) are the single source
+    // of truth for currency; unlockX() performs its own final save.
+    const spent = item.currency === 'diamonds' ?
+      saveSystem.spendDiamonds(item.cost) : saveSystem.spendCoins(item.cost);
+    if (!spent) return;
+
+    if (this.currentCategory === 'characters') saveSystem.unlockCharacter(item.id);
+    else if (this.currentCategory === 'vehicles') saveSystem.unlockVehicle(item.id);
+    else saveSystem.unlockStage(item.id);
+
+    this.currencyDisplay.update(saveSystem.getCoins(), saveSystem.getDiamonds());
+    this.createItems(this.scale.width / 2, this.scale.height / 2 + 20);
   }
 
   showMsg(msg) {
