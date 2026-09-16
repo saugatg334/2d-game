@@ -136,7 +136,7 @@ export class Vehicle {
     this.updateWheelPositions();
   }
 
-  checkGroundCollision(terrain) {
+  checkGroundCollision(terrain, terrainAlignmentRate = 0.05) {
     const frontTerrainY = terrain.getTerrainYAt(this.frontWheel.x);
     const rearTerrainY = terrain.getTerrainYAt(this.rearWheel.x);
     const frontContactY = frontTerrainY - this.wheelRadius;
@@ -159,7 +159,9 @@ export class Vehicle {
           const angleDifference = Math.abs(Phaser.Math.Angle.Wrap(terrainAngle - this.rotation));
           const hasStableAngleDifference = angleDifference < Math.PI / 4;
           if (hasValidTerrainAngle && hasStableAngleDifference) {
-            this.rotation = Phaser.Math.Angle.RotateTo(this.rotation, terrainAngle, 0.05);
+            // P0 Step 6E: alignment rate is data-driven (0.05 x suspension,
+            // resolved in VehicleTuning); every guard below is unchanged.
+            this.rotation = Phaser.Math.Angle.RotateTo(this.rotation, terrainAngle, terrainAlignmentRate);
             this.y = (frontContactY + rearContactY) / 2 - this.height * 0.4;
             this.updateWheelPositions();
           }
@@ -483,7 +485,9 @@ export class Vehicle {
     }
   }
 
-  update(input, terrain, gravity, friction, delta) {
+  // P0 Step 6E: terrainAlignmentRate threaded through exactly like friction;
+  // defaults to the previous hardcoded 0.05 so existing callers are unaffected.
+  update(input, terrain, gravity, friction, delta, terrainAlignmentRate = 0.05) {
     const dt = delta / 1000;
 
     if (input.accelerate) this.accelerate(dt);
@@ -495,7 +499,7 @@ export class Vehicle {
     this.applyFriction(friction, input.accelerate);
     this.updateRotation(dt);
     this.updatePosition(dt);
-    this.checkGroundCollision(terrain);
+    this.checkGroundCollision(terrain, terrainAlignmentRate);
     this.render();
   }
 

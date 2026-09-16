@@ -20,6 +20,17 @@ const DEFAULT_GROUND_FRICTION = 0.96; // = PHYSICS.GROUND_FRICTION
 const GROUND_FRICTION_MIN = 0.5;
 const GROUND_FRICTION_MAX = 0.995;
 
+// P0 Step 6E: suspension -> terrain alignment rate. Multiplies the previous
+// hardcoded RotateTo alignment rate (0.05) in Vehicle.checkGroundCollision so
+// vehicles with better suspension conform to terrain faster. suspension = 1
+// (tempo/default) resolves to exactly 0.05, preserving default behavior.
+// Existing data range 0.8..1.8 -> rates 0.04..0.09, so the [0.01, 0.2] clamp
+// only guards against invalid physics and never alters an existing vehicle's
+// intended result.
+const DEFAULT_ALIGNMENT_RATE = 0.05; // previous hardcoded value in Vehicle.js
+const ALIGNMENT_RATE_MIN = 0.01;
+const ALIGNMENT_RATE_MAX = 0.2;
+
 // Accept only finite numbers; anything else (missing, NaN, Infinity, strings)
 // falls back to the safe default so NaN/Infinity can never reach fuel math.
 const toFiniteNumber = (value, fallback) =>
@@ -43,6 +54,11 @@ const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
  *   groundFriction = clamp(1 - (1 - 0.96) / grip, 0.5, 0.995)
  * grip = 1 resolves to exactly 0.96 (the previous hardcoded value), higher grip
  * retains more velocity per frame, lower grip slows down faster.
+ *
+ * Terrain alignment domain (Step 6E):
+ *   terrainAlignmentRate = clamp(0.05 * suspension, 0.01, 0.2)
+ * suspension = 1 resolves to exactly 0.05 (the previous hardcoded RotateTo
+ * rate); higher suspension aligns the vehicle to terrain slope faster.
  */
 export function resolveVehicleTuning(vehicleStats, characterData) {
   const stats = (vehicleStats && typeof vehicleStats === 'object') ? vehicleStats : {};
@@ -66,7 +82,19 @@ export function resolveVehicleTuning(vehicleStats, characterData) {
     GROUND_FRICTION_MAX
   );
 
-  return { fuelCapacity, fuelConsumption, fuelEfficiency, groundFriction };
+  // P0 Step 6E: suspension -> terrain alignment rate, resolved once. Valid
+  // finite positive suspension is used directly; missing/invalid/non-positive
+  // values fall back to 1 (=> exactly 0.05). Gravity, wheel contact tests,
+  // positional snap, angular damping and flip logic are untouched.
+  const suspensionRaw = toFiniteNumber(stats.suspension, 1);
+  const suspension = suspensionRaw > 0 ? suspensionRaw : 1;
+  const terrainAlignmentRate = clamp(
+    DEFAULT_ALIGNMENT_RATE * suspension,
+    ALIGNMENT_RATE_MIN,
+    ALIGNMENT_RATE_MAX
+  );
+
+  return { fuelCapacity, fuelConsumption, fuelEfficiency, groundFriction, terrainAlignmentRate };
 }
 
 export default resolveVehicleTuning;

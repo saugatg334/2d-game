@@ -281,7 +281,10 @@ export class GameScene extends Phaser.Scene {
     // (grip data via VehicleTuning; tempo grip=1 -> exactly 0.96, the previous
     // hardcoded PHYSICS.GROUND_FRICTION). Single application point unchanged:
     // Vehicle.applyFriction(), grounded + not accelerating, exactly one multiply.
-    this.vehicle.update(this.controls, this.terrain, this.gravity, this.vehicleTuning.groundFriction, delta);
+    // P0 Step 6E: terrain alignment rate (0.05 x suspension, resolved in
+    // VehicleTuning) threaded through exactly like friction; tempo (suspension
+    // 1) resolves to exactly the previous hardcoded 0.05.
+    this.vehicle.update(this.controls, this.terrain, this.gravity, this.vehicleTuning.groundFriction, delta, this.vehicleTuning.terrainAlignmentRate);
 
     // Update camera to follow vehicle
     const targetScrollX = this.vehicle.x - this.scale.width * 0.3;
