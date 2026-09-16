@@ -2,7 +2,14 @@
 // Nepali Racer - Default Player Data
 // ============================================
 
+// F6: single source of truth for the save-data schema version. Lives here (not
+// in SaveSystem) to avoid a circular import; SaveSystem imports it for the
+// migration hook and stamps it on every save.
+export const CURRENT_SAVE_VERSION = 1;
+
 export const defaultPlayerData = {
+  schemaVersion: CURRENT_SAVE_VERSION,
+
   coins: 0,
   diamonds: 0,
 

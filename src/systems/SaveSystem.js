@@ -3,7 +3,7 @@
 // ============================================
 
 import { SAVE_KEY } from '../config/constants.js';
-import { defaultPlayerData } from '../data/playerData.js';
+import { defaultPlayerData, CURRENT_SAVE_VERSION } from '../data/playerData.js';
 
 class SaveSystem {
   constructor() {
@@ -11,16 +11,21 @@ class SaveSystem {
   }
 
   load() {
-    let data = { ...defaultPlayerData };
+    let parsed = {};
     try {
       const saved = localStorage.getItem(SAVE_KEY);
       if (saved) {
-        const parsed = JSON.parse(saved);
-        data = { ...defaultPlayerData, ...parsed };
+        parsed = JSON.parse(saved);
       }
     } catch (e) {
       console.warn('SaveSystem: Failed to load save data, using defaults.', e);
+      parsed = {};
     }
+    // F6: migrate legacy/future save structures BEFORE merging with defaults so
+    // the migration hook always sees the raw saved shape (a missing
+    // schemaVersion would otherwise be masked by the default's value).
+    parsed = this.migrateSaveData(parsed);
+    let data = { ...defaultPlayerData, ...parsed };
     // F1: normalize corrupted/legacy fields before anything reads them.
     this.sanitizeSaveData(data);
     // Development-only: unlock legendary characters and Fast Track stage for local testing
@@ -32,6 +37,30 @@ class SaveSystem {
       if (!data.unlockedStages.includes('ktm_nijgadh_fast_track')) {
         data.unlockedStages = [...data.unlockedStages, 'ktm_nijgadh_fast_track'];
       }
+    }
+    return data;
+  }
+
+  // F6: Backward-compatible migration hook. Runs BEFORE merge-with-defaults and
+  // sanitization. Determines the save's schema version safely (missing/invalid
+  // = legacy save that can be migrated) and migrates older versions toward
+  // CURRENT_SAVE_VERSION step by step.
+  // - Unknown FUTURE versions (data written by a newer build) are kept intact:
+  //   no downgrade, no field destruction — sanitization still handles unsafe fields.
+  // - Version 1 has no prior structural migration, so this performs NO
+  //   destructive field changes today.
+  // - Safe for malformed/non-object input (returned untouched).
+  migrateSaveData(data) {
+    if (data === null || typeof data !== 'object') return data;
+    const v = data.schemaVersion;
+    const version =
+      typeof v === 'number' && Number.isFinite(v) && v >= 0
+        ? Math.floor(v)
+        : 0; // missing/invalid => legacy save that can be migrated
+    if (version >= CURRENT_SAVE_VERSION) return data; // v1 (or future): keep as-is
+    // Stepwise migrations: 0 -> 1. Add future steps below as needed.
+    if (version < 1) {
+      data.schemaVersion = 1;
     }
     return data;
   }
@@ -78,6 +107,11 @@ class SaveSystem {
 
   save() {
     try {
+      // F6: stamp the current schema version so every persisted save is
+      // self-describing; existing valid saves gain schemaVersion on first save.
+      if (this.data && typeof this.data === 'object') {
+        this.data.schemaVersion = CURRENT_SAVE_VERSION;
+      }
       localStorage.setItem(SAVE_KEY, JSON.stringify(this.data));
       return true;
     } catch (e) {
