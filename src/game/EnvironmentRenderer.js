@@ -46,9 +46,13 @@ export class EnvironmentRenderer {
     const sections = (this.terrain?.stagePlan?.terrain?.sections) ?? [];
     const sectionByRole = (role) => sections.find((section) => section.role === role);
 
-    const bridgeSection = sectionByRole('bridge');
-    this.bridgeStart = bridgeSection?.start ?? 900;
-    this.bridgeEnd = bridgeSection?.end ?? 1150;
+    // ALL bridge sections (Fast Track stages may define more than one).
+    // Fallback preserves the legacy single-bridge geometry for section-less
+    // stages. The viaduct scenery renders every section in this list.
+    const bridgeSections = sections.filter((section) => section.role === 'bridge');
+    this.bridgeSections = bridgeSections.length > 0
+      ? bridgeSections.map((section) => ({ start: section.start, end: section.end }))
+      : [{ start: 900, end: 1150 }];
 
     const tunnelSection = sectionByRole('tunnel');
     this.tunnelStart = tunnelSection?.start ?? 1300;
@@ -57,10 +61,13 @@ export class EnvironmentRenderer {
     const teraiSection = sectionByRole('terai');
     this.teraiStart = teraiSection?.start ?? 2050;
 
-    // Keep the existing finish visual placement (a lead-in before the stage end).
+    // Keep the existing finish visual placement (a lead-in before the stage
+    // end). The LAST finish section is the actual stage END; earlier
+    // finish-role sections are mid-stage landmark platforms.
     const FINISH_LEAD = 50;
-    const finishSection = sectionByRole('finish');
-    this.finishX = finishSection ? finishSection.end - FINISH_LEAD : 2450;
+    const finishSections = sections.filter((section) => section.role === 'finish');
+    const lastFinishSection = finishSections[finishSections.length - 1];
+    this.finishX = lastFinishSection ? lastFinishSection.end - FINISH_LEAD : 2450;
 
     // Terai blend band is centered on the Terai section start (± 100) so the
     // KTM Fast Track keeps its 1950-2150 band while remaining derived.
@@ -303,6 +310,13 @@ export class EnvironmentRenderer {
     const nearOffset = (cameraX * 0.38) % 500;
     this.nearTreeGraphics.setScrollFactor(0, 0);
 
+    // Deep-valley haze applies only around actual bridge sections (any of
+    // them) - never across the whole world.
+    let inBridgeZone = false;
+    for (const bridge of this.bridgeSections) {
+      if (cameraX >= bridge.start && cameraX <= bridge.end) { inBridgeZone = true; break; }
+    }
+
     for (let x = -200; x < w + 300; x += 92) {
       const px = x - nearOffset;
       const py = h * 0.80;
@@ -314,7 +328,7 @@ export class EnvironmentRenderer {
       const screenWorldX = cameraX + px;
       const blendT = Phaser.Math.Clamp((screenWorldX - TERAI_BLEND_START) / (TERAI_BLEND_END - TERAI_BLEND_START), 0, 1);
 
-      if (cameraX >= this.bridgeStart && cameraX <= this.bridgeEnd) {
+      if (inBridgeZone) {
         // Deep River Valley haze circles below bridge level only (kept subtle)
         this.nearTreeGraphics.fillStyle(0x117864, 0.25);
         this.nearTreeGraphics.fillCircle(px, py + 20, 22);
@@ -906,15 +920,23 @@ export class EnvironmentRenderer {
     }
   }
 
-  // D. P0-1: CONCRETE BOX GIRDER MEGA-VIADUCT BRIDGE (900m - 1150m)
+  // D. P0-1: CONCRETE BOX GIRDER MEGA-VIADUCT BRIDGE(S)
   // Visual-only deep valley: everything is kept inside the 720px viewport
-  // (valley floor ~y=700). No camera or collision changes.
+  // (valley floor ~y=700). No camera or collision changes. Renders EVERY
+  // bridge section once (multi-bridge Fast Track stages); the per-bridge
+  // scenery below is the original drawing logic, ported 1:1 onto each
+  // section's own start/end.
   drawConcreteViaductBridge(viewLeft, viewRight) {
-    if (this.bridgeEnd < viewLeft || this.bridgeStart > viewRight) return;
-
     const segments = this.terrain.getSegments();
     if (!segments) return;
 
+    for (const bridge of this.bridgeSections) {
+      if (bridge.end < viewLeft || bridge.start > viewRight) continue;
+      this.drawSingleViaductBridge(bridge.start, bridge.end, segments, viewLeft, viewRight);
+    }
+  }
+
+  drawSingleViaductBridge(bridgeStart, bridgeEnd, segments, viewLeft, viewRight) {
     const screenH = this.scene.scale.height; // 720
     const valleyFloorY = screenH - 25;       // ~y695: visible valley floor line
     const riverY = screenH - 15;             // ~y705: river band inside valley
@@ -924,33 +946,33 @@ export class EnvironmentRenderer {
     // Far ridge pair (blue-grey, hazy)
     this.structGraphics.fillStyle(0x85a3c2, 0.45);
     this.structGraphics.beginPath();
-    this.structGraphics.moveTo(Math.max(viewLeft, this.bridgeStart - 60), valleyFloorY - 190);
-    this.structGraphics.lineTo(this.bridgeStart + 60, valleyFloorY - 90);
-    this.structGraphics.lineTo(this.bridgeStart + 180, valleyFloorY - 160);
-    this.structGraphics.lineTo(this.bridgeStart + 330, valleyFloorY - 70);
-    this.structGraphics.lineTo(this.bridgeStart + 460, valleyFloorY - 150);
-    this.structGraphics.lineTo(this.bridgeStart + 620, valleyFloorY - 80);
-    this.structGraphics.lineTo(this.bridgeStart + 780, valleyFloorY - 170);
-    this.structGraphics.lineTo(this.bridgeStart + 930, valleyFloorY - 85);
-    this.structGraphics.lineTo(Math.min(viewRight, this.bridgeEnd + 60), valleyFloorY - 190);
-    this.structGraphics.lineTo(Math.min(viewRight, this.bridgeEnd + 60), valleyFloorY);
-    this.structGraphics.lineTo(Math.max(viewLeft, this.bridgeStart - 60), valleyFloorY);
+    this.structGraphics.moveTo(Math.max(viewLeft, bridgeStart - 60), valleyFloorY - 190);
+    this.structGraphics.lineTo(bridgeStart + 60, valleyFloorY - 90);
+    this.structGraphics.lineTo(bridgeStart + 180, valleyFloorY - 160);
+    this.structGraphics.lineTo(bridgeStart + 330, valleyFloorY - 70);
+    this.structGraphics.lineTo(bridgeStart + 460, valleyFloorY - 150);
+    this.structGraphics.lineTo(bridgeStart + 620, valleyFloorY - 80);
+    this.structGraphics.lineTo(bridgeStart + 780, valleyFloorY - 170);
+    this.structGraphics.lineTo(bridgeStart + 930, valleyFloorY - 85);
+    this.structGraphics.lineTo(Math.min(viewRight, bridgeEnd + 60), valleyFloorY - 190);
+    this.structGraphics.lineTo(Math.min(viewRight, bridgeEnd + 60), valleyFloorY);
+    this.structGraphics.lineTo(Math.max(viewLeft, bridgeStart - 60), valleyFloorY);
     this.structGraphics.closePath();
     this.structGraphics.fillPath();
 
     // Near ridge pair (greener, less haze)
     this.structGraphics.fillStyle(0x5e7d8c, 0.55);
     this.structGraphics.beginPath();
-    this.structGraphics.moveTo(Math.max(viewLeft, this.bridgeStart - 60), valleyFloorY - 120);
-    this.structGraphics.lineTo(this.bridgeStart + 110, valleyFloorY - 55);
-    this.structGraphics.lineTo(this.bridgeStart + 260, valleyFloorY - 105);
-    this.structGraphics.lineTo(this.bridgeStart + 420, valleyFloorY - 45);
-    this.structGraphics.lineTo(this.bridgeStart + 580, valleyFloorY - 110);
-    this.structGraphics.lineTo(this.bridgeStart + 740, valleyFloorY - 50);
-    this.structGraphics.lineTo(this.bridgeStart + 890, valleyFloorY - 95);
-    this.structGraphics.lineTo(Math.min(viewRight, this.bridgeEnd + 60), valleyFloorY - 55);
-    this.structGraphics.lineTo(Math.min(viewRight, this.bridgeEnd + 60), valleyFloorY);
-    this.structGraphics.lineTo(Math.max(viewLeft, this.bridgeStart - 60), valleyFloorY);
+    this.structGraphics.moveTo(Math.max(viewLeft, bridgeStart - 60), valleyFloorY - 120);
+    this.structGraphics.lineTo(bridgeStart + 110, valleyFloorY - 55);
+    this.structGraphics.lineTo(bridgeStart + 260, valleyFloorY - 105);
+    this.structGraphics.lineTo(bridgeStart + 420, valleyFloorY - 45);
+    this.structGraphics.lineTo(bridgeStart + 580, valleyFloorY - 110);
+    this.structGraphics.lineTo(bridgeStart + 740, valleyFloorY - 50);
+    this.structGraphics.lineTo(bridgeStart + 890, valleyFloorY - 95);
+    this.structGraphics.lineTo(Math.min(viewRight, bridgeEnd + 60), valleyFloorY - 55);
+    this.structGraphics.lineTo(Math.min(viewRight, bridgeEnd + 60), valleyFloorY);
+    this.structGraphics.lineTo(Math.max(viewLeft, bridgeStart - 60), valleyFloorY);
     this.structGraphics.closePath();
     this.structGraphics.fillPath();
 
@@ -958,26 +980,31 @@ export class EnvironmentRenderer {
     //    only under the deck span so abutments still sit on solid ground.
     this.structGraphics.fillStyle(0x1e3a2a, 1);
     this.structGraphics.beginPath();
-    this.structGraphics.moveTo(this.bridgeStart - 40, this.terrain.getTerrainYAt(this.bridgeStart - 40));
-    this.structGraphics.lineTo(this.bridgeStart, this.terrain.getTerrainYAt(this.bridgeStart));
+    // Span-proportional wall insets: identical to the original fixed 40/90
+    // insets at the 250m span, and keeps shorter spans (150m) from
+    // self-intersecting the valley-floor polygon.
+    const wallSh = 40 * ((bridgeEnd - bridgeStart) / 250);
+    const wallFl = 90 * ((bridgeEnd - bridgeStart) / 250);
+    this.structGraphics.moveTo(bridgeStart - 40, this.terrain.getTerrainYAt(bridgeStart - 40));
+    this.structGraphics.lineTo(bridgeStart, this.terrain.getTerrainYAt(bridgeStart));
     // Stepped dark slope on the Khokana side
-    this.structGraphics.lineTo(this.bridgeStart + 40, valleyFloorY - 95);
-    this.structGraphics.lineTo(this.bridgeStart + 90, valleyFloorY);
+    this.structGraphics.lineTo(bridgeStart + wallSh, valleyFloorY - 95);
+    this.structGraphics.lineTo(bridgeStart + wallFl, valleyFloorY);
     // Valley floor to the far abutment
-    this.structGraphics.lineTo(this.bridgeEnd - 90, valleyFloorY);
-    this.structGraphics.lineTo(this.bridgeEnd - 40, valleyFloorY - 95);
-    this.structGraphics.lineTo(this.bridgeEnd, this.terrain.getTerrainYAt(this.bridgeEnd));
-    this.structGraphics.lineTo(this.bridgeEnd + 40, this.terrain.getTerrainYAt(this.bridgeEnd + 40));
-    this.structGraphics.lineTo(this.bridgeEnd + 40, screenH + 20);
-    this.structGraphics.lineTo(this.bridgeStart - 40, screenH + 20);
+    this.structGraphics.lineTo(bridgeEnd - wallFl, valleyFloorY);
+    this.structGraphics.lineTo(bridgeEnd - wallSh, valleyFloorY - 95);
+    this.structGraphics.lineTo(bridgeEnd, this.terrain.getTerrainYAt(bridgeEnd));
+    this.structGraphics.lineTo(bridgeEnd + 40, this.terrain.getTerrainYAt(bridgeEnd + 40));
+    this.structGraphics.lineTo(bridgeEnd + 40, screenH + 20);
+    this.structGraphics.lineTo(bridgeStart - 40, screenH + 20);
     this.structGraphics.closePath();
     this.structGraphics.fillPath();
 
     // Green forested valley walls texture (stripes above the river line)
     this.structGraphics.lineStyle(2, 0x274e2e, 0.8);
-    for (let wx = this.bridgeStart - 30; wx < this.bridgeEnd + 30; wx += 34) {
+    for (let wx = bridgeStart - 30; wx < bridgeEnd + 30; wx += 34) {
       const wallTop = this.terrain.getTerrainYAt(wx);
-      const wallBottom = wx < this.bridgeStart + 90 || wx > this.bridgeEnd - 90 ? valleyFloorY - 30 : valleyFloorY - 55;
+      const wallBottom = wx < bridgeStart + 90 || wx > bridgeEnd - 90 ? valleyFloorY - 30 : valleyFloorY - 55;
       this.structGraphics.beginPath();
       this.structGraphics.moveTo(wx, Math.max(wallTop + 6, valleyFloorY - 150));
       this.structGraphics.lineTo(wx + 6, wallBottom);
@@ -986,18 +1013,23 @@ export class EnvironmentRenderer {
 
     // 2. River / stream band along the visible valley floor
     this.structGraphics.fillStyle(0x2980b9, 1);
-    this.structGraphics.fillRect(this.bridgeStart - 30, riverY, (this.bridgeEnd - this.bridgeStart) + 60, 12);
+    this.structGraphics.fillRect(bridgeStart - 30, riverY, (bridgeEnd - bridgeStart) + 60, 12);
     this.structGraphics.fillStyle(0x7fb3d5, 0.7);
-    this.structGraphics.fillRect(this.bridgeStart - 10, riverY + 3, (this.bridgeEnd - this.bridgeStart) + 20, 4);
-    // Mid-channel sand bars
+    this.structGraphics.fillRect(bridgeStart - 10, riverY + 3, (bridgeEnd - bridgeStart) + 20, 4);
+    // Mid-channel sand bars (kept fully inside this bridge's river band;
+    // shorter spans skip a bar that would not fit)
     this.structGraphics.fillStyle(0xd5c49a, 0.9);
-    this.structGraphics.fillRect(this.bridgeStart + 130, riverY + 4, 34, 5);
-    this.structGraphics.fillRect(this.bridgeStart + 460, riverY + 3, 26, 6);
+    if (bridgeStart + 130 + 34 <= bridgeEnd + 30) {
+      this.structGraphics.fillRect(bridgeStart + 130, riverY + 4, 34, 5);
+    }
+    if (bridgeStart + 460 + 26 <= bridgeEnd + 30) {
+      this.structGraphics.fillRect(bridgeStart + 460, riverY + 3, 26, 6);
+    }
 
     // 3. Trees far below bridge level, on the valley slopes
-    for (let vx = this.bridgeStart + 20; vx < this.bridgeEnd - 20; vx += 46) {
+    for (let vx = bridgeStart + 20; vx < bridgeEnd - 20; vx += 46) {
       if (vx < viewLeft || vx > viewRight) continue;
-      const vy = vx < (this.bridgeStart + this.bridgeEnd) / 2 ? valleyFloorY - 12 : valleyFloorY - 18;
+      const vy = vx < (bridgeStart + bridgeEnd) / 2 ? valleyFloorY - 12 : valleyFloorY - 18;
       this.nearTreeGraphics.fillStyle(0x14532d, 0.95);
       this.nearTreeGraphics.fillTriangle(vx - 7, vy, vx, vy - 16, vx + 7, vy);
       this.nearTreeGraphics.fillStyle(0x166534, 0.9);
@@ -1007,9 +1039,9 @@ export class EnvironmentRenderer {
     // 4. Evenly spaced hammerhead piers standing on the visible valley floor
     // 4 piers distributed symmetrically across the 250m span (every 50px)
     const pierCount = 4;
-    const pierStep = (this.bridgeEnd - this.bridgeStart) / (pierCount + 1);
+    const pierStep = (bridgeEnd - bridgeStart) / (pierCount + 1);
     for (let i = 1; i <= pierCount; i++) {
-      const px = Math.round(this.bridgeStart + i * pierStep);
+      const px = Math.round(bridgeStart + i * pierStep);
       if (px < viewLeft - 30 || px > viewRight + 30) continue;
       const py = this.terrain.getTerrainYAt(px); // deck surface Y at pier X
 
@@ -1049,7 +1081,7 @@ export class EnvironmentRenderer {
     // 5. Concrete Box-Girder Deck Slab beneath road surface (visual only)
     this.structGraphics.fillStyle(0x2c3e50, 1);
     for (const seg of segments) {
-      if (seg.startX >= this.bridgeStart && seg.endX <= this.bridgeEnd) {
+      if (seg.startX >= bridgeStart && seg.endX <= bridgeEnd) {
         if (seg.startX < viewLeft || seg.endX > viewRight) continue;
 
         const y1 = seg.startY;
@@ -1080,7 +1112,7 @@ export class EnvironmentRenderer {
 
     // 6. Expansion joints across the deck (every other pier position)
     for (let i = 1; i <= pierCount; i += 2) {
-      const jx = Math.round(this.bridgeStart + i * pierStep);
+      const jx = Math.round(bridgeStart + i * pierStep);
       if (jx < viewLeft || jx > viewRight) continue;
       const jy = this.terrain.getTerrainYAt(jx);
       this.structGraphics.fillStyle(0x0f1922, 1);
@@ -1088,7 +1120,7 @@ export class EnvironmentRenderer {
     }
 
     // 7. "TRISHULI RIVER BRIDGE" identity board on the near parapet
-    const boardX = this.bridgeStart + 40;
+    const boardX = bridgeStart + 40;
     if (boardX >= viewLeft && boardX <= viewRight) {
       const by = this.terrain.getTerrainYAt(boardX);
       this.structGraphics.fillStyle(0x1a5276, 1);
