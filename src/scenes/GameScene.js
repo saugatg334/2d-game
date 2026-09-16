@@ -1,4 +1,4 @@
-import { COLORS, SCENES, PHYSICS, FUEL } from '../config/constants.js';
+import { COLORS, SCENES, FUEL } from '../config/constants.js';
 import { saveSystem } from '../systems/SaveSystem.js';
 import { stages } from '../data/stages.js';
 import { characters } from '../data/characters.js';
@@ -277,7 +277,11 @@ export class GameScene extends Phaser.Scene {
     const dt = delta / 1000;
     this.updateAbility(dt);
 
-    this.vehicle.update(this.controls, this.terrain, this.gravity, PHYSICS.GROUND_FRICTION, delta);
+    // P0 Step 6C: ground friction now comes from the resolved vehicle tuning
+    // (grip data via VehicleTuning; tempo grip=1 -> exactly 0.96, the previous
+    // hardcoded PHYSICS.GROUND_FRICTION). Single application point unchanged:
+    // Vehicle.applyFriction(), grounded + not accelerating, exactly one multiply.
+    this.vehicle.update(this.controls, this.terrain, this.gravity, this.vehicleTuning.groundFriction, delta);
 
     // Update camera to follow vehicle
     const targetScrollX = this.vehicle.x - this.scale.width * 0.3;
