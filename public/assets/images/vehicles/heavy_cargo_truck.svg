@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90" viewBox="0 0 160 90">
+  <!-- Heavy Cargo Truck - heavy hauler (Side View, facing right) -->
+
+  <!-- REAR DUAL WHEELS (twin hint) -->
+  <g id="rear-wheel">
+    <circle cx="34" cy="68" r="15" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="34" cy="68" r="13.5" fill="none" stroke="#333333" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <circle cx="34" cy="68" r="9.5" fill="#bdc3c7" stroke="#7f8c8d" stroke-width="1"/>
+    <circle cx="34" cy="68" r="6.5" fill="#ecf0f1"/>
+    <circle cx="34" cy="68" r="3" fill="#2c3e50"/>
+  </g>
+  <circle cx="50" cy="68" r="13" fill="#1a1a1a" stroke="#000000" stroke-width="1.5" opacity="0.9"/>
+  <circle cx="50" cy="68" r="8.5" fill="#bdc3c7"/>
+
+  <!-- FRONT WHEEL -->
+  <g id="front-wheel">
+    <circle cx="124" cy="68" r="15" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="124" cy="68" r="13.5" fill="none" stroke="#333333" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <circle cx="124" cy="68" r="9.5" fill="#bdc3c7" stroke="#7f8c8d" stroke-width="1"/>
+    <circle cx="124" cy="68" r="6.5" fill="#ecf0f1"/>
+    <circle cx="124" cy="68" r="3" fill="#2c3e50"/>
+  </g>
+
+  <!-- HEAVY CHASSIS RAIL (thick) -->
+  <rect x="8" y="55" width="152" height="8" rx="2" fill="#1b2631"/>
+  <rect x="8" y="62" width="152" height="3" fill="#2c3e50"/>
+
+  <!-- TALL CARGO BOX (tarp-covered, canvas green) -->
+  <path d="M 8 14 L 100 14 L 100 55 L 8 55 Z" fill="#6e8b3d" stroke="#4a5d23" stroke-width="1.5"/>
+  <path d="M 8 14 Q 54 8 100 14 L 100 20 Q 54 14 8 20 Z" fill="#7d9b4a"/>
+  <line x1="26" y1="16" x2="26" y2="55" stroke="#4a5d23" stroke-width="1"/>
+  <line x1="44" y1="16" x2="44" y2="55" stroke="#4a5d23" stroke-width="1"/>
+  <line x1="62" y1="16" x2="62" y2="55" stroke="#4a5d23" stroke-width="1"/>
+  <line x1="80" y1="16" x2="80" y2="55" stroke="#4a5d23" stroke-width="1"/>
+  <rect x="8" y="48" width="92" height="4" fill="#4a5d23"/>
+
+  <!-- WHEEL ARCH -->
+  <path d="M 16 55 A 19 19 0 0 1 54 55 Z" fill="#1b2631"/>
+
+  <!-- STRONG CAB (tall, dark red) -->
+  <path d="M 106 22 L 140 22 Q 150 22 153 32 L 153 50 Q 153 55 149 55 L 106 55 Z" fill="#c0392b" stroke="#7b241c" stroke-width="1.5"/>
+  <path d="M 112 27 L 136 27 Q 143 27 145 33 L 147 38 L 112 38 Z" fill="#85c1e9" stroke="#2c3e50" stroke-width="1"/>
+  <rect x="106" y="42" width="47" height="3" fill="#7b241c"/>
+
+  <!-- DOOR + GRAB HANDLE -->
+  <line x1="132" y1="24" x2="132" y2="54" stroke="#7b241c" stroke-width="1.2"/>
+  <rect x="135" y="42" width="4" height="2.5" rx="1" fill="#2c3e50"/>
+
+  <!-- HEAVY BUMPER + GRILLE + LIGHTS -->
+  <rect x="146" y="44" width="7" height="11" rx="1.5" fill="#566573"/>
+  <rect x="147" y="34" width="6" height="8" rx="1" fill="#2c3e50"/>
+  <circle cx="151" cy="50" r="2.5" fill="#f1c40f" stroke="#ffffff" stroke-width="1"/>
+
+  <!-- TALL EXHAUST STACK -->
+  <rect x="100" y="8" width="4.5" height="47" fill="#7f8c8d" stroke="#34495e" stroke-width="0.5"/>
+  <path d="M 98 8 L 106 6 L 102 8 Z" fill="#2c3e50"/>
+
+  <!-- ROOF MARKER LIGHTS -->
+  <rect x="112" y="18" width="5" height="3" rx="1" fill="#f1c40f"/>
+  <rect x="122" y="18" width="5" height="3" rx="1" fill="#f1c40f"/>
+</svg>
