@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Tanahun Hills - warm rolling farmland with extensive terraces -->
+
+  <rect width="170" height="62" fill="#ffd9a0"/>
+  <!-- warm sun and distant hazy layers -->
+  <circle cx="142" cy="12" r="6" fill="#ffb347" opacity="0.9"/>
+  <ellipse cx="60" cy="30" rx="86" ry="8" fill="#e8b98a"/>
+  <ellipse cx="140" cy="33" rx="66" ry="9" fill="#c9a06e"/>
+  <!-- rolling hills in warm greens -->
+  <ellipse cx="42" cy="42" rx="70" ry="12" fill="#7aa74a"/>
+  <ellipse cx="138" cy="45" rx="70" ry="13" fill="#6b9c42"/>
+  <!-- dense terraced farmland bands on both hillsides -->
+  <path d="M 0 38 Q 22 35 52 38" stroke="#c9b458" fill="none" stroke-width="1.6"/>
+  <path d="M 0 43 Q 26 40 58 43" stroke="#b8a34c" fill="none" stroke-width="1.6"/>
+  <path d="M 0 48 Q 30 45 64 48" stroke="#c9b458" fill="none" stroke-width="1.6"/>
+  <path d="M 108 42 Q 138 39 170 42.5" stroke="#b8a34c" fill="none" stroke-width="1.6"/>
+  <path d="M 106 47 Q 140 44 170 47.5" stroke="#c9b458" fill="none" stroke-width="1.6"/>
+  <path d="M 110 52 Q 142 49.5 170 52.5" stroke="#b8a34c" fill="none" stroke-width="1.6"/>
+  <!-- narrow winding rural road curving through the hillside -->
+  <path d="M 0 61 Q 30 60 48 56 Q 66 52 58 49.5 Q 54 48 76 47 Q 110 45.5 170 45" stroke="#8a7355" stroke-width="5" fill="none"/>
+  <path d="M 8 60.2 Q 32 59.2 50 55.4" stroke="#f1c40f" stroke-width="1.1" fill="none" stroke-dasharray="4,4"/>
+  <path d="M 80 47.5 Q 120 46 168 45.5" stroke="#f1c40f" stroke-width="1.1" fill="none" stroke-dasharray="4,4"/>
+  <!-- scattered farm trees -->
+  <circle cx="18" cy="41" r="3.6" fill="#4c7a2f"/>
+  <circle cx="72" cy="42" r="3.2" fill="#4c7a2f"/>
+  <circle cx="128" cy="39" r="3.4" fill="#4c7a2f"/>
+  <circle cx="158" cy="43" r="3" fill="#4c7a2f"/>
+</svg>

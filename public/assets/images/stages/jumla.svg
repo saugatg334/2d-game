@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Jumla Road - settled agricultural Karnali highland with terraces and scattered homes -->
+
+  <rect width="170" height="62" fill="#c2dde9"/>
+  <!-- distant snow peaks -->
+  <polygon points="12,30 34,12 56,30" fill="#f0f6fa"/>
+  <polygon points="118,30 140,13 162,30" fill="#e6eff6"/>
+  <!-- green/brown highland slopes -->
+  <path d="M 0 34 Q 44 28 88 33 Q 130 37 170 34 L 170 62 L 0 62 Z" fill="#7a9a5a"/>
+  <path d="M 0 34 Q 44 28 88 33 L 84 40 Q 44 34 0 40 Z" fill="#8fae6c"/>
+  <!-- terraced hillside farmland bands -->
+  <path d="M 0 44 Q 40 39 84 43" stroke="#c9b458" fill="none" stroke-width="1.8"/>
+  <path d="M 0 50 Q 44 45 90 49" stroke="#a89a4a" fill="none" stroke-width="1.8"/>
+  <path d="M 2 56 Q 48 51 94 55" stroke="#c9b458" fill="none" stroke-width="1.8"/>
+  <path d="M 100 42 Q 134 39 170 42" stroke="#a89a4a" fill="none" stroke-width="1.6"/>
+  <path d="M 102 48 Q 136 45 170 48" stroke="#c9b458" fill="none" stroke-width="1.6"/>
+  <!-- brown/green hillside patchwork -->
+  <ellipse cx="120" cy="53" rx="30" ry="7" fill="#8f7a52"/>
+  <!-- scattered traditional highland houses -->
+  <rect x="30" y="37" width="8" height="5.5" fill="#b8926b"/>
+  <polygon points="29,37 34,33.5 39,37" fill="#5d4436"/>
+  <rect x="96" y="39" width="8" height="5.5" fill="#c9a27e"/>
+  <polygon points="95,39 100,35.5 105,39" fill="#6d5140"/>
+  <rect x="128" y="44" width="8" height="5" fill="#b8926b"/>
+  <polygon points="127,44 132,40.5 137,44" fill="#5d4436"/>
+  <!-- haystacks and field walls -->
+  <circle cx="52" cy="47" r="2.4" fill="#d8c070"/>
+  <circle cx="60" cy="49" r="2" fill="#c9b060"/>
+  <circle cx="150" cy="52" r="2.4" fill="#d8c070"/>
+  <!-- winding rural mountain road -->
+  <path d="M 0 61 Q 34 59 56 56 Q 78 53 96 52 Q 126 50 170 50.5" stroke="#8a7a5e" stroke-width="4.8" fill="none"/>
+  <path d="M 10 60.2 Q 40 58.4 62 55.6" stroke="#f0e8d0" stroke-width="1.1" fill="none" stroke-dasharray="4,3"/>
+  <path d="M 104 51.8 Q 136 50.6 168 50.8" stroke="#f0e8d0" stroke-width="1.1" fill="none" stroke-dasharray="4,3"/>
+  <!-- highland trees -->
+  <circle cx="74" cy="45" r="2.8" fill="#4c7a3e"/>
+  <circle cx="164" cy="46" r="2.6" fill="#4c7a3e"/>
+</svg>

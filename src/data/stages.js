@@ -55,7 +55,7 @@ const stageSpecs = [
   ['jumla', 'Jumla Road', 'Jumla', 'mountain', 'steep_hills', 4600, 5, 'diamonds', 95]
 ];
 
-const existingStageAssets = new Set(['ktm_valley', 'ew_highway', 'pokhara_hills', 'mustang_road', 'himalayan_route']);
+const existingStageAssets = new Set(['ktm_valley', 'ew_highway', 'pokhara_hills', 'mustang_road', 'himalayan_route', 'ktm_nijgadh_fast_track', 'nijgadh_fast_track', 'khokana', 'nijgadh_hetauda', 'hetauda_hills', 'tribhuvan_highway', 'prithvi_highway', 'bp_highway', 'karnali_highway', 'muglin_road', 'kathmandu_pokhara', 'makwanpur_hills', 'pokhara_valley', 'sarangkot', 'tanahun_hills', 'gorkha', 'bandipur', 'sindhuli', 'dhankuta', 'palpa', 'tansen', 'chitwan', 'bardibas', 'birgunj', 'lumbini', 'birtamod', 'narayangadh', 'narayangadh_muglin', 'khurkot', 'beni', 'begnas', 'bharatpur', 'janakpur', 'biratnagar', 'butwal', 'ilam', 'kanyam', 'dharan', 'itahari', 'jomsom', 'mustang', 'kagbeni', 'manang', 'annapurna_mountain_road', 'jumla']);
 const themes = {
   valley: ['#87ceeb', '#4a7c59', '#8b4513', '#6b8e23', '#228b22'],
   urban: ['#87ceeb', '#556b2f', '#696969', '#808080', '#daa520'],

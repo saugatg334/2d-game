@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Manang Mountain Road - snowy alpine valley with stone settlement below great peaks -->
+
+  <rect width="170" height="62" fill="#c8dde9"/>
+  <!-- dramatic snow-covered mountains dominating the background -->
+  <polygon points="6,34 32,6 58,34" fill="#f7fafc"/>
+  <polygon points="44,34 72,4 100,34" fill="#eef4f9"/>
+  <polygon points="86,34 112,8 138,34" fill="#f7fafc"/>
+  <polygon points="124,34 148,12 172,34" fill="#e2ecf4"/>
+  <!-- glacial faces and blue shadow ridges -->
+  <polygon points="24,34 32,18 40,34" fill="#bcd2e2"/>
+  <polygon points="64,34 72,16 80,34" fill="#c8dbe8"/>
+  <polygon points="104,34 112,19 120,34" fill="#bcd2e2"/>
+  <!-- rocky high-altitude slopes with snow patches -->
+  <path d="M 0 40 Q 40 36 78 40 L 88 62 L 0 62 Z" fill="#7d8a94"/>
+  <path d="M 170 38 Q 134 37 100 42 L 92 62 L 170 62 Z" fill="#8a969e"/>
+  <ellipse cx="22" cy="43" rx="10" ry="3" fill="#eef4f8"/>
+  <ellipse cx="146" cy="42" rx="12" ry="3.2" fill="#eef4f8"/>
+  <ellipse cx="60" cy="46" rx="8" ry="2.6" fill="#e4edf3"/>
+  <!-- small stone houses of the settlement -->
+  <rect x="96" y="46" width="9" height="6" fill="#b0a898"/>
+  <polygon points="95,46 100.5,42.5 106,46" fill="#6d6a60"/>
+  <rect x="107" y="48" width="8" height="5.5" fill="#a8a098"/>
+  <rect x="110" y="50" width="2.4" height="3" fill="#4e4a44"/>
+  <!-- sparse alpine vegetation -->
+  <circle cx="30" cy="52" r="2.2" fill="#6d7d5e"/>
+  <circle cx="140" cy="52" r="2.4" fill="#6d7d5e"/>
+  <!-- narrow mountain road climbing the valley -->
+  <path d="M 0 60 Q 36 57 64 55 Q 92 53 116 52.5 Q 142 52 170 53" stroke="#9aa4aa" stroke-width="4.6" fill="none"/>
+  <path d="M 10 59.2 Q 42 56.8 70 55" stroke="#e8eef2" stroke-width="1" fill="none" stroke-dasharray="4,3"/>
+  <path d="M 120 52.6 Q 146 52.4 168 53.4" stroke="#e8eef2" stroke-width="1" fill="none" stroke-dasharray="4,3"/>
+</svg>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Kanyam Tea Garden - extensive geometric tea rows sweeping across rolling estate hills -->
+
+  <rect width="170" height="62" fill="#bfe6ee"/>
+  <!-- distant green ridges -->
+  <ellipse cx="54" cy="28" rx="88" ry="8" fill="#88b89a"/>
+  <ellipse cx="144" cy="31" rx="58" ry="9" fill="#78a88c"/>
+  <!-- dominant estate hillside sweeping across the frame -->
+  <path d="M 0 36 Q 50 30 100 35 Q 140 39 170 36 L 170 62 L 0 62 Z" fill="#4a9a54"/>
+  <!-- extensive diagonal tea rows dominating the hillside -->
+  <path d="M 0 40 Q 46 34.5 96 39 Q 136 42.5 170 39.5" stroke="#1f6b38" fill="none" stroke-width="2"/>
+  <path d="M 0 45 Q 50 39.5 100 44 Q 138 47.5 170 44.5" stroke="#2e8b46" fill="none" stroke-width="2"/>
+  <path d="M 0 50 Q 54 44.5 104 49 Q 140 52.5 170 49.5" stroke="#1f6b38" fill="none" stroke-width="2"/>
+  <path d="M 0 55 Q 58 49.5 108 54 Q 142 57.5 170 54.5" stroke="#2e8b46" fill="none" stroke-width="2"/>
+  <path d="M 0 60 Q 62 54.5 112 58.5 Q 144 61 170 59" stroke="#1f6b38" fill="none" stroke-width="2"/>
+  <!-- small tea-estate building with pitched roof -->
+  <rect x="130" y="30" width="12" height="7" fill="#e8e0d0"/>
+  <polygon points="128.5,30 136,24.5 143.5,30" fill="#8a5a3a"/>
+  <rect x="134" y="33" width="2.6" height="4" fill="#6d5140"/>
+  <!-- winding scenic estate road -->
+  <path d="M 0 62 Q 30 60 44 56.5 Q 58 53 54 50.5 Q 51 48.5 72 47.5 Q 104 46 134 44.5 Q 152 43.5 170 43" stroke="#5f6a62" stroke-width="4.6" fill="none"/>
+  <path d="M 8 60.8 Q 32 59 44 55.8" stroke="#f1c40f" stroke-width="1" fill="none" stroke-dasharray="4,3"/>
+  <path d="M 78 47.2 Q 110 45.8 140 44.4" stroke="#f1c40f" stroke-width="1" fill="none" stroke-dasharray="4,3"/>
+  <!-- estate shade trees -->
+  <circle cx="20" cy="38" r="3.4" fill="#1e5e38"/>
+  <circle cx="88" cy="40" r="3" fill="#1e5e38"/>
+</svg>

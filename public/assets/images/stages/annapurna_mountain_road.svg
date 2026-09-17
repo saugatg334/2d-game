@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Annapurna Mountain Road - the most dramatic cliff-edge road beneath giant peaks -->
+
+  <rect width="170" height="62" fill="#bdd7ea"/>
+  <!-- enormous snow-covered Himalayan giants filling the sky -->
+  <polygon points="30,40 66,4 102,40" fill="#f9fcfe"/>
+  <polygon points="76,40 114,6 152,40" fill="#eef5fb"/>
+  <polygon points="0,40 26,14 52,40" fill="#e4eef6"/>
+  <polygon points="132,40 158,16 180,40" fill="#e4eef6"/>
+  <!-- blue glacial faces and razor ridgelines -->
+  <polygon points="56,40 66,20 76,40" fill="#a8c4dc"/>
+  <polygon points="104,40 114,22 124,40" fill="#b6d0e4"/>
+  <polygon points="16,40 26,26 36,40" fill="#bcd4e6"/>
+  <!-- very steep mountain slope falling into a deep valley -->
+  <path d="M 0 44 Q 50 38 96 42 L 108 62 L 0 62 Z" fill="#5f6d76"/>
+  <path d="M 0 44 Q 50 38 96 42 L 92 48 Q 48 44 0 50 Z" fill="#525f68"/>
+  <!-- dark rock faces breaking through -->
+  <polygon points="20,46 38,42.5 50,48 34,52" fill="#3e4a52"/>
+  <polygon points="66,42 80,40 88,45 72,48" fill="#46525a"/>
+  <!-- deep valley below -->
+  <path d="M 96 62 Q 108 54 124 52 Q 142 50 158 54 L 170 58 L 170 62 Z" fill="#7d8a90"/>
+  <!-- narrow winding road with exposed cliff edge -->
+  <path d="M 0 56 Q 26 52 48 49.5 Q 74 46.5 96 46 Q 122 45.5 146 47 Q 158 48 170 49.5" stroke="#8a949a" stroke-width="4.2" fill="none"/>
+  <path d="M 10 55 Q 36 51.6 60 49" stroke="#eef3f6" stroke-width="1" fill="none" stroke-dasharray="4,3"/>
+  <path d="M 110 46.2 Q 136 46.4 162 48.4" stroke="#eef3f6" stroke-width="1" fill="none" stroke-dasharray="4,3"/>
+  <!-- cliff-edge marker posts along the drop -->
+  <rect x="56" y="44.5" width="1.8" height="4.5" fill="#f5f5f0"/>
+  <rect x="88" y="42.5" width="1.8" height="4.5" fill="#f5f5f0"/>
+  <rect x="128" y="44.5" width="1.8" height="4.5" fill="#f5f5f0"/>
+  <!-- sparse vegetation clinging to the slope -->
+  <circle cx="42" cy="55" r="2.2" fill="#5d7055"/>
+  <circle cx="150" cy="56" r="2.2" fill="#5d7055"/>
+</svg>

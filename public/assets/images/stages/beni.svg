@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Beni River Road - Himalayan mountain river valley with bridge and snow peaks -->
+
+  <rect width="170" height="62" fill="#a5d5ee"/>
+  <!-- distant Himalayan layers -->
+  <polygon points="8,34 30,12 52,34" fill="#dfeef8"/>
+  <polygon points="38,34 62,9 86,34" fill="#eef6fc"/>
+  <polygon points="72,34 94,13 116,34" fill="#d5e8f4"/>
+  <polygon points="104,34 126,11 148,34" fill="#e8f3fa"/>
+  <!-- steep green mountain slopes descending to the river -->
+  <path d="M 0 38 Q 36 40 66 46 L 78 62 L 0 62 Z" fill="#2f7a50"/>
+  <path d="M 170 36 Q 138 40 110 47 L 100 62 L 170 62 Z" fill="#28704a"/>
+  <!-- mountain river as the central anchor -->
+  <path d="M 66 62 Q 78 52 96 49 Q 118 45 136 43 Q 154 41 170 40" stroke="#43a3d8" stroke-width="7" fill="none"/>
+  <path d="M 76 59 Q 96 51 118 47" stroke="#8ecce8" fill="none" stroke-width="1.4"/>
+  <!-- bridge crossing the river to the road -->
+  <rect x="84" y="44.5" width="26" height="2.2" fill="#7d5a44"/>
+  <rect x="88" y="46.7" width="2.2" height="7" fill="#5d4037"/>
+  <rect x="95" y="46.7" width="2.2" height="7" fill="#5d4037"/>
+  <rect x="102" y="46.7" width="2.2" height="7" fill="#5d4037"/>
+  <!-- winding hill road on the left slope -->
+  <path d="M 0 60 Q 26 58 44 54 Q 62 50 78 47 Q 104 42 134 40.5 Q 152 39.5 170 39" stroke="#6f6350" stroke-width="4.6" fill="none"/>
+  <path d="M 8 59.2 Q 30 57.4 46 53.8" stroke="#f1c40f" stroke-width="1" fill="none" stroke-dasharray="4,4"/>
+  <path d="M 84 46.6 Q 116 43 150 41.2" stroke="#f1c40f" stroke-width="1" fill="none" stroke-dasharray="4,4"/>
+  <!-- scattered rural vegetation -->
+  <circle cx="20" cy="46" r="3" fill="#1e6b45"/>
+  <circle cx="52" cy="50" r="2.8" fill="#1e6b45"/>
+  <circle cx="152" cy="45" r="3" fill="#1e6b45"/>
+</svg>

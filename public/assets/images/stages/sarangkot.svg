@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Sarangkot viewpoint - dramatic Himalayan panorama over layered hills -->
+
+  <rect width="170" height="62" fill="#7fc4ef"/>
+  <!-- dominant jagged snow-capped range filling the upper background -->
+  <polygon points="0,38 22,8 46,38" fill="#ffffff"/>
+  <polygon points="30,38 56,4 82,38" fill="#f9fcfe"/>
+  <polygon points="66,38 94,6 122,38" fill="#ffffff"/>
+  <polygon points="106,38 134,7 162,38" fill="#f4f9fd"/>
+  <polygon points="146,38 170,12 178,38" fill="#eef6fc"/>
+  <!-- glacial faces and ridgelines -->
+  <polygon points="16,38 22,20 28,38" fill="#c9e0f0"/>
+  <polygon points="50,38 56,16 62,38" fill="#c9e0f0"/>
+  <polygon points="88,38 94,18 100,38" fill="#d4e7f4"/>
+  <polygon points="128,38 134,19 140,38" fill="#c9e0f0"/>
+  <!-- layered green hills descending below the panorama -->
+  <ellipse cx="34" cy="46" rx="66" ry="9" fill="#4d9e63"/>
+  <ellipse cx="126" cy="49" rx="70" ry="10" fill="#3d8b55"/>
+  <!-- narrow scenic viewpoint road hugging the mid hill -->
+  <path d="M 0 57 Q 36 54 64 52 Q 104 49.5 170 48.5" stroke="#71655a" stroke-width="4.5" fill="none"/>
+  <path d="M 10 56 Q 50 53.5 96 51" stroke="#f1c40f" stroke-width="1" fill="none" stroke-dasharray="5,4"/>
+  <!-- viewpoint paraglider dot in the sky -->
+  <path d="M 76 15 Q 80 12 84 15 Q 80 16 76 15 Z" fill="#e05656"/>
+  <!-- rural hillside vegetation -->
+  <circle cx="20" cy="50" r="3.2" fill="#1e6b45"/>
+  <circle cx="100" cy="51" r="3" fill="#1e6b45"/>
+  <circle cx="152" cy="53" r="3.4" fill="#1e6b45"/>
+</svg>

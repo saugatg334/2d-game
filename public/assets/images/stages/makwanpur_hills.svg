@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Makwanpur Hills - climbing road through forested slopes with rocky cut -->
+
+  <rect width="170" height="62" fill="#8ec9e8"/>
+  <!-- distant mountain layers -->
+  <ellipse cx="50" cy="30" rx="80" ry="10" fill="#7fa8c9"/>
+  <ellipse cx="130" cy="33" rx="70" ry="11" fill="#6f97ba"/>
+  <!-- layered forest-covered slopes -->
+  <ellipse cx="36" cy="42" rx="66" ry="14" fill="#2d6a4f"/>
+  <ellipse cx="130" cy="46" rx="70" ry="15" fill="#40916c"/>
+  <ellipse cx="84" cy="38" rx="48" ry="9" fill="#1b4332"/>
+  <!-- rocky roadside cut / retaining wall (right) -->
+  <polygon points="104,38 170,34 170,44 108,46" fill="#8d6e4f"/>
+  <polygon points="110,40 168,36.5 168,39 112,42.5" fill="#6d4c35"/>
+  <!-- road visibly climbing from foreground to background -->
+  <path d="M 0 61 L 40 56 L 72 51 L 88 47 L 104 44 L 170 42.5" stroke="#756551" stroke-width="7" fill="none"/>
+  <path d="M 6 60.5 L 42 55.5 L 74 50.5" stroke="#f1c40f" stroke-width="1.2" fill="none" stroke-dasharray="5,4"/>
+  <path d="M 94 46 L 166 44" stroke="#f1c40f" stroke-width="1.2" fill="none" stroke-dasharray="5,4"/>
+  <!-- cut-slope posts -->
+  <rect x="106" y="43" width="2" height="4.5" fill="#ecf0f1"/>
+  <rect x="140" y="41" width="2" height="4.5" fill="#ecf0f1"/>
+  <!-- forest canopy clumps -->
+  <circle cx="22" cy="49" r="4" fill="#14452f"/>
+  <circle cx="58" cy="45" r="3.4" fill="#1b4332"/>
+  <circle cx="152" cy="51" r="4" fill="#1b4332"/>
+</svg>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Lumbini Plains - peaceful flat landscape with distant pagoda silhouette -->
+
+  <rect width="170" height="62" fill="#cdeffc"/>
+  <!-- distant low hills on the horizon -->
+  <ellipse cx="46" cy="33" rx="78" ry="6" fill="#a8c8a0"/>
+  <ellipse cx="142" cy="34.5" rx="58" ry="6.5" fill="#98bb92"/>
+  <!-- peaceful green fields -->
+  <rect x="0" y="37" width="170" height="10" fill="#7ab86a"/>
+  <rect x="0" y="39" width="170" height="2" fill="#8fc87e"/>
+  <rect x="0" y="43" width="170" height="2" fill="#6baa5c"/>
+  <!-- distant pagoda/temple silhouette -->
+  <polygon points="128,37 136,29 144,37" fill="#8a7355"/>
+  <polygon points="125.5,37 136,27.5 146.5,37" fill="#9a8465" opacity="0.85"/>
+  <rect x="133.5" y="25" width="5" height="4" fill="#8a7355"/>
+  <polygon points="132.5,25 136,22 139.5,25" fill="#7a6448"/>
+  <!-- scattered calm trees -->
+  <circle cx="24" cy="37.5" r="3.8" fill="#4c8a44"/>
+  <rect x="22.5" y="40" width="3" height="5" fill="#5d4436"/>
+  <circle cx="66" cy="37.5" r="3.2" fill="#549a4c"/>
+  <rect x="64.5" y="40" width="3" height="5" fill="#5d4436"/>
+  <circle cx="160" cy="38" r="3.4" fill="#4c8a44"/>
+  <rect x="158.5" y="40.5" width="3" height="4.5" fill="#5d4436"/>
+  <!-- broad calm road -->
+  <rect x="0" y="47" width="170" height="10" fill="#61707a"/>
+  <rect x="0" y="47" width="170" height="1.5" fill="#95a5a6"/>
+  <rect x="16" y="51.5" width="14" height="2" fill="#f1c40f"/>
+  <rect x="60" y="51.5" width="14" height="2" fill="#f1c40f"/>
+  <rect x="104" y="51.5" width="14" height="2" fill="#f1c40f"/>
+  <rect x="148" y="51.5" width="14" height="2" fill="#f1c40f"/>
+</svg>

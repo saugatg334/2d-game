@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Gorkha - steep historic hill region with traditional houses and mountain road -->
+
+  <rect width="170" height="62" fill="#8ccbe8"/>
+  <!-- distant mountain peaks -->
+  <polygon points="100,34 122,12 144,34" fill="#eef6fc"/>
+  <polygon points="130,34 150,16 170,34" fill="#dfeef8"/>
+  <polygon points="114,34 122,23 130,34" fill="#c9e0f0"/>
+  <!-- steep green hill dominating the left/centre -->
+  <ellipse cx="50" cy="44" rx="76" ry="17" fill="#2f7a4e"/>
+  <ellipse cx="140" cy="50" rx="60" ry="12" fill="#3c8a58"/>
+  <!-- forest patches on the steep face -->
+  <ellipse cx="26" cy="38" rx="14" ry="5" fill="#1c5236"/>
+  <ellipse cx="66" cy="34" rx="12" ry="4.5" fill="#1c5236"/>
+  <ellipse cx="96" cy="42" rx="13" ry="5" fill="#1c5236"/>
+  <!-- small traditional hillside houses -->
+  <rect x="44" y="33" width="9" height="7" fill="#c9a27e"/>
+  <polygon points="42.5,33 48.5,28.5 54.5,33" fill="#6d5140"/>
+  <rect x="58" y="35.5" width="8" height="6" fill="#b8926b"/>
+  <polygon points="56.5,35.5 62,31.5 67.5,35.5" fill="#5d4436"/>
+  <rect x="31" y="36.5" width="7" height="5.5" fill="#d4b294"/>
+  <polygon points="29.8,36.5 34.5,32.8 39.2,36.5" fill="#6d5140"/>
+  <!-- winding steep mountain road -->
+  <path d="M 0 60 L 34 56 L 60 52 L 78 48.5 Q 92 46 112 45 Q 140 43.5 170 43" stroke="#6f6350" stroke-width="6" fill="none"/>
+  <path d="M 8 59.2 L 36 55.4 L 62 51.5" stroke="#f1c40f" stroke-width="1.2" fill="none" stroke-dasharray="5,4"/>
+  <path d="M 86 47.5 Q 122 45.5 168 44" stroke="#f1c40f" stroke-width="1.2" fill="none" stroke-dasharray="5,4"/>
+  <!-- roadside posts -->
+  <rect x="64" y="49" width="2" height="4.5" fill="#ecf0f1"/>
+  <rect x="120" y="42.5" width="2" height="4.5" fill="#ecf0f1"/>
+</svg>

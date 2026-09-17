@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Kathmandu-Nijgadh Fast Track - modern expressway through Nepal hills -->
+
+  <rect width="170" height="62" fill="#85c1e9"/>
+  <!-- Himalayan backdrop -->
+  <polygon points="8,30 26,10 44,30" fill="#f0f8ff"/>
+  <polygon points="28,30 46,12 64,30" fill="#e0ffff"/>
+  <polygon points="118,30 138,8 158,30" fill="#f0f8ff"/>
+  <!-- layered hills -->
+  <ellipse cx="34" cy="44" rx="56" ry="14" fill="#2e8b57"/>
+  <ellipse cx="132" cy="47" rx="62" ry="16" fill="#4a7c59"/>
+  <!-- multi-lane expressway with perspective -->
+  <polygon points="0,62 62,40 108,40 170,62" fill="#5d6d7e"/>
+  <!-- concrete retaining wall (right cutting) -->
+  <rect x="110" y="32" width="60" height="9" fill="#95a5a6"/>
+  <rect x="110" y="39" width="60" height="1.5" fill="#7f8c8d"/>
+  <!-- guardrail (left) -->
+  <rect x="0" y="41" width="60" height="2" fill="#ecf0f1"/>
+  <!-- lane dashes -->
+  <rect x="82" y="47" width="12" height="2" fill="#f1c40f"/>
+  <rect x="36" y="53" width="14" height="2" fill="#f1c40f"/>
+  <rect x="122" y="53" width="14" height="2" fill="#f1c40f"/>
+  <!-- road studs -->
+  <rect x="66" y="44" width="3" height="1.5" fill="#ecf0f1"/>
+</svg>

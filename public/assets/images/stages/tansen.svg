@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Tansen Road - historic hill town with tiered temple and climbing road -->
+
+  <rect width="170" height="62" fill="#9fd3ee"/>
+  <!-- distant peaks -->
+  <polygon points="96,32 118,11 140,32" fill="#e8f3fa"/>
+  <polygon points="128,32 148,15 168,32" fill="#dcebf6"/>
+  <!-- town ridge -->
+  <path d="M 0 40 Q 50 33 92 34 Q 134 35 170 38" stroke="#55845a" stroke-width="14" fill="none"/>
+  <!-- historic tiered temple silhouette (geometric, no text) -->
+  <polygon points="52,30 60,24 68,30" fill="#6d5140"/>
+  <polygon points="50,33 60,26.5 70,33" fill="#7a5c48"/>
+  <rect x="57" y="19.5" width="6" height="5" fill="#6d5140"/>
+  <polygon points="56,19.5 60,16.5 64,19.5" fill="#5d4436"/>
+  <!-- old-town rooftops beside the temple -->
+  <rect x="76" y="28" width="9" height="6" fill="#c9a27e"/>
+  <polygon points="74.5,28 80.5,24 86.5,28" fill="#5d4436"/>
+  <rect x="88" y="29.5" width="8" height="5" fill="#b8926b"/>
+  <polygon points="86.5,29.5 92,26 97.5,29.5" fill="#6d5140"/>
+  <rect x="36" y="31" width="8" height="5.5" fill="#d4b294"/>
+  <polygon points="34.5,31 40,27.5 45.5,31" fill="#5d4436"/>
+  <!-- lower valley slope -->
+  <ellipse cx="60" cy="52" rx="80" ry="13" fill="#41855a"/>
+  <ellipse cx="146" cy="54" rx="60" ry="11" fill="#37754c"/>
+  <!-- road climbing steeply to the town -->
+  <path d="M 0 61 L 30 58 L 54 54.5 L 72 51 Q 90 47.5 110 45.5 Q 140 43 170 42" stroke="#6f6350" stroke-width="6" fill="none"/>
+  <path d="M 8 60.2 L 34 57.4 L 58 54" stroke="#f1c40f" stroke-width="1.2" fill="none" stroke-dasharray="5,4"/>
+  <path d="M 84 50 Q 126 46.5 168 44" stroke="#f1c40f" stroke-width="1.2" fill="none" stroke-dasharray="5,4"/>
+  <!-- roadside posts -->
+  <rect x="70" y="48" width="2" height="4.5" fill="#ecf0f1"/>
+  <rect x="130" y="41.5" width="2" height="4.5" fill="#ecf0f1"/>
+</svg>

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Kagbeni Valley - Himalayan mud-brick settlement in a steep dry river valley -->
+
+  <rect width="170" height="62" fill="#d3dde3"/>
+  <!-- snow peaks behind the valley walls -->
+  <polygon points="14,32 36,11 58,32" fill="#f0f5f9"/>
+  <polygon points="116,32 140,10 164,32" fill="#e8eff5"/>
+  <!-- steep barren mountain walls -->
+  <path d="M 0 34 Q 30 32 52 38 L 60 62 L 0 62 Z" fill="#9a8874"/>
+  <path d="M 170 32 Q 140 33 116 39 L 110 62 L 170 62 Z" fill="#a2917c"/>
+  <path d="M 0 34 Q 30 32 52 38 L 48 44 Q 28 38 0 42 Z" fill="#8a7a66"/>
+  <path d="M 170 32 Q 140 33 116 39 L 120 45 Q 140 39 170 40 Z" fill="#93826e"/>
+  <!-- glacial river/stream hint down the valley -->
+  <path d="M 78 62 Q 84 54 96 50 Q 110 46 122 44.5" stroke="#9fc4d4" stroke-width="4.5" fill="none"/>
+  <!-- prominent traditional settlement: flat-roofed mud/stone houses -->
+  <rect x="56" y="42" width="11" height="7" fill="#d8cdb8"/>
+  <rect x="58" y="44" width="2.6" height="3" fill="#6d5140"/>
+  <rect x="70" y="44.5" width="10" height="6.5" fill="#cfc2aa"/>
+  <rect x="73" y="46.5" width="2.6" height="3" fill="#6d5140"/>
+  <rect x="83" y="43.5" width="11" height="7.5" fill="#d8cdb8"/>
+  <rect x="86" y="45.5" width="2.6" height="3" fill="#6d5140"/>
+  <rect x="97" y="46" width="9" height="6" fill="#c5b8a0"/>
+  <!-- white chorten-style structure on the ridge -->
+  <rect x="118" y="38.5" width="5" height="7" fill="#f5f2ea"/>
+  <polygon points="117,38.5 120.5,35.5 124,38.5" fill="#f5f2ea"/>
+  <!-- winding road through the settlement -->
+  <path d="M 0 59 Q 28 57 46 55 Q 68 52.5 92 51.5 Q 118 50.5 142 51 Q 158 51.5 170 52.5" stroke="#b0a088" stroke-width="4.6" fill="none"/>
+  <path d="M 10 58.2 Q 36 56.4 60 54.2" stroke="#efe6d2" stroke-width="1" fill="none" stroke-dasharray="4,3"/>
+  <path d="M 112 51 Q 140 51.2 168 52.4" stroke="#efe6d2" stroke-width="1" fill="none" stroke-dasharray="4,3"/>
+  <!-- sparse dry shrubs -->
+  <circle cx="40" cy="50" r="2" fill="#7d7452"/>
+  <circle cx="150" cy="48" r="2" fill="#7d7452"/>
+</svg>

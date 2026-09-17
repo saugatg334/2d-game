@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <rect width="170" height="62" fill="#9ad8f5"/>
+  <!-- Annapurna-style snow range spanning the horizon -->
+  <polygon points="10,34 34,10 58,34" fill="#f7fbfe"/>
+  <polygon points="40,34 66,7 92,34" fill="#ffffff"/>
+  <polygon points="80,34 104,12 128,34" fill="#f7fbfe"/>
+  <polygon points="116,34 142,10 166,34" fill="#eef6fc"/>
+  <!-- high glacial valleys shading -->
+  <polygon points="28,34 34,22 40,34" fill="#cfe4f2"/>
+  <polygon points="60,34 66,18 72,34" fill="#cfe4f2"/>
+  <!-- green rolling valley sides -->
+  <ellipse cx="30" cy="44" rx="62" ry="10" fill="#5aa66a"/>
+  <ellipse cx="144" cy="46" rx="58" ry="11" fill="#4c9a5e"/>
+  <!-- Phewa-style lake on the valley floor -->
+  <path d="M 0 52 Q 42 47 84 51 Q 126 55 170 50 L 170 58 Q 128 62 86 58 Q 44 54 0 58 Z" fill="#57b0dd"/>
+  <path d="M 14 54 Q 60 50.5 110 54" stroke="#9fd4ee" fill="none" stroke-width="1.4"/>
+  <!-- winding foreground road below the lake shore -->
+  <path d="M 0 61 Q 50 57 92 59 Q 132 61 170 58.5" stroke="#6a7a82" stroke-width="4.5" fill="none"/>
+  <path d="M 8 60.5 Q 55 57.5 100 59" stroke="#f1c40f" stroke-width="1" fill="none" stroke-dasharray="5,4"/>
+  <!-- lakeside trees -->
+  <circle cx="24" cy="46" r="3.4" fill="#2e7d4f"/>
+  <circle cx="120" cy="48" r="3" fill="#2e7d4f"/>
+</svg>

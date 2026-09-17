@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Ilam Tea Road - misty eastern hills with tea rows and a winding valley road -->
+
+  <rect width="170" height="62" fill="#cfe8f0"/>
+  <!-- cool mist bands -->
+  <ellipse cx="60" cy="26" rx="90" ry="7" fill="#e2f1f5" opacity="0.8"/>
+  <ellipse cx="140" cy="32" rx="60" ry="6" fill="#e2f1f5" opacity="0.7"/>
+  <!-- misty distant ridges -->
+  <ellipse cx="50" cy="32" rx="86" ry="8" fill="#9cc4b8"/>
+  <ellipse cx="146" cy="35" rx="58" ry="8" fill="#8cb6aa"/>
+  <!-- rounded tea hills left and right -->
+  <ellipse cx="36" cy="45" rx="62" ry="12" fill="#4f9e5e"/>
+  <path d="M 0 41 Q 22 38 52 41" stroke="#2e7d44" fill="none" stroke-width="1.6"/>
+  <path d="M 0 46 Q 26 43 56 46" stroke="#2e7d44" fill="none" stroke-width="1.6"/>
+  <path d="M 2 51 Q 30 48 60 51" stroke="#2e7d44" fill="none" stroke-width="1.6"/>
+  <ellipse cx="140" cy="47" rx="60" ry="12" fill="#459455"/>
+  <path d="M 108 43 Q 136 40 170 43.5" stroke="#2e7d44" fill="none" stroke-width="1.6"/>
+  <path d="M 110 48 Q 138 45 170 48.5" stroke="#2e7d44" fill="none" stroke-width="1.6"/>
+  <path d="M 112 53 Q 140 50 170 53.5" stroke="#2e7d44" fill="none" stroke-width="1.6"/>
+  <!-- winding road through the middle valley -->
+  <path d="M 0 60 Q 34 58 56 54.5 Q 78 51 92 50 Q 122 48 170 47" stroke="#6f7a6a" stroke-width="5" fill="none"/>
+  <path d="M 10 59.2 Q 40 57.4 60 54" stroke="#f1c40f" stroke-width="1" fill="none" stroke-dasharray="4,4"/>
+  <path d="M 100 49.6 Q 136 48 168 47.4" stroke="#f1c40f" stroke-width="1" fill="none" stroke-dasharray="4,3"/>
+  <!-- scattered trees -->
+  <circle cx="24" cy="43" r="3.2" fill="#2e6b45"/>
+  <circle cx="72" cy="45" r="2.8" fill="#2e6b45"/>
+  <circle cx="152" cy="42" r="3" fill="#2e6b45"/>
+</svg>

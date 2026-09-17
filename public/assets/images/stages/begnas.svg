@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Begnas Lake Road - serene lake centerpiece ringed by rolling green hills -->
+
+  <rect width="170" height="62" fill="#bde7f5"/>
+  <!-- distant mountain silhouettes -->
+  <polygon points="0,32 20,16 40,32" fill="#cfe4f0"/>
+  <polygon points="26,32 48,13 70,32" fill="#dfeef8"/>
+  <polygon points="96,32 118,14 140,32" fill="#d5e8f4"/>
+  <polygon points="128,32 148,17 168,32" fill="#cfe4f0"/>
+  <!-- rolling green hills around the lake -->
+  <ellipse cx="34" cy="38" rx="58" ry="8" fill="#57a05c"/>
+  <ellipse cx="140" cy="39" rx="58" ry="8" fill="#4c9155"/>
+  <!-- unmistakable blue-green lake as the centerpiece -->
+  <ellipse cx="85" cy="45" rx="52" ry="9.5" fill="#3fa8c9"/>
+  <ellipse cx="85" cy="44" rx="44" ry="7" fill="#55bcd8"/>
+  <ellipse cx="76" cy="42.5" rx="18" ry="3" fill="#7fd0e4"/>
+  <!-- small lake island -->
+  <ellipse cx="102" cy="42.5" rx="6" ry="2.4" fill="#4c9155"/>
+  <!-- winding scenic shoreline road in the foreground -->
+  <path d="M 0 58 Q 40 55 76 56.5 Q 116 58 170 55" stroke="#6a7a72" stroke-width="5" fill="none"/>
+  <path d="M 10 57.2 Q 48 55.4 84 56.6" stroke="#f1c40f" stroke-width="1.1" fill="none" stroke-dasharray="5,4"/>
+  <path d="M 120 57 Q 146 56 168 55.2" stroke="#f1c40f" stroke-width="1.1" fill="none" stroke-dasharray="4,3"/>
+  <!-- shoreline vegetation -->
+  <circle cx="30" cy="44" r="3" fill="#2e7d4f"/>
+  <circle cx="142" cy="45" r="3.2" fill="#2e7d4f"/>
+  <circle cx="62" cy="42" r="2.6" fill="#2e7d4f"/>
+</svg>

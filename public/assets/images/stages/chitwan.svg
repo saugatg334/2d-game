@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Chitwan Road - jungle-edge highway through sal forest and elephant grass -->
+
+  <rect width="170" height="62" fill="#b8e0f0"/>
+  <!-- distant low hills -->
+  <ellipse cx="60" cy="32" rx="90" ry="7" fill="#8fbf8f"/>
+  <ellipse cx="150" cy="34" rx="60" ry="7" fill="#7cb07c"/>
+  <!-- dense sal forest band -->
+  <ellipse cx="40" cy="40" rx="60" ry="9" fill="#1e5631"/>
+  <ellipse cx="130" cy="41" rx="66" ry="9" fill="#2d6a4f"/>
+  <!-- elephant-grassland patch -->
+  <ellipse cx="92" cy="42" rx="34" ry="6" fill="#8fbc5a"/>
+  <path d="M 78 42 L 80 37 M 88 42 L 91 36.5 M 98 42 L 100 37 M 108 42 L 109 37.5" stroke="#5f8f3a" stroke-width="1.2" fill="none"/>
+  <!-- distinctive sal trees -->
+  <circle cx="18" cy="36" r="4.5" fill="#14452f"/>
+  <rect x="16.5" y="39" width="3" height="5" fill="#4e342e"/>
+  <circle cx="150" cy="37" r="4" fill="#14452f"/>
+  <rect x="148.5" y="40" width="3" height="5" fill="#4e342e"/>
+  <circle cx="122" cy="38.5" r="3.4" fill="#1e5631"/>
+  <!-- rural highway with dusty shoulders -->
+  <rect x="0" y="47" width="170" height="9" fill="#6a7a72"/>
+  <rect x="0" y="46" width="170" height="1.6" fill="#8d6e4a"/>
+  <rect x="0" y="56" width="170" height="1.6" fill="#8d6e4a"/>
+  <rect x="12" y="50.5" width="13" height="2" fill="#f1c40f"/>
+  <rect x="56" y="50.5" width="13" height="2" fill="#f1c40f"/>
+  <rect x="100" y="50.5" width="13" height="2" fill="#f1c40f"/>
+  <rect x="144" y="50.5" width="13" height="2" fill="#f1c40f"/>
+</svg>

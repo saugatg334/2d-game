@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Dharan Foothills - eastern gateway city beneath lush rising foothills -->
+
+  <rect width="170" height="62" fill="#b5ddf0"/>
+  <!-- lush foothills rising behind the city -->
+  <ellipse cx="60" cy="28" rx="84" ry="13" fill="#4c8a58"/>
+  <ellipse cx="146" cy="31" rx="60" ry="13" fill="#3d7a4c"/>
+  <ellipse cx="104" cy="24" rx="44" ry="9" fill="#5c9a68"/>
+  <!-- city buildings clustered at the base -->
+  <rect x="8" y="28" width="15" height="12" fill="#c9b8a0"/>
+  <rect x="11" y="31" width="3" height="3.5" fill="#7a6a55"/>
+  <rect x="16" y="31" width="3" height="3.5" fill="#7a6a55"/>
+  <rect x="27" y="25" width="13" height="15" fill="#b8a488"/>
+  <rect x="30" y="28" width="3" height="3.5" fill="#7a6a55"/>
+  <rect x="35" y="28" width="3" height="3.5" fill="#7a6a55"/>
+  <rect x="44" y="30" width="12" height="10" fill="#a89880"/>
+  <rect x="60" y="27" width="14" height="13" fill="#c9b8a0"/>
+  <rect x="63" y="30" width="3" height="3.5" fill="#7a6a55"/>
+  <rect x="68" y="30" width="3" height="3.5" fill="#7a6a55"/>
+  <rect x="78" y="31" width="10" height="9" fill="#b8a488"/>
+  <!-- utility poles -->
+  <rect x="58" y="22" width="2" height="17" fill="#5d4436"/>
+  <rect x="54.5" y="24" width="9" height="1.6" fill="#5d4436"/>
+  <rect x="102" y="25" width="2" height="15" fill="#5d4436"/>
+  <rect x="98.5" y="27" width="9" height="1.6" fill="#5d4436"/>
+  <!-- roadside trees -->
+  <circle cx="94" cy="37" r="3.2" fill="#2e7d4a"/>
+  <rect x="92.5" y="39.5" width="3" height="4" fill="#6d5140"/>
+  <circle cx="126" cy="36" r="3.2" fill="#2e7d4a"/>
+  <!-- road transitioning toward the hills -->
+  <path d="M 0 60 Q 40 58 72 55 Q 100 52.5 124 50 Q 148 47.5 170 46" stroke="#667076" stroke-width="6" fill="none"/>
+  <path d="M 10 59.2 Q 46 57.4 76 54.6" stroke="#f1c40f" stroke-width="1.1" fill="none" stroke-dasharray="5,4"/>
+  <path d="M 130 49.4 Q 150 47.6 168 46.4" stroke="#f1c40f" stroke-width="1.1" fill="none" stroke-dasharray="4,3"/>
+</svg>

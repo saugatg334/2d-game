@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Nijgadh Fast Track - Terai transition with warm golden atmosphere -->
+
+  <rect width="170" height="62" fill="#f5d08a"/>
+  <!-- low sun -->
+  <circle cx="140" cy="14" r="7" fill="#ff9f43" opacity="0.85"/>
+  <!-- distant low hills -->
+  <ellipse cx="28" cy="35" rx="52" ry="8" fill="#6b8e23" opacity="0.85"/>
+  <ellipse cx="122" cy="37" rx="62" ry="9" fill="#8fbc8f" opacity="0.9"/>
+  <!-- Terai vegetation -->
+  <polygon points="16,40 21,26 26,40" fill="#27ae60"/>
+  <rect x="19.5" y="38" width="3" height="4" fill="#5d4037"/>
+  <polygon points="148,38 154,22 160,38" fill="#229954"/>
+  <rect x="152.5" y="36" width="3" height="5" fill="#5d4037"/>
+  <circle cx="60" cy="39" r="3.5" fill="#2e8b57"/>
+  <circle cx="110" cy="40" r="3" fill="#27ae60"/>
+  <!-- broad expressway -->
+  <rect x="0" y="44" width="170" height="18" fill="#616e7c"/>
+  <rect x="0" y="44" width="170" height="2" fill="#95a5a6"/>
+  <!-- lane dashes -->
+  <rect x="12" y="52" width="14" height="2" fill="#f1c40f"/>
+  <rect x="56" y="52" width="14" height="2" fill="#f1c40f"/>
+  <rect x="100" y="52" width="14" height="2" fill="#f1c40f"/>
+  <rect x="144" y="52" width="14" height="2" fill="#f1c40f"/>
+  <!-- overhead gantry hint -->
+  <rect x="72" y="29" width="4" height="15" fill="#2c3e50"/>
+  <rect x="94" y="29" width="4" height="15" fill="#2c3e50"/>
+  <rect x="70" y="27" width="30" height="3" fill="#2c3e50"/>
+</svg>

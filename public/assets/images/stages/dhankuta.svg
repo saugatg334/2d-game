@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Dhankuta Hills - steep eastern hillside town cascading above the road -->
+
+  <rect width="170" height="62" fill="#9bd2ec"/>
+  <!-- hazy eastern ranges -->
+  <ellipse cx="70" cy="28" rx="90" ry="8" fill="#8ab4d0"/>
+  <ellipse cx="146" cy="31" rx="60" ry="9" fill="#7aa6c4"/>
+  <!-- steep dominant hillside -->
+  <path d="M 0 34 Q 40 30 78 36 Q 116 42 170 40 L 170 62 L 0 62 Z" fill="#41855a"/>
+  <!-- cascading terrace bands down the slope -->
+  <path d="M 0 40 Q 42 36 82 41" stroke="#8bc34a" fill="none" stroke-width="1.5"/>
+  <path d="M 0 46 Q 46 42 88 46" stroke="#aed581" fill="none" stroke-width="1.5"/>
+  <path d="M 0 52 Q 50 48 92 52" stroke="#8bc34a" fill="none" stroke-width="1.5"/>
+  <!-- hillside town: small houses tumbling down the slope -->
+  <rect x="96" y="38" width="7" height="5.5" fill="#c9a27e"/>
+  <polygon points="95,38 99.5,34.8 104,38" fill="#5d4436"/>
+  <rect x="106" y="41" width="7" height="5.5" fill="#b8926b"/>
+  <polygon points="105,41 109.5,37.8 114,41" fill="#6d5140"/>
+  <rect x="116" y="44.5" width="7" height="5" fill="#d4b294"/>
+  <polygon points="115,44.5 119.5,41.5 124,44.5" fill="#5d4436"/>
+  <rect x="126" y="48" width="7" height="5" fill="#c9a27e"/>
+  <polygon points="125,48 129.5,45 134,48" fill="#6d5140"/>
+  <!-- road switchbacking up from the valley corner -->
+  <path d="M 0 60 Q 40 58 64 54 Q 84 50.5 100 49 Q 128 47 170 46" stroke="#6f6350" stroke-width="5.5" fill="none"/>
+  <path d="M 8 59.3 Q 44 57.5 68 53.6" stroke="#f1c40f" stroke-width="1.1" fill="none" stroke-dasharray="4,4"/>
+  <path d="M 106 48.6 Q 136 47.3 168 46.4" stroke="#f1c40f" stroke-width="1.1" fill="none" stroke-dasharray="4,4"/>
+  <!-- slope trees -->
+  <circle cx="30" cy="45" r="3.4" fill="#2e6b45"/>
+  <circle cx="150" cy="50" r="3.4" fill="#2e6b45"/>
+</svg>

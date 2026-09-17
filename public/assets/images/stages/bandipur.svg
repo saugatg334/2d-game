@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Bandipur Ridge - ridge-top heritage village road above the valley -->
+
+  <rect width="170" height="62" fill="#a8d8ef"/>
+  <!-- distant hazy ranges -->
+  <ellipse cx="56" cy="30" rx="86" ry="8" fill="#8fb8d4"/>
+  <ellipse cx="140" cy="33" rx="66" ry="9" fill="#7ea8c6"/>
+  <!-- deep valley slopes falling away on both sides -->
+  <ellipse cx="30" cy="50" rx="66" ry="14" fill="#4a8f5c"/>
+  <ellipse cx="146" cy="52" rx="64" ry="13" fill="#3d7f50"/>
+  <!-- central ridge crest carrying the road -->
+  <path d="M 0 40 Q 46 35 85 35.5 Q 126 36 170 39" stroke="#6f8f56" stroke-width="12" fill="none"/>
+  <!-- row of traditional hillside houses on the ridge -->
+  <rect x="38" y="28" width="10" height="7" fill="#c9a27e"/>
+  <polygon points="36.5,28 43,23.5 49.5,28" fill="#5d4436"/>
+  <rect x="52" y="27.5" width="9" height="7.5" fill="#b8926b"/>
+  <polygon points="50.5,27.5 56.5,23 62.5,27.5" fill="#6d5140"/>
+  <rect x="64" y="28.5" width="9" height="7" fill="#d4b294"/>
+  <polygon points="62.5,28.5 68.5,24 74.5,28.5" fill="#5d4436"/>
+  <rect x="90" y="29" width="8" height="6.5" fill="#c9a27e"/>
+  <polygon points="88.5,29 94,25 99.5,29" fill="#6d5140"/>
+  <!-- ridge-top road along the crest -->
+  <path d="M 0 42 Q 46 37.5 85 38 Q 126 38.5 170 41.5" stroke="#7a6c58" stroke-width="4.5" fill="none"/>
+  <path d="M 8 41.4 Q 50 37.6 100 38.4" stroke="#f1c40f" stroke-width="1" fill="none" stroke-dasharray="5,4"/>
+  <path d="M 126 39.4 Q 148 40 168 41" stroke="#f1c40f" stroke-width="1" fill="none" stroke-dasharray="4,3"/>
+  <!-- valley trees far below -->
+  <circle cx="22" cy="47" r="3" fill="#2e6b45"/>
+  <circle cx="120" cy="49" r="3" fill="#2e6b45"/>
+  <circle cx="158" cy="51" r="3.2" fill="#2e6b45"/>
+</svg>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Khurkot Crossing - steep river gorge with vertical walls and ledge highway -->
+
+  <rect width="170" height="62" fill="#b0d8e8"/>
+  <!-- layered green/brown ridges behind the gorge -->
+  <ellipse cx="60" cy="26" rx="88" ry="8" fill="#8aa886"/>
+  <ellipse cx="146" cy="29" rx="60" ry="9" fill="#7a9878"/>
+  <!-- strong vertical rock walls forming a V-gorge -->
+  <polygon points="0,24 46,36 58,62 0,62" fill="#5f5a48"/>
+  <polygon points="170,22 122,36 108,62 170,62" fill="#6a6450"/>
+  <polygon points="0,24 46,36 50,44 0,38" fill="#6d6753"/>
+  <polygon points="170,22 122,36 118,44 170,38" fill="#77705a"/>
+  <!-- green crests on the gorge rims -->
+  <ellipse cx="24" cy="30" rx="26" ry="6" fill="#3d8b55"/>
+  <ellipse cx="148" cy="30" rx="28" ry="6" fill="#35804e"/>
+  <!-- prominent river at the gorge bottom -->
+  <path d="M 40 62 Q 66 54 92 53 Q 118 52 140 56 L 150 62 Z" fill="#4f9fd8"/>
+  <path d="M 52 59 Q 80 54.5 106 54.5 Q 124 54.5 138 57.5" stroke="#8ec8ec" fill="none" stroke-width="1.3"/>
+  <!-- challenging ledge highway cut along the left wall -->
+  <path d="M 0 44 L 34 40.5 L 62 39 Q 96 37.5 128 37 L 170 36.5" stroke="#6f6350" stroke-width="5" fill="none"/>
+  <path d="M 8 43.4 L 36 40.2 L 64 38.8" stroke="#f1c40f" stroke-width="1.1" fill="none" stroke-dasharray="4,4"/>
+  <path d="M 100 37.4 Q 134 37 168 36.7" stroke="#f1c40f" stroke-width="1.1" fill="none" stroke-dasharray="4,4"/>
+  <!-- bridge hint over a side ravine in the right wall -->
+  <rect x="132" y="40" width="22" height="2" fill="#7d5a44"/>
+  <rect x="136" y="42" width="2" height="8" fill="#5d4037"/>
+  <rect x="146" y="42" width="2" height="8" fill="#5d4037"/>
+  <!-- rockfall boulders on the ledge -->
+  <ellipse cx="72" cy="41.5" rx="2.6" ry="2" fill="#544e3c"/>
+  <ellipse cx="112" cy="39.5" rx="2.2" ry="1.8" fill="#544e3c"/>
+</svg>

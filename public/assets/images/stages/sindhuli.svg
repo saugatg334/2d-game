@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="62" viewBox="0 0 170 62">
+  <!-- Sindhuli Road - winding hill highway with terraced slopes and historic ridgeline fort -->
+
+  <rect width="170" height="62" fill="#93cbe8"/>
+  <!-- layered ridges -->
+  <ellipse cx="46" cy="30" rx="86" ry="10" fill="#7aa8c8"/>
+  <ellipse cx="132" cy="34" rx="72" ry="11" fill="#6b98b8"/>
+  <!-- near hill with terraced slopes -->
+  <ellipse cx="52" cy="46" rx="80" ry="15" fill="#3d8b5a"/>
+  <path d="M 0 41 Q 26 38 58 41" stroke="#8bc34a" fill="none" stroke-width="1.6"/>
+  <path d="M 0 46 Q 30 43 64 46" stroke="#aed581" fill="none" stroke-width="1.6"/>
+  <path d="M 0 51 Q 34 48 70 51" stroke="#8bc34a" fill="none" stroke-width="1.6"/>
+  <!-- historic hilltop fort silhouette (Sindhuli Gadhi) -->
+  <rect x="128" y="28" width="10" height="7" fill="#8d7a63"/>
+  <rect x="126" y="26.5" width="3" height="3" fill="#8d7a63"/>
+  <rect x="133" y="26.5" width="3" height="3" fill="#8d7a63"/>
+  <rect x="140" y="29.5" width="14" height="5.5" fill="#9a8670"/>
+  <rect x="142" y="27.5" width="2.5" height="2.5" fill="#9a8670"/>
+  <rect x="147" y="27.5" width="2.5" height="2.5" fill="#9a8670"/>
+  <rect x="152" y="27.5" width="2.5" height="2.5" fill="#9a8670"/>
+  <!-- winding highway with hairpin -->
+  <path d="M 0 61 L 36 57 L 66 52 L 84 48.5 Q 98 46 116 45 Q 144 43.5 170 43" stroke="#6f6350" stroke-width="6.5" fill="none"/>
+  <path d="M 8 60.2 L 40 56.4 L 68 51.6" stroke="#f1c40f" stroke-width="1.2" fill="none" stroke-dasharray="5,4"/>
+  <path d="M 92 47 Q 130 45 168 43.8" stroke="#f1c40f" stroke-width="1.2" fill="none" stroke-dasharray="5,4"/>
+  <!-- roadside posts and trees -->
+  <rect x="72" y="49.5" width="2" height="4.5" fill="#ecf0f1"/>
+  <rect x="126" y="42" width="2" height="4.5" fill="#ecf0f1"/>
+  <circle cx="24" cy="53" r="3.6" fill="#2e6b45"/>
+  <circle cx="108" cy="47" r="3.2" fill="#2e6b45"/>
+</svg>
