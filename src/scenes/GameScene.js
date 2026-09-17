@@ -8,6 +8,7 @@ import { Terrain } from '../game/Terrain.js';
 import { Collectibles } from '../game/Collectibles.js';
 import { EnvironmentRenderer } from '../game/EnvironmentRenderer.js';
 import { resolveVehicleTuning } from '../game/VehicleTuning.js';
+import { resolveCharacterAbility } from '../game/CharacterAbility.js';
 import { device } from '../utils/device.js';
 
 export class GameScene extends Phaser.Scene {
@@ -55,18 +56,23 @@ export class GameScene extends Phaser.Scene {
     this.flipTimer = 0;
     this.previousFlipRotation = 0;
 
-    // Ability system - only for characters with specialAbility
-    const characterAbility = this.characterData.specialAbility || null;
+    // Ability system - only for characters with specialAbility.
+    // P0 Step 6H: resolved once through the pure CharacterAbility resolver
+    // (StagePlan/VehicleTuning-style). duration/boost values now come from
+    // characters.js data instead of GameScene literals; the resolved values
+    // are byte-identical to the previous hardcoded ones, so behavior is
+    // preserved exactly (available=true only for saugat_legendary).
+    this.characterAbility = resolveCharacterAbility(this.characterData);
     this.abilityState = {
-      available: characterAbility !== null,
+      available: this.characterAbility !== null,
       active: false,
       cooldownRemaining: 0,
       activeRemaining: 0,
-      config: characterAbility ? {
-        id: characterAbility.id,
-        name: characterAbility.name,
-        cooldown: characterAbility.cooldown || 45,
-        duration: 8
+      config: this.characterAbility ? {
+        id: this.characterAbility.id,
+        name: this.characterAbility.name,
+        cooldown: this.characterAbility.cooldown,
+        duration: this.characterAbility.duration
       } : null
     };
 
@@ -110,12 +116,13 @@ export class GameScene extends Phaser.Scene {
     this.abilityState.active = true;
     this.abilityState.activeRemaining = this.abilityState.config.duration;
 
-    // Apply temporary boosts to vehicle
+    // Apply temporary boosts to vehicle (P0 Step 6H: data-driven boost
+    // factors from the resolved ability config; economy keys intentionally
+    // not passed — Vehicle.applyAbilityBoosts has always ignored them).
     this.vehicle.applyAbilityBoosts({
-      acceleration: 0.5,
-      maxSpeed: 0.4,
-      fuelEfficiency: 0.5,
-      coinBonus: 1.0
+      acceleration: this.characterAbility.boosts.acceleration,
+      maxSpeed: this.characterAbility.boosts.maxSpeed,
+      airControl: this.characterAbility.boosts.airControl
     });
   }
 

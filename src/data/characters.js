@@ -75,11 +75,23 @@ function createCharacter([id, name, category, region, weight, handling, amount, 
       coinMultiplier: 0,
       stability: 0.25
     };
+    // P0 Step 6H: ability tuning is now data-driven (previously hardcoded in
+    // GameScene as duration 8 + boost literals). Values are exact parity with
+    // the old runtime behavior; resolveCharacterAbility() in
+    // src/game/CharacterAbility.js reads these with safe fallbacks.
+    // NOTE: boosts.fuelEfficiency/coinBonus are intentionally NOT included —
+    // Vehicle.applyAbilityBoosts has always ignored them, so they stay dead.
     character.specialAbility = {
       id: 'legendary_rider',
       name: 'Legendary Rider',
       description: 'Temporarily boosts speed, fuel efficiency and coin collection.',
-      cooldown: 45
+      cooldown: 45,
+      duration: 8,
+      boosts: {
+        acceleration: 0.5,
+        maxSpeed: 0.4,
+        airControl: 0.3
+      }
     };
   }
   return character;
