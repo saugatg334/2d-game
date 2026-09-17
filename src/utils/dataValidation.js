@@ -48,6 +48,17 @@ function validateAssetPath(errors, type, item, field, path) {
   }
 }
 
+// P0 Step 7C: visual assets are optional when absent. The runtime already
+// handles missing thumbnails/sprites/previews with graceful fallbacks (vector
+// vehicle, vector driver, "IMAGE MISSING" card text), so a null/undefined/
+// empty visual asset path is valid data. Any path that IS provided is still
+// validated with full strictness by validateAssetPath (pattern + traversal
+// checks, unchanged). Gameplay-required validation is not affected.
+function validateOptionalAssetPath(errors, type, item, field, path) {
+  if (path === null || path === undefined || path === '') return;
+  validateAssetPath(errors, type, item, field, path);
+}
+
 function validateUnlock(errors, type, item, unlock) {
   if (!unlock || typeof unlock !== 'object') {
     addError(errors, type, item, 'Missing required field: unlock');
@@ -80,8 +91,9 @@ function validateCharacters(characters, errors) {
   characters.forEach(character => {
     if (!validateIdentity(errors, 'Character', character)) return;
     const item = character.id || 'unknown';
-    validateAssetPath(errors, 'Character', item, 'assets.thumbnail', character.assets?.thumbnail);
-    validateAssetPath(errors, 'Character', item, 'assets.sprite', character.assets?.sprite);
+    // P0 Step 7C: optional-if-absent / strict-if-present visual assets.
+    validateOptionalAssetPath(errors, 'Character', item, 'assets.thumbnail', character.assets?.thumbnail);
+    validateOptionalAssetPath(errors, 'Character', item, 'assets.sprite', character.assets?.sprite);
     validateUnlock(errors, 'Character', item, character.unlock);
     REQUIRED_CHARACTER_STATS.forEach(field => validateNumber(errors, 'Character', item, `stats.${field}`, character.stats?.[field]));
     Object.entries(character.bonuses || {}).forEach(([field, value]) => {
@@ -94,8 +106,9 @@ function validateVehicles(vehicles, errors) {
   vehicles.forEach(vehicle => {
     if (!validateIdentity(errors, 'Vehicle', vehicle)) return;
     const item = vehicle.id || 'unknown';
-    validateAssetPath(errors, 'Vehicle', item, 'assets.thumbnail', vehicle.assets?.thumbnail);
-    validateAssetPath(errors, 'Vehicle', item, 'assets.sprite', vehicle.assets?.sprite);
+    // P0 Step 7C: optional-if-absent / strict-if-present visual assets.
+    validateOptionalAssetPath(errors, 'Vehicle', item, 'assets.thumbnail', vehicle.assets?.thumbnail);
+    validateOptionalAssetPath(errors, 'Vehicle', item, 'assets.sprite', vehicle.assets?.sprite);
     validateUnlock(errors, 'Vehicle', item, vehicle.unlock);
     REQUIRED_VEHICLE_STATS.forEach(field => validateNumber(errors, 'Vehicle', item, `stats.${field}`, vehicle.stats?.[field]));
   });
@@ -105,8 +118,9 @@ function validateStage(stage, errors, type = 'Stage') {
   if (!validateIdentity(errors, type, stage)) return;
   const item = stage.id || 'unknown';
   const isBonusStage = type === 'Bonus Stage';
-  validateAssetPath(errors, type, item, 'assets.preview', stage.assets?.preview);
-  validateAssetPath(errors, type, item, 'assets.background', stage.assets?.background);
+  // P0 Step 7C: optional-if-absent / strict-if-present visual assets.
+  validateOptionalAssetPath(errors, type, item, 'assets.preview', stage.assets?.preview);
+  validateOptionalAssetPath(errors, type, item, 'assets.background', stage.assets?.background);
   if (!isBonusStage) {
     validateUnlock(errors, type, item, stage.unlock);
     validateNumber(errors, type, item, 'difficulty', stage.difficulty, { min: 1 });

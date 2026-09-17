@@ -22,6 +22,11 @@ export class ShopScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     this.currentCategory = 'vehicles';
+    // P0 Step 7B: pagination state — page size 4 matches the SelectionPanel's
+    // practical page size so every shop item stays reachable, one page at a
+    // time. Card visuals, purchase logic and unlock rules are unchanged.
+    this.pageSize = 4;
+    this.currentPage = 0;
     this.createTabs(width / 2, 100);
     this.createItems(width / 2, height / 2 + 20);
 
@@ -51,6 +56,8 @@ export class ShopScene extends Phaser.Scene {
       this.add.text(tx, y, tab.label, { fontSize: '18px' }).setOrigin(0.5);
       this.add.zone(tx, y, tw, th).setInteractive().on('pointerup', () => {
         this.currentCategory = tab.id;
+        // P0 Step 7B: reset to the first page whenever the category changes.
+        this.currentPage = 0;
         this.createTabs(x, y);
         this.createItems(this.scale.width / 2, this.scale.height / 2 + 20);
       });
@@ -64,11 +71,19 @@ export class ShopScene extends Phaser.Scene {
     const items = this.currentCategory === 'characters' ? characters :
                   this.currentCategory === 'vehicles' ? vehicles : stages;
 
+    // P0 Step 7B: render only the current page slice — the card drawing below
+    // is untouched. pageCount has a Math.max(1, ...) floor so an empty
+    // collection renders a valid "PAGE 1/1" instead of crashing.
+    const pageCount = Math.max(1, Math.ceil(items.length / this.pageSize));
+    this.currentPage = Phaser.Math.Clamp(this.currentPage, 0, pageCount - 1);
+    const pageStart = this.currentPage * this.pageSize;
+    const pageItems = items.slice(pageStart, pageStart + this.pageSize);
+
     const cw = 180, ch = 200, sp = 15, cols = 4;
     const total = cols * cw + (cols - 1) * sp;
     const sx = x - total / 2 + cw / 2;
 
-    items.forEach((item, i) => {
+    pageItems.forEach((item, i) => {
       const col = i % cols, row = Math.floor(i / cols);
       const cx = sx + col * (cw + sp);
       const cy = y + row * (ch + sp);
@@ -99,6 +114,46 @@ export class ShopScene extends Phaser.Scene {
         this.add.text(cx, cy + 40, '✓ UNLOCKED', { fontSize: '14px', color: COLORS.SUCCESS, fontStyle: 'bold' }).setOrigin(0.5);
       }
     });
+
+    this.createPagination(x, y, pageCount);
+  }
+
+  // P0 Step 7B: PREV / page indicator / NEXT controls, mirroring the existing
+  // SelectionPanel pagination pattern (SelectionPanel.js itself untouched).
+  // Controls are added to itemContainer so switching pages destroys them
+  // together with the cards (no accumulation). PREV is disabled on the first
+  // page, NEXT on the final page. Purchase/unlock behavior is not touched.
+  createPagination(x, y, pageCount) {
+    const controlsY = y + 135;
+    const pageText = this.add.text(x, controlsY, `PAGE ${this.currentPage + 1}/${pageCount}`, {
+      fontSize: '16px', color: COLORS.WARNING, fontStyle: 'bold'
+    }).setOrigin(0.5);
+
+    const prev = this.add.text(x - 110, controlsY, '< PREV', {
+      fontSize: '16px', color: COLORS.WHITE, backgroundColor: '#333333', padding: { x: 8, y: 5 }
+    }).setOrigin(0.5);
+    if (this.currentPage > 0) {
+      prev.setInteractive({ useHandCursor: true }).on('pointerup', () => {
+        this.currentPage -= 1;
+        this.createItems(this.scale.width / 2, this.scale.height / 2 + 20);
+      });
+    } else {
+      prev.setAlpha(0.3);
+    }
+
+    const next = this.add.text(x + 110, controlsY, 'NEXT >', {
+      fontSize: '16px', color: COLORS.WHITE, backgroundColor: '#333333', padding: { x: 8, y: 5 }
+    }).setOrigin(0.5);
+    if (this.currentPage < pageCount - 1) {
+      next.setInteractive({ useHandCursor: true }).on('pointerup', () => {
+        this.currentPage += 1;
+        this.createItems(this.scale.width / 2, this.scale.height / 2 + 20);
+      });
+    } else {
+      next.setAlpha(0.3);
+    }
+
+    [pageText, prev, next].forEach(control => this.itemContainer.add(control));
   }
 
   isUnlocked(item) {
