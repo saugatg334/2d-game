@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90" viewBox="0 0 160 90">
+  <!-- Tourist Coach - premium long-distance (Side View, facing right) -->
+
+  <!-- REAR WHEEL -->
+  <g id="rear-wheel">
+    <circle cx="40" cy="68" r="15" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="40" cy="68" r="13.5" fill="none" stroke="#333333" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <circle cx="40" cy="68" r="9.5" fill="#bdc3c7" stroke="#7f8c8d" stroke-width="1"/>
+    <circle cx="40" cy="68" r="7" fill="#ecf0f1"/>
+    <circle cx="40" cy="68" r="3.5" fill="#2c3e50"/>
+    <circle cx="40" cy="68" r="1.5" fill="#7f8c8d"/>
+  </g>
+
+  <!-- FRONT WHEEL -->
+  <g id="front-wheel">
+    <circle cx="122" cy="68" r="15" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="122" cy="68" r="13.5" fill="none" stroke="#333333" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <circle cx="122" cy="68" r="9.5" fill="#bdc3c7" stroke="#7f8c8d" stroke-width="1"/>
+    <circle cx="122" cy="68" r="7" fill="#ecf0f1"/>
+    <circle cx="122" cy="68" r="3.5" fill="#2c3e50"/>
+    <circle cx="122" cy="68" r="1.5" fill="#7f8c8d"/>
+  </g>
+
+  <!-- UNDERBODY CHASSIS -->
+  <rect x="14" y="55" width="134" height="6" rx="2" fill="#1b2631"/>
+
+  <!-- SLEEK COACH BODY (deep blue, long and low-nosed) -->
+  <path d="M 10 20 L 138 20 Q 150 20 152 30 L 152 52 Q 152 57 147 57 L 10 57 Z" fill="#2471a3" stroke="#1a5276" stroke-width="1.5"/>
+  <path d="M 10 20 L 138 20 Q 146 20 150 26 L 10 26 Z" fill="#2e86c1"/>
+
+  <!-- WHEEL ARCH CUTOUTS -->
+  <path d="M 22 57 A 18 18 0 0 1 58 57 Z" fill="#1b2631"/>
+  <path d="M 104 57 A 18 18 0 0 1 140 57 Z" fill="#1b2631"/>
+
+  <!-- LARGE PANORAMIC TINTED WINDOWS -->
+  <rect x="16" y="29" width="24" height="13" rx="2" fill="#17202a" stroke="#5499c7" stroke-width="1"/>
+  <rect x="44" y="29" width="24" height="13" rx="2" fill="#17202a" stroke="#5499c7" stroke-width="1"/>
+  <rect x="72" y="29" width="24" height="13" rx="2" fill="#17202a" stroke="#5499c7" stroke-width="1"/>
+  <rect x="100" y="29" width="22" height="13" rx="2" fill="#17202a" stroke="#5499c7" stroke-width="1"/>
+  <path d="M 128 29 L 146 32 L 146 42 L 128 42 Z" fill="#17202a" stroke="#5499c7" stroke-width="1"/>
+  <path d="M 18 31 L 36 31" stroke="#5dade2" stroke-width="1.5" opacity="0.7"/>
+  <path d="M 46 31 L 64 31" stroke="#5dade2" stroke-width="1.5" opacity="0.7"/>
+
+  <!-- LUGGAGE BAY DOORS (lower body) -->
+  <rect x="20" y="46" width="30" height="8" rx="1.5" fill="#1a5276" stroke="#154360" stroke-width="1"/>
+  <rect x="56" y="46" width="30" height="8" rx="1.5" fill="#1a5276" stroke="#154360" stroke-width="1"/>
+  <line x1="24" y1="46" x2="24" y2="54" stroke="#154360" stroke-width="1"/>
+  <line x1="60" y1="46" x2="60" y2="54" stroke="#154360" stroke-width="1"/>
+
+  <!-- GOLD TRIM STRIPE -->
+  <rect x="10" y="44" width="142" height="1.5" fill="#f1c40f" opacity="0.8"/>
+
+  <!-- DOOR + HEADLIGHT -->
+  <rect x="124" y="46" width="10" height="11" rx="1" fill="#1a5276" stroke="#154360" stroke-width="1"/>
+  <circle cx="148" cy="48" r="3" fill="#f1c40f" stroke="#ffffff" stroke-width="1"/>
+  <circle cx="148" cy="53" r="2" fill="#e74c3c"/>
+  <rect x="138" y="54" width="14" height="3.5" rx="1.5" fill="#566573"/>
+</svg>
