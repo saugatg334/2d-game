@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90" viewBox="0 0 160 90">
+  <!-- Forest Rescue Truck - jungle/mountain rescue utility (Side View, facing right) -->
+
+  <!-- REAR WHEEL (high clearance) -->
+  <g id="rear-wheel">
+    <circle cx="44" cy="66" r="13.5" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="44" cy="66" r="12" fill="none" stroke="#333333" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <circle cx="44" cy="66" r="8.5" fill="#bdc3c7" stroke="#7f8c8d" stroke-width="1"/>
+    <circle cx="44" cy="66" r="6" fill="#ecf0f1"/>
+    <circle cx="44" cy="66" r="3" fill="#2c3e50"/>
+  </g>
+
+  <!-- FRONT WHEEL (high clearance) -->
+  <g id="front-wheel">
+    <circle cx="120" cy="66" r="13.5" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="120" cy="66" r="12" fill="none" stroke="#333333" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <circle cx="120" cy="66" r="8.5" fill="#bdc3c7" stroke="#7f8c8d" stroke-width="1"/>
+    <circle cx="120" cy="66" r="6" fill="#ecf0f1"/>
+    <circle cx="120" cy="66" r="3" fill="#2c3e50"/>
+  </g>
+
+  <!-- RAISED CHASSIS RAIL -->
+  <rect x="14" y="54" width="136" height="6" rx="2" fill="#1b2631"/>
+
+  <!-- BOXY RESCUE BODY (rear, forest green) -->
+  <rect x="22" y="20" width="72" height="34" fill="#1e8449" stroke="#145a32" stroke-width="1.5"/>
+  <!-- KHAKI RESCUE STRIPE -->
+  <rect x="22" y="42" width="72" height="5" fill="#f9e79f"/>
+  <!-- REAR SIDE WINDOWS -->
+  <rect x="28" y="25" width="12" height="11" rx="1" fill="#aed6f1" stroke="#2c3e50" stroke-width="0.8"/>
+  <rect x="44" y="25" width="12" height="11" rx="1" fill="#aed6f1" stroke="#2c3e50" stroke-width="0.8"/>
+
+  <!-- CAB (front) -->
+  <path d="M 94 26 L 118 26 Q 130 26 137 34 L 143 42 Q 145 45 145 50 L 145 54 L 94 54 Z" fill="#1e8449" stroke="#145a32" stroke-width="1.5"/>
+  <path d="M 100 31 L 116 31 Q 124 31 129 37 L 133 42 L 100 42 Z" fill="#aed6f1" stroke="#2c3e50" stroke-width="1"/>
+
+  <!-- ROOF EQUIPMENT RACK (rear roof) -->
+  <rect x="24" y="15" width="66" height="3" fill="#2c3e50"/>
+  <line x1="30" y1="15" x2="30" y2="20" stroke="#2c3e50" stroke-width="1.5"/>
+  <line x1="84" y1="15" x2="84" y2="20" stroke="#2c3e50" stroke-width="1.5"/>
+  <!-- STORAGE BOX + JERRY CANS -->
+  <rect x="30" y="8" width="22" height="8" rx="1" fill="#b03a2e" stroke="#7b241c" stroke-width="1"/>
+  <rect x="56" y="8" width="9" height="8" rx="1" fill="#7f8c8d" stroke="#5d6d7e" stroke-width="1"/>
+  <rect x="67" y="8" width="9" height="8" rx="1" fill="#7f8c8d" stroke="#5d6d7e" stroke-width="1"/>
+
+  <!-- AMBER LIGHT BAR ON CAB ROOF -->
+  <rect x="98" y="20" width="26" height="6" rx="2" fill="#2c3e50"/>
+  <rect x="100" y="21.5" width="10" height="3" rx="1" fill="#f39c12"/>
+  <rect x="112" y="21.5" width="10" height="3" rx="1" fill="#f1c40f"/>
+
+  <!-- SNORKEL ALONG A-PILLAR -->
+  <rect x="117" y="18" width="4" height="16" fill="#2c3e50"/>
+  <rect x="115" y="14" width="8" height="5" rx="1.5" fill="#2c3e50"/>
+
+  <!-- BULL BAR + WINCH -->
+  <rect x="143" y="40" width="4" height="14" rx="1.5" fill="#5d6d7e"/>
+  <line x1="147" y1="42" x2="147" y2="52" stroke="#5d6d7e" stroke-width="2"/>
+  <circle cx="141" cy="50" r="3" fill="#5d6d7e" stroke="#2c3e50" stroke-width="1"/>
+
+  <!-- HEADLIGHT + WHEEL ARCHES -->
+  <circle cx="141" cy="46" r="2.5" fill="#f1c40f" stroke="#ffffff" stroke-width="1"/>
+  <path d="M 32 54 A 16 16 0 0 1 60 54 Z" fill="#145a32"/>
+  <path d="M 108 54 A 16 16 0 0 1 136 54 Z" fill="#145a32"/>
+</svg>

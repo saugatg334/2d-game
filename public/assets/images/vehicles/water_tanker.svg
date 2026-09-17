@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90" viewBox="0 0 160 90">
+  <!-- Water Tanker - cylindrical tank truck (Side View, facing right) -->
+
+  <!-- REAR WHEEL -->
+  <g id="rear-wheel">
+    <circle cx="42" cy="68" r="14" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="42" cy="68" r="12.5" fill="none" stroke="#333333" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <circle cx="42" cy="68" r="9" fill="#bdc3c7" stroke="#7f8c8d" stroke-width="1"/>
+    <circle cx="42" cy="68" r="6.5" fill="#ecf0f1"/>
+    <circle cx="42" cy="68" r="3" fill="#2c3e50"/>
+  </g>
+
+  <!-- FRONT WHEEL -->
+  <g id="front-wheel">
+    <circle cx="124" cy="68" r="14" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="124" cy="68" r="12.5" fill="none" stroke="#333333" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <circle cx="124" cy="68" r="9" fill="#bdc3c7" stroke="#7f8c8d" stroke-width="1"/>
+    <circle cx="124" cy="68" r="6.5" fill="#ecf0f1"/>
+    <circle cx="124" cy="68" r="3" fill="#2c3e50"/>
+  </g>
+
+  <!-- CHASSIS RAIL -->
+  <rect x="12" y="56" width="140" height="6" rx="2" fill="#1b2631"/>
+
+  <!-- CYLINDRICAL TANK -->
+  <rect x="10" y="18" width="106" height="36" rx="18" fill="#aed6f1" stroke="#5499c7" stroke-width="1.5"/>
+  <!-- TANK BANDS -->
+  <line x1="40" y1="19.5" x2="40" y2="52.5" stroke="#5499c7" stroke-width="2"/>
+  <line x1="64" y1="19.5" x2="64" y2="52.5" stroke="#5499c7" stroke-width="2"/>
+  <line x1="88" y1="19.5" x2="88" y2="52.5" stroke="#5499c7" stroke-width="2"/>
+  <!-- TANK HIGHLIGHT -->
+  <rect x="18" y="23" width="88" height="6" rx="3" fill="#d6eaf8"/>
+  <!-- TOP HATCH -->
+  <rect x="50" y="12" width="16" height="7" rx="2" fill="#5499c7" stroke="#2c3e50" stroke-width="1"/>
+
+  <!-- REAR LADDER -->
+  <rect x="7" y="22" width="2.5" height="30" fill="#2c3e50"/>
+  <rect x="13" y="22" width="2.5" height="30" fill="#2c3e50"/>
+  <line x1="7" y1="29" x2="15.5" y2="29" stroke="#2c3e50" stroke-width="1.5"/>
+  <line x1="7" y1="37" x2="15.5" y2="37" stroke="#2c3e50" stroke-width="1.5"/>
+  <line x1="7" y1="45" x2="15.5" y2="45" stroke="#2c3e50" stroke-width="1.5"/>
+
+  <!-- OUTLET VALVE + PIPE -->
+  <circle cx="30" cy="60" r="4" fill="#5499c7" stroke="#2c3e50" stroke-width="1"/>
+  <rect x="28.5" y="62" width="3" height="8" fill="#2c3e50"/>
+
+  <!-- WHEEL ARCH OVER REAR WHEEL -->
+  <path d="M 26 56 A 18 18 0 0 1 58 56 Z" fill="#1b2631"/>
+
+  <!-- CAB (front, teal flat-nose) -->
+  <path d="M 118 26 L 146 26 Q 152 26 153 32 L 155 44 L 155 56 L 118 56 Z" fill="#16a085" stroke="#0e6655" stroke-width="1.5"/>
+  <path d="M 122 31 L 140 31 Q 146 31 148 36 L 150 42 L 122 42 Z" fill="#d5f5e3" stroke="#2c3e50" stroke-width="1"/>
+
+  <!-- DOOR LINE + HANDLE -->
+  <line x1="134" y1="28" x2="134" y2="55" stroke="#0e6655" stroke-width="1.2"/>
+  <rect x="137" y="46" width="4" height="2.5" rx="1" fill="#2c3e50"/>
+
+  <!-- BUMPER + HEADLIGHT -->
+  <rect x="149" y="47" width="6" height="9" rx="1.5" fill="#566573"/>
+  <circle cx="152" cy="51" r="2.5" fill="#f1c40f" stroke="#ffffff" stroke-width="1"/>
+
+  <!-- EXHAUST STACK BEHIND CAB -->
+  <rect x="113" y="14" width="4" height="12" fill="#7f8c8d" stroke="#34495e" stroke-width="0.5"/>
+</svg>

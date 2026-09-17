@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90" viewBox="0 0 160 90">
+  <!-- Mini Truck - compact open-bed cargo truck (Side View, facing right) -->
+
+  <!-- REAR WHEEL (small) -->
+  <g id="rear-wheel">
+    <circle cx="48" cy="70" r="12.5" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="48" cy="70" r="11" fill="none" stroke="#333333" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <circle cx="48" cy="70" r="8" fill="#bdc3c7" stroke="#7f8c8d" stroke-width="1"/>
+    <circle cx="48" cy="70" r="5.5" fill="#ecf0f1"/>
+    <circle cx="48" cy="70" r="2.5" fill="#2c3e50"/>
+  </g>
+
+  <!-- FRONT WHEEL (small) -->
+  <g id="front-wheel">
+    <circle cx="112" cy="70" r="12.5" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="112" cy="70" r="11" fill="none" stroke="#333333" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <circle cx="112" cy="70" r="8" fill="#bdc3c7" stroke="#7f8c8d" stroke-width="1"/>
+    <circle cx="112" cy="70" r="5.5" fill="#ecf0f1"/>
+    <circle cx="112" cy="70" r="2.5" fill="#2c3e50"/>
+  </g>
+
+  <!-- CHASSIS RAIL (short, compact) -->
+  <rect x="30" y="58" width="102" height="5.5" rx="2" fill="#1b2631"/>
+
+  <!-- OPEN CARGO BED (rear) -->
+  <rect x="32" y="38" width="56" height="20" fill="#d5dbdb" stroke="#95a5a6" stroke-width="1.5"/>
+  <!-- OPEN BED RECESS -->
+  <rect x="36" y="42" width="48" height="12" fill="#95a5a6"/>
+  <rect x="36" y="42" width="48" height="3" fill="#7f8c8d"/>
+  <!-- BED SIDE RIBS -->
+  <line x1="50" y1="38" x2="50" y2="58" stroke="#95a5a6" stroke-width="1"/>
+  <line x1="64" y1="38" x2="64" y2="58" stroke="#95a5a6" stroke-width="1"/>
+  <line x1="78" y1="38" x2="78" y2="58" stroke="#95a5a6" stroke-width="1"/>
+  <!-- CRATE IN BED -->
+  <rect x="40" y="34" width="14" height="9" rx="1" fill="#b9855c" stroke="#8d6e4a" stroke-width="1"/>
+
+  <!-- WHEEL ARCH OVER REAR WHEEL -->
+  <path d="M 34 58 A 16 16 0 0 1 62 58 Z" fill="#1b2631"/>
+
+  <!-- COMPACT CAB (front) -->
+  <path d="M 90 30 L 112 30 L 112 58 L 90 58 Z" fill="#5dade2" stroke="#2e86c1" stroke-width="1.5"/>
+  <path d="M 112 36 L 124 36 Q 130 36 131 42 L 132 48 L 132 58 L 112 58 Z" fill="#5dade2" stroke="#2e86c1" stroke-width="1.5"/>
+  <!-- CAB WINDOW -->
+  <path d="M 115 40 L 124 40 Q 128 40 129 44 L 130 47 L 115 47 Z" fill="#d6eaf8" stroke="#2c3e50" stroke-width="1"/>
+  <rect x="93" y="34" width="16" height="12" rx="1" fill="#d6eaf8" stroke="#2c3e50" stroke-width="1"/>
+
+  <!-- DOOR LINE + HANDLE -->
+  <line x1="111" y1="32" x2="111" y2="57" stroke="#2e86c1" stroke-width="1.2"/>
+  <rect x="104" y="50" width="4" height="2.5" rx="1" fill="#2c3e50"/>
+
+  <!-- BUMPER + HEADLIGHT -->
+  <rect x="128" y="52" width="6" height="7" rx="1.5" fill="#566573"/>
+  <circle cx="130" cy="55" r="2.2" fill="#f1c40f" stroke="#ffffff" stroke-width="1"/>
+
+  <!-- ROOFLINE MARKER -->
+  <rect x="90" y="26" width="22" height="4" rx="1.5" fill="#2e86c1"/>
+</svg>
