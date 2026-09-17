@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90" viewBox="0 0 160 90">
+  <!-- Fastback EV - sleek premium electric fastback (Side View, facing right) -->
+
+  <!-- REAR WHEEL (large modern aero) -->
+  <g id="rear-wheel">
+    <circle cx="40" cy="68" r="15" fill="#1a1a1a" stroke="#111111" stroke-width="1.5"/>
+    <circle cx="40" cy="68" r="10.5" fill="#ecf0f1"/>
+    <circle cx="40" cy="68" r="10.5" fill="none" stroke="#00bcd4" stroke-width="1.5"/>
+    <circle cx="40" cy="68" r="5.5" fill="#2c3e50"/>
+    <circle cx="40" cy="68" r="8" fill="none" stroke="#bdc3c7" stroke-width="1" stroke-dasharray="4,4"/>
+  </g>
+
+  <!-- FRONT WHEEL (large modern aero) -->
+  <g id="front-wheel">
+    <circle cx="122" cy="68" r="15" fill="#1a1a1a" stroke="#111111" stroke-width="1.5"/>
+    <circle cx="122" cy="68" r="10.5" fill="#ecf0f1"/>
+    <circle cx="122" cy="68" r="10.5" fill="none" stroke="#00bcd4" stroke-width="1.5"/>
+    <circle cx="122" cy="68" r="5.5" fill="#2c3e50"/>
+    <circle cx="122" cy="68" r="8" fill="none" stroke="#bdc3c7" stroke-width="1" stroke-dasharray="4,4"/>
+  </g>
+
+  <!-- FLOWING FASTBACK BODY (single arc, low nose) -->
+  <path d="M 14 56 Q 14 42 34 36 Q 52 28 74 28 Q 100 28 118 38 Q 136 44 146 50 Q 150 53 148 56 Z"
+        fill="#e74c3c" stroke="#922b21" stroke-width="1.5"/>
+
+  <!-- SMOOTH GLASSHOUSE (tinted arc band) -->
+  <path d="M 40 36 Q 56 30 78 30 Q 98 30 112 37 L 106 42 Q 88 35 68 35 Q 54 35 46 39 Z"
+        fill="#2c3e50" stroke="#1a252f" stroke-width="1"/>
+
+  <!-- FLUSH DOOR LINE + HIDDEN HANDLE -->
+  <line x1="80" y1="34" x2="80" y2="55" stroke="#922b21" stroke-width="1"/>
+  <line x1="86" y1="45" x2="94" y2="45" stroke="#f5b7b1" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- DUCKTAIL SPOILER (subtle) -->
+  <path d="M 12 40 L 20 36 L 21 40 Z" fill="#922b21"/>
+
+  <!-- FRONT CYAN LIGHT BAR -->
+  <rect x="140" y="48" width="9" height="2.5" rx="1.2" fill="#00bcd4"/>
+  <!-- REAR LIGHT STRIP -->
+  <rect x="13" y="46" width="5" height="2" rx="1" fill="#e74c3c"/>
+
+  <!-- UNDERBODY BATTERY (flat slab) -->
+  <rect x="46" y="58" width="70" height="5" rx="2" fill="#2c3e50"/>
+  <line x1="52" y1="60.5" x2="110" y2="60.5" stroke="#00bcd4" stroke-width="1.2" opacity="0.8"/>
+
+  <!-- CHARGE PORT GLOW -->
+  <circle cx="30" cy="52" r="2" fill="#00bcd4"/>
+
+  <!-- LOWER CYAN SKIRT ACCENT -->
+  <line x1="46" y1="56" x2="112" y2="56" stroke="#00bcd4" stroke-width="1.5" opacity="0.6"/>
+</svg>

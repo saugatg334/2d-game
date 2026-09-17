@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90" viewBox="0 0 160 90">
+  <!-- Solar Shuttle - solar-powered passenger shuttle (Side View, facing right) -->
+
+  <!-- REAR WHEEL -->
+  <g id="rear-wheel">
+    <circle cx="42" cy="69" r="12.5" fill="#1a1a1a" stroke="#111111" stroke-width="1.5"/>
+    <circle cx="42" cy="69" r="11" fill="none" stroke="#333333" stroke-width="1" stroke-dasharray="2,2"/>
+    <circle cx="42" cy="69" r="7.5" fill="#bdc3c7"/>
+    <circle cx="42" cy="69" r="4.5" fill="#7f8c8d"/>
+    <circle cx="42" cy="69" r="2.5" fill="#2c3e50"/>
+  </g>
+
+  <!-- FRONT WHEEL -->
+  <g id="front-wheel">
+    <circle cx="118" cy="69" r="12.5" fill="#1a1a1a" stroke="#111111" stroke-width="1.5"/>
+    <circle cx="118" cy="69" r="11" fill="none" stroke="#333333" stroke-width="1" stroke-dasharray="2,2"/>
+    <circle cx="118" cy="69" r="7.5" fill="#bdc3c7"/>
+    <circle cx="118" cy="69" r="4.5" fill="#7f8c8d"/>
+    <circle cx="118" cy="69" r="2.5" fill="#2c3e50"/>
+  </g>
+
+  <!-- BOXY SHUTTLE BODY (sky blue/white) -->
+  <rect x="20" y="30" width="112" height="28" rx="3" fill="#d6eaf8" stroke="#85c1e9" stroke-width="1.5"/>
+  <path d="M 132 34 L 138 34 Q 146 34 148 42 L 149 48 Q 149 52 146 52 L 132 52 Z" fill="#d6eaf8" stroke="#85c1e9" stroke-width="1.5"/>
+
+  <!-- FULL-LENGTH LARGE WINDOWS -->
+  <rect x="26" y="35" width="26" height="14" rx="1.5" fill="#aed6f1" stroke="#2c3e50" stroke-width="1"/>
+  <rect x="58" y="35" width="26" height="14" rx="1.5" fill="#aed6f1" stroke="#2c3e50" stroke-width="1"/>
+  <rect x="90" y="35" width="26" height="14" rx="1.5" fill="#aed6f1" stroke="#2c3e50" stroke-width="1"/>
+  <path d="M 120 36 L 132 36 L 136 42 L 136 49 L 120 49 Z" fill="#aed6f1" stroke="#2c3e50" stroke-width="1"/>
+
+  <!-- MID DOOR -->
+  <line x1="54" y1="31" x2="54" y2="57" stroke="#85c1e9" stroke-width="1.2"/>
+  <rect x="58" y="53" width="4" height="2.5" rx="1" fill="#2c3e50"/>
+
+  <!-- ROOF SOLAR PANELS (grid on struts) -->
+  <line x1="28" y1="30" x2="28" y2="24" stroke="#566573" stroke-width="2"/>
+  <line x1="70" y1="30" x2="70" y2="24" stroke="#566573" stroke-width="2"/>
+  <line x1="112" y1="30" x2="112" y2="24" stroke="#566573" stroke-width="2"/>
+  <rect x="24" y="18" width="34" height="7" fill="#1a5276" stroke="#154360" stroke-width="1"/>
+  <rect x="60" y="18" width="34" height="7" fill="#1a5276" stroke="#154360" stroke-width="1"/>
+  <rect x="96" y="18" width="34" height="7" fill="#1a5276" stroke="#154360" stroke-width="1"/>
+  <line x1="35" y1="18" x2="35" y2="25" stroke="#5dade2" stroke-width="0.8"/>
+  <line x1="46" y1="18" x2="46" y2="25" stroke="#5dade2" stroke-width="0.8"/>
+  <line x1="71" y1="18" x2="71" y2="25" stroke="#5dade2" stroke-width="0.8"/>
+  <line x1="82" y1="18" x2="82" y2="25" stroke="#5dade2" stroke-width="0.8"/>
+  <line x1="107" y1="18" x2="107" y2="25" stroke="#5dade2" stroke-width="0.8"/>
+  <line x1="118" y1="18" x2="118" y2="25" stroke="#5dade2" stroke-width="0.8"/>
+
+  <!-- CYAN SKIRT STRIPE -->
+  <rect x="20" y="52" width="129" height="3.5" fill="#00bcd4" opacity="0.7"/>
+
+  <!-- BUMPER + HEADLIGHT -->
+  <rect x="141" y="46" width="7" height="7" rx="1.5" fill="#566573"/>
+  <circle cx="145" cy="49" r="2.2" fill="#f1c40f" stroke="#ffffff" stroke-width="1"/>
+
+  <!-- WHEEL ARCHES -->
+  <path d="M 30 58 A 15 15 0 0 1 54 58 Z" fill="#1b2631"/>
+  <path d="M 106 58 A 15 15 0 0 1 130 58 Z" fill="#1b2631"/>
+</svg>
