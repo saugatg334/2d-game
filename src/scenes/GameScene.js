@@ -159,6 +159,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   getAbilityHUDColor() {
+    // P0 Step 6J: guard comment only — behavior identical. The name/description
+    // labels are static and colored at creation; only the state text is recolored.
     if (!this.abilityState.available) return '#666';
     if (this.abilityState.active) return '#2ecc71';
     if (this.abilityState.cooldownRemaining > 0) return '#e74c3c';
@@ -189,9 +191,28 @@ export class GameScene extends Phaser.Scene {
       this.scene.start(SCENES.MAIN_MENU);
     });
 
-    // Ability HUD indicator
+    // P0 Step 6J: Ability HUD indicator — surfaces the already-resolved
+    // specialAbility metadata (name + description from characters.js via
+    // resolveCharacterAbility) above the existing READY/ACTIVE/cooldown text.
+    // UI-only: no activation, timing, boost or input behavior is changed.
+    // Characters without an ability still get no HUD at all (unchanged).
     if (this.abilityState.available) {
-      this.abilityText = this.add.text(w / 2, 30, '', {
+      const abilityName = this.abilityState.config?.name || '';
+      const abilityDescription = this.characterAbility?.description || '';
+      if (abilityName) {
+        this.abilityNameText = this.add.text(w / 2, 18, abilityName, {
+          fontSize: '14px', fontStyle: 'bold', color: '#f1c40f', align: 'center'
+        }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(1);
+      }
+      if (abilityDescription) {
+        this.abilityDescriptionText = this.add.text(w / 2, 34, abilityDescription, {
+          fontSize: '13px', color: '#f1c40f', align: 'center',
+          wordWrap: { width: Math.min(520, w - 40) }
+        }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(1);
+      }
+      // Existing state text (READY [Q] / ACTIVE / cooldown) unchanged,
+      // shifted down only when metadata is present so it never overlaps.
+      this.abilityText = this.add.text(w / 2, 52, '', {
         fontSize: '18px', fontStyle: 'bold', color: '#f1c40f', align: 'center'
       }).setOrigin(0.5).setScrollFactor(0);
     }
