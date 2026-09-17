@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90" viewBox="0 0 160 90">
+  <!-- Rally Jeep - race-spec machine (Side View, facing right) -->
+
+  <!-- RALLY TIRES (wide) -->
+  <g id="rear-wheel">
+    <circle cx="42" cy="66" r="15.5" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="42" cy="66" r="13.8" fill="none" stroke="#444444" stroke-width="2.5" stroke-dasharray="4,3"/>
+    <circle cx="42" cy="66" r="9.5" fill="#bdc3c7"/>
+    <circle cx="42" cy="66" r="6.5" fill="#7f8c8d"/>
+    <circle cx="42" cy="66" r="3" fill="#2c3e50"/>
+  </g>
+  <g id="front-wheel">
+    <circle cx="120" cy="66" r="15.5" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="120" cy="66" r="13.8" fill="none" stroke="#444444" stroke-width="2.5" stroke-dasharray="4,3"/>
+    <circle cx="120" cy="66" r="9.5" fill="#bdc3c7"/>
+    <circle cx="120" cy="66" r="6.5" fill="#7f8c8d"/>
+    <circle cx="120" cy="66" r="3" fill="#2c3e50"/>
+  </g>
+
+  <!-- LOW WIDE RALLY BODY (racing red, wedge) -->
+  <path d="M 24 50 L 24 38 L 34 24 L 84 22 L 96 14 L 124 14 Q 138 14 144 24 L 148 34 Q 150 38 150 44 L 150 52 Q 150 55 146 55 L 24 55 Z" fill="#c0392b" stroke="#7b241c" stroke-width="1.5"/>
+
+  <!-- WHEEL ARCH CUTOUTS -->
+  <path d="M 25 55 A 19 19 0 0 1 61 55 Z" fill="#1b2631"/>
+  <path d="M 103 55 A 19 19 0 0 1 139 55 Z" fill="#1b2631"/>
+
+  <!-- RALLY STRIPES (diagonal white) -->
+  <path d="M 30 38 L 92 20 L 100 20 L 38 38 Z" fill="#ecf0f1"/>
+  <path d="M 44 38 L 104 20 L 110 20 L 50 38 Z" fill="#ecf0f1"/>
+
+  <!-- RACE WINDOWS (slanted) -->
+  <path d="M 98 18 L 120 18 Q 130 18 135 25 L 140 32 L 100 32 Z" fill="#17202a" stroke="#2c3e50" stroke-width="1"/>
+  <rect x="70" y="25" width="20" height="9" rx="1" fill="#17202a" stroke="#2c3e50" stroke-width="1"/>
+
+  <!-- REAR SPOILER -->
+  <rect x="14" y="18" width="26" height="4" rx="1.5" fill="#2c3e50"/>
+  <line x1="20" y1="22" x2="20" y2="28" stroke="#2c3e50" stroke-width="2.5"/>
+  <line x1="34" y1="22" x2="34" y2="28" stroke="#2c3e50" stroke-width="2.5"/>
+
+  <!-- HOOD SCOOP + LIVERY ACCENT -->
+  <rect x="108" y="10" width="16" height="5" rx="1.5" fill="#2c3e50"/>
+  <rect x="24" y="46" width="126" height="3" fill="#f1c40f"/>
+
+  <!-- MUD FLAPS -->
+  <rect x="28" y="55" width="8" height="6" fill="#2c3e50"/>
+  <rect x="106" y="55" width="8" height="6" fill="#2c3e50"/>
+
+  <!-- RALLY BUMPER + FOG LIGHTS -->
+  <rect x="142" y="44" width="9" height="8" rx="1.5" fill="#566573"/>
+  <circle cx="146" cy="36" r="2.5" fill="#f1c40f"/>
+  <circle cx="150" cy="47" r="2" fill="#ffffff" stroke="#566573" stroke-width="1"/>
+
+  <!-- RACE MIRROR -->
+  <line x1="128" y1="18" x2="124" y2="13" stroke="#2c3e50" stroke-width="1.5"/>
+  <rect x="119" y="10" width="6" height="4" rx="1" fill="#2c3e50"/>
+</svg>

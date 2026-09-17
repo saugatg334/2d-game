@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90" viewBox="0 0 160 90">
+  <!-- Local 4x4 - boxy Nepal utility wagon (Side View, facing right) -->
+
+  <!-- REAR WHEEL -->
+  <g id="rear-wheel">
+    <circle cx="42" cy="66" r="14" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="42" cy="66" r="12.5" fill="none" stroke="#333333" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <circle cx="42" cy="66" r="9" fill="#bdc3c7" stroke="#7f8c8d" stroke-width="1"/>
+    <circle cx="42" cy="66" r="6.5" fill="#ecf0f1"/>
+    <circle cx="42" cy="66" r="3" fill="#2c3e50"/>
+  </g>
+
+  <!-- FRONT WHEEL -->
+  <g id="front-wheel">
+    <circle cx="120" cy="66" r="14" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="120" cy="66" r="12.5" fill="none" stroke="#333333" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <circle cx="120" cy="66" r="9" fill="#bdc3c7" stroke="#7f8c8d" stroke-width="1"/>
+    <circle cx="120" cy="66" r="6.5" fill="#ecf0f1"/>
+    <circle cx="120" cy="66" r="3" fill="#2c3e50"/>
+  </g>
+
+  <!-- BOXY WAGON BODY (slate blue, upright) -->
+  <path d="M 24 20 L 24 54 Q 24 57 28 57 L 140 57 Q 146 57 146 52 L 146 36 Q 146 30 140 28 L 130 28 L 130 20 Z" fill="#46627f" stroke="#34495e" stroke-width="1.5"/>
+  <path d="M 130 20 L 140 20 L 146 30 L 130 30 Z" fill="#3b536b"/>
+
+  <!-- WHEEL ARCH CUTOUTS -->
+  <path d="M 28 57 A 17 17 0 0 1 58 57 Z" fill="#1b2631"/>
+  <path d="M 106 57 A 17 17 0 0 1 136 57 Z" fill="#1b2631"/>
+
+  <!-- SQUARE UTILITY WINDOWS -->
+  <rect x="30" y="24" width="18" height="12" rx="1" fill="#aed6f1" stroke="#2c3e50" stroke-width="1"/>
+  <rect x="52" y="24" width="18" height="12" rx="1" fill="#aed6f1" stroke="#2c3e50" stroke-width="1"/>
+  <rect x="74" y="24" width="18" height="12" rx="1" fill="#aed6f1" stroke="#2c3e50" stroke-width="1"/>
+  <rect x="104" y="24" width="22" height="12" rx="1" fill="#aed6f1" stroke="#2c3e50" stroke-width="1"/>
+
+  <!-- SIDE CLADDING (rugged lower band) -->
+  <rect x="24" y="46" width="122" height="5" fill="#34495e"/>
+
+  <!-- REAR-MOUNTED SPARE TIRE -->
+  <circle cx="18" cy="36" r="9" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+  <circle cx="18" cy="36" r="6" fill="#2c3e50"/>
+  <circle cx="18" cy="36" r="2.5" fill="#7f8c8d"/>
+
+  <!-- ROOF RACK (full-length, heavy) -->
+  <rect x="26" y="14" width="106" height="3.5" rx="1.5" fill="#566573"/>
+  <line x1="36" y1="17.5" x2="36" y2="20" stroke="#566573" stroke-width="2"/>
+  <line x1="120" y1="17.5" x2="120" y2="20" stroke="#566573" stroke-width="2"/>
+  <rect x="58" y="10" width="20" height="4" rx="1" fill="#8d6e63"/>
+
+  <!-- SNORKEL (4x4 cue) -->
+  <rect x="132" y="8" width="4.5" height="20" fill="#7f8c8d" stroke="#34495e" stroke-width="0.5"/>
+  <path d="M 130 8 L 139 6 L 136 8 Z" fill="#2c3e50"/>
+
+  <!-- HEADLIGHT + BULL BAR -->
+  <circle cx="143" cy="38" r="3" fill="#f1c40f" stroke="#ffffff" stroke-width="1"/>
+  <line x1="146" y1="28" x2="146" y2="46" stroke="#566573" stroke-width="3.5" stroke-linecap="round"/>
+  <rect x="140" y="52" width="10" height="4" rx="1.5" fill="#566573"/>
+</svg>
