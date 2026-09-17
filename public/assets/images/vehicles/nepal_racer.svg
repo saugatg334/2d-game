@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90" viewBox="0 0 160 90">
+  <!-- Nepal Racer X - flagship end-game racer (Side View, facing right) -->
+
+  <!-- WIDE RACING SLICKS -->
+  <g id="rear-wheel">
+    <circle cx="44" cy="68" r="14.5" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="44" cy="68" r="9.5" fill="#bdc3c7"/>
+    <circle cx="44" cy="68" r="6.5" fill="#e74c3c"/>
+    <circle cx="44" cy="68" r="3" fill="#2c3e50"/>
+  </g>
+  <g id="front-wheel">
+    <circle cx="118" cy="68" r="14.5" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="118" cy="68" r="9.5" fill="#bdc3c7"/>
+    <circle cx="118" cy="68" r="6.5" fill="#e74c3c"/>
+    <circle cx="118" cy="68" r="3" fill="#2c3e50"/>
+  </g>
+
+  <!-- LOW AERO BODY (crimson wedge, low nose) -->
+  <path d="M 20 56 L 20 46 Q 20 40 28 38 L 52 32 Q 70 20 96 18 L 118 18 Q 134 18 142 26 L 148 34 Q 152 38 152 46 L 152 52 Q 152 56 148 56 Z" fill="#c0392b" stroke="#7b241c" stroke-width="1.5"/>
+  <path d="M 52 32 Q 70 22 96 20 L 116 20 L 110 28 L 56 34 Z" fill="#e74c3c"/>
+
+  <!-- COCKPIT CANOPY -->
+  <path d="M 96 22 L 114 22 Q 122 22 126 27 L 130 32 L 98 32 Q 94 26 96 22 Z" fill="#17202a" stroke="#2c3e50" stroke-width="1"/>
+  <path d="M 99 24 L 112 24 Q 118 24 121 27 L 124 30 L 100 30 Z" fill="#5dade2" opacity="0.85"/>
+
+  <!-- FRONT SPLITTER -->
+  <rect x="138" y="52" width="16" height="4" rx="1.5" fill="#2c3e50"/>
+
+  <!-- REAR WING (high, on struts) -->
+  <rect x="10" y="16" width="34" height="5" rx="2" fill="#2c3e50"/>
+  <line x1="16" y1="21" x2="16" y2="34" stroke="#2c3e50" stroke-width="3"/>
+  <line x1="34" y1="21" x2="34" y2="34" stroke="#2c3e50" stroke-width="3"/>
+
+  <!-- NEPAL-INSPIRED DETAIL: crimson-blue twin stripe + sun disc -->
+  <rect x="24" y="44" width="126" height="2.5" fill="#2c3e50"/>
+  <rect x="24" y="48" width="126" height="2.5" fill="#2471a3"/>
+  <circle cx="70" cy="40" r="4.5" fill="#ecf0f1"/>
+  <path d="M 70 35.5 L 70 44.5 M 65.5 40 L 74.5 40" stroke="#c0392b" stroke-width="1.5"/>
+
+  <!-- ENGINE BAY VENTS -->
+  <path d="M 20 46 L 20 42 L 30 40 L 30 46 Z" fill="#7b241c"/>
+  <line x1="132" y1="30" x2="140" y2="30" stroke="#7b241c" stroke-width="1.5"/>
+
+  <!-- REAR DIFFUSER -->
+  <path d="M 20 56 L 20 52 L 34 52 L 34 56 Z" fill="#2c3e50"/>
+
+  <!-- HEADLIGHT SLIT -->
+  <path d="M 142 34 L 150 36 L 150 40 L 142 38 Z" fill="#f1c40f"/>
+</svg>

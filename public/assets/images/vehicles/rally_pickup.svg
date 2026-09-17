@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90" viewBox="0 0 160 90">
+  <!-- Rally Pickup - race-spec truck (Side View, facing right) -->
+
+  <!-- LARGE RALLY TIRES -->
+  <g id="rear-wheel">
+    <circle cx="40" cy="66" r="16" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="40" cy="66" r="14" fill="none" stroke="#444444" stroke-width="2.5" stroke-dasharray="4,3"/>
+    <circle cx="40" cy="66" r="9.5" fill="#bdc3c7"/>
+    <circle cx="40" cy="66" r="6.5" fill="#7f8c8d"/>
+    <circle cx="40" cy="66" r="3" fill="#2c3e50"/>
+  </g>
+  <g id="front-wheel">
+    <circle cx="122" cy="66" r="16" fill="#1a1a1a" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="122" cy="66" r="14" fill="none" stroke="#444444" stroke-width="2.5" stroke-dasharray="4,3"/>
+    <circle cx="122" cy="66" r="9.5" fill="#bdc3c7"/>
+    <circle cx="122" cy="66" r="6.5" fill="#7f8c8d"/>
+    <circle cx="122" cy="66" r="3" fill="#2c3e50"/>
+  </g>
+
+  <!-- HIGH RALLY SUSPENSION CHASSIS -->
+  <rect x="18" y="49" width="134" height="8" rx="2" fill="#1b2631"/>
+  <line x1="44" y1="51" x2="50" y2="42" stroke="#566573" stroke-width="2.5"/>
+  <line x1="118" y1="51" x2="112" y2="42" stroke="#566573" stroke-width="2.5"/>
+
+  <!-- OPEN CARGO BED (rear, visible) -->
+  <path d="M 20 30 L 62 30 L 62 49 L 20 49 Z" fill="#8e44ad" stroke="#5b2c6f" stroke-width="1.5"/>
+  <rect x="24" y="34" width="34" height="4" fill="#5b2c6f"/>
+  <rect x="24" y="41" width="34" height="4" fill="#5b2c6f"/>
+
+  <!-- CAB (mid, sloped rally glass) -->
+  <path d="M 62 49 L 62 26 L 82 26 L 92 14 L 112 14 Q 118 14 122 20 L 128 28 L 62 28 Z" fill="#8e44ad" stroke="#5b2c6f" stroke-width="1.5"/>
+  <path d="M 94 18 L 110 18 Q 115 18 118 23 L 122 28 L 94 28 Z" fill="#17202a" stroke="#2c3e50" stroke-width="1"/>
+  <rect x="66" y="30" width="18" height="10" rx="1" fill="#17202a" stroke="#2c3e50" stroke-width="1"/>
+
+  <!-- LONG RALLY HOOD + FENDERS -->
+  <path d="M 128 30 L 142 32 Q 150 34 150 42 L 150 50 Q 150 53 146 53 L 128 53 Z" fill="#8e44ad" stroke="#5b2c6f" stroke-width="1.5"/>
+
+  <!-- WHEEL ARCH CUTOUTS -->
+  <path d="M 24 49 A 19 19 0 0 1 60 49 Z" fill="#1b2631"/>
+  <path d="M 106 49 A 19 19 0 0 1 142 49 Z" fill="#1b2631"/>
+
+  <!-- RACING LIVERY (gold flash) -->
+  <path d="M 20 44 L 150 44 L 150 47 L 20 47 Z" fill="#f1c40f"/>
+  <path d="M 66 30 L 92 30 L 92 33 L 66 33 Z" fill="#f1c40f" opacity="0.8"/>
+
+  <!-- AGGRESSIVE FRONT BUMPER + SPOILER LIP -->
+  <rect x="144" y="42" width="9" height="9" rx="1.5" fill="#566573"/>
+  <rect x="140" y="51" width="14" height="3.5" rx="1.5" fill="#2c3e50"/>
+  <circle cx="148" cy="37" r="2.5" fill="#f1c40f" stroke="#ffffff" stroke-width="1"/>
+
+  <!-- BED ROLL BAR -->
+  <line x1="60" y1="30" x2="60" y2="20" stroke="#2c3e50" stroke-width="3"/>
+  <line x1="60" y1="20" x2="72" y2="20" stroke="#2c3e50" stroke-width="3"/>
+
+  <!-- ROOF ANTENNA -->
+  <line x1="108" y1="14" x2="114" y2="4" stroke="#2c3e50" stroke-width="1.5"/>
+</svg>

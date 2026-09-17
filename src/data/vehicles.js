@@ -27,7 +27,7 @@ const vehicleSpecs = [
   ['electric_scooter', 'Electric Scooter', 'electric', 290, 130, 145, 0.7, 180, 1, 1.2, 50, 34, 13, 2.9, 1050, 'electric_scooter.svg'],
   ['electric_tempo', 'Electric Tempo', 'electric', 260, 115, 185, 0.9, 1150, 1.1, 1.1, 100, 50, 20, 2.3, 1100],
   ['rally_jeep', 'Rally Jeep', 'rally', 370, 165, 180, 2.8, 1400, 1.5, 1.35, 92, 50, 18, 3.4, 1400, 'rally_jeep.svg'],
-  ['himalayan_rally', 'Himalayan Rally Car', 'rally', 390, 175, 175, 3, 1250, 1.4, 1.4, 90, 48, 17, 3.5, 1500],
+  ['himalayan_rally', 'Himalayan Rally Car', 'rally', 390, 175, 175, 3, 1250, 1.4, 1.4, 90, 48, 17, 3.5, 1500, 'himalayan_rally.svg'],
   ['mountain_taxi', 'Mountain Taxi', 'taxi', 285, 105, 175, 2, 1350, 1.1, 1.05, 88, 48, 18, 2.3, 500, 'mountain_taxi.svg'],
   ['kathmandu_taxi', 'Kathmandu Taxi', 'taxi', 300, 115, 165, 1.9, 1250, 1, 1.1, 86, 46, 17, 2.5, 550],
   ['sajha_electric_bus', 'Sajha Electric Bus', 'electric_bus', 225, 80, 255, 1.1, 3300, 1, 1, 125, 68, 22, 1.5, 1250, 'sajha_electric_bus.svg'],
@@ -44,16 +44,16 @@ const vehicleSpecs = [
   ['electric_three_wheeler', 'Electric Three Wheeler', 'electric', 235, 95, 180, 0.9, 600, 1, 1.05, 80, 46, 17, 2.4, 750],
   ['mountain_moped', 'Mountain Moped', 'motorcycle', 240, 100, 150, 1.3, 145, 1.1, 1.1, 46, 32, 12, 2.6, 300, 'mountain_moped.svg'],
   ['trail_motorcycle', 'Trail Motorcycle', 'motorcycle', 345, 150, 135, 1.6, 230, 1.4, 1.3, 56, 36, 15, 3.1, 900, 'trail_motorcycle.svg'],
-  ['hill_crawler', 'Hill Crawler', 'offroad', 255, 95, 240, 2.9, 2250, 1.7, 1.35, 100, 60, 23, 1.9, 1250],
-  ['rock_crawler', 'Rock Crawler', 'offroad', 235, 85, 260, 3.1, 2500, 1.8, 1.4, 105, 65, 24, 1.7, 1350],
+  ['hill_crawler', 'Hill Crawler', 'offroad', 255, 95, 240, 2.9, 2250, 1.7, 1.35, 100, 60, 23, 1.9, 1250, 'hill_crawler.svg'],
+  ['rock_crawler', 'Rock Crawler', 'offroad', 235, 85, 260, 3.1, 2500, 1.8, 1.4, 105, 65, 24, 1.7, 1350, 'rock_crawler.svg'],
   ['expressway_sedan', 'Expressway Sedan', 'car', 340, 145, 155, 2, 1400, 1, 1.1, 92, 45, 17, 3, 1000],
   ['fastback_ev', 'Fastback EV', 'electric', 380, 170, 160, 0.8, 1550, 1.1, 1.2, 96, 48, 18, 3.3, 1450],
-  ['rally_pickup', 'Rally Pickup', 'rally', 355, 150, 185, 2.7, 1600, 1.5, 1.3, 98, 54, 20, 3.2, 1300],
+  ['rally_pickup', 'Rally Pickup', 'rally', 355, 150, 185, 2.7, 1600, 1.5, 1.3, 98, 54, 20, 3.2, 1300, 'rally_pickup.svg'],
   ['forest_rescue', 'Forest Rescue Truck', 'utility', 220, 80, 275, 3.5, 3900, 1.3, 1.15, 128, 70, 24, 1.4, 1200],
   ['terai_loader', 'Terai Loader', 'cargo', 190, 60, 245, 3.8, 3000, 1, 0.95, 120, 68, 22, 1.2, 650],
   ['village_cart', 'Village Utility Cart', 'utility', 160, 55, 210, 2.5, 900, 1.2, 1, 82, 48, 19, 1.6, 250],
   ['solar_shuttle', 'Solar Shuttle', 'electric', 215, 85, 200, 0.6, 1300, 1, 1.05, 98, 52, 19, 2, 1150],
-  ['nepal_racer', 'Nepal Racer X', 'rally', 400, 185, 170, 2.9, 1100, 1.5, 1.45, 88, 46, 17, 3.7, 1800]
+  ['nepal_racer', 'Nepal Racer X', 'rally', 400, 185, 170, 2.9, 1100, 1.5, 1.45, 88, 46, 17, 3.7, 1800, 'nepal_racer.svg']
 ];
 
 function createVehicle([id, name, category, maxSpeed, acceleration, brakeForce, fuelConsumption, mass, suspension, grip, width, height, wheelRadius, airRotationSpeed, unlockAmount, asset]) {
