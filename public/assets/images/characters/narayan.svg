@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Narayan - mature rider with grey-flecked hair and moustache -->
+
+  <!-- Head -->
+  <circle cx="50" cy="35" r="19" fill="#d4a574"/>
+  <!-- Short dark hair with grey temples -->
+  <path d="M31 32 Q31 19 50 19 Q69 19 69 32 Q60 25 50 26 Q40 25 31 32 Z" fill="#292524"/>
+  <!-- Grey streak accents -->
+  <path d="M32 31 Q34 26 38 24" fill="none" stroke="#9ca3af" stroke-width="1.8"/>
+  <path d="M68 31 Q66 26 62 24" fill="none" stroke="#9ca3af" stroke-width="1.8"/>
+  <!-- Ears -->
+  <circle cx="31" cy="36" r="3" fill="#d4a574"/>
+  <circle cx="69" cy="36" r="3" fill="#d4a574"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="33" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="33" r="3" fill="#2c3e50"/>
+  <!-- Moustache -->
+  <path d="M42 41 Q46 38.5 50 40.5 Q54 38.5 58 41 Q54 43.5 50 42 Q46 43.5 42 41 Z" fill="#4a403a"/>
+  <!-- Calm small smile below moustache -->
+  <path d="M45 46 Q50 49 55 46" stroke="#2c3e50" stroke-width="1.8" fill="none"/>
+  <!-- Stubble shade -->
+  <path d="M33 40 A17 17 0 0 0 67 40 L67 45 Q60 52 50 52 Q40 52 33 45 Z" fill="#57534e" opacity="0.3"/>
+  <!-- Body: dark green utility jacket -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#166534"/>
+  <!-- Zip -->
+  <line x1="50" y1="57" x2="50" y2="88" stroke="#14532d" stroke-width="1.5"/>
+  <!-- Chest pockets -->
+  <rect x="37" y="63" width="8" height="6" rx="1" fill="none" stroke="#14532d" stroke-width="1"/>
+  <rect x="55" y="63" width="8" height="6" rx="1" fill="none" stroke="#14532d" stroke-width="1"/>
+  <!-- Waist strap + pouch -->
+  <rect x="35" y="76" width="30" height="4" fill="#14532d"/>
+  <rect x="52" y="79" width="10" height="8" rx="1.5" fill="#4d7c0f"/>
+  <rect x="54" y="81" width="6" height="2.5" rx="1" fill="#a3e635"/>
+  <!-- Collar -->
+  <path d="M44 55 L50 59 L56 55" fill="none" stroke="#14532d" stroke-width="1.5"/>
+</svg>

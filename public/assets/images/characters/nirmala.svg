@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Nirmala - female rider with centred low ponytail and patterned scarf -->
+
+  <!-- Low ponytail straight down behind neck -->
+  <path d="M42 50 Q40 66 44 78 Q47 84 50 84 Q53 84 56 78 Q60 66 58 50 Z" fill="#241a12"/>
+  <path d="M45 58 L55 58 M45 66 L55 66 M45 74 L55 74" stroke="#4a3826" stroke-width="1"/>
+  <!-- Hair tie -->
+  <rect x="46" y="48" width="8" height="3" rx="1.5" fill="#e11d48"/>
+  <!-- Head -->
+  <circle cx="50" cy="35" r="18" fill="#e0a878"/>
+  <!-- Sleek hair top -->
+  <path d="M32 33 Q32 20 50 20 Q68 20 68 33 Q60 25 50 26 Q40 25 32 33 Z" fill="#241a12"/>
+  <!-- Ears -->
+  <circle cx="32" cy="36" r="2.5" fill="#e0a878"/>
+  <circle cx="68" cy="36" r="2.5" fill="#e0a878"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="33" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="33" r="3" fill="#2c3e50"/>
+  <!-- Calm smile -->
+  <path d="M45 43 Q50 47 55 43" stroke="#2c3e50" stroke-width="2" fill="none"/>
+  <!-- Body: maroon jacket -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#9f1239"/>
+  <!-- Zip -->
+  <line x1="50" y1="61" x2="50" y2="88" stroke="#6d0f28" stroke-width="1.5"/>
+  <!-- Small patterned scarf below collar -->
+  <path d="M43 58 L57 58 L56 64 L44 64 Z" fill="#f59e0b"/>
+  <circle cx="47" cy="61" r="1" fill="#78350f"/>
+  <circle cx="52" cy="61" r="1" fill="#78350f"/>
+  <!-- Chest seams -->
+  <path d="M35 64 Q40 66 43 64" fill="none" stroke="#6d0f28" stroke-width="1"/>
+  <path d="M65 64 Q60 66 57 64" fill="none" stroke="#6d0f28" stroke-width="1"/>
+</svg>

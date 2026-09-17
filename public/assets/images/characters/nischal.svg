@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Nischal - rider in hoodie with hood bunched -->
+
+  <!-- Head -->
+  <circle cx="50" cy="35" r="19" fill="#d9a06b"/>
+  <!-- Short dark hair with fringe -->
+  <path d="M32 33 Q32 20 50 20 Q68 20 68 33 L68 30 Q60 27 50 27 Q40 27 32 30 Z" fill="#111111"/>
+  <rect x="32" y="28" width="36" height="4" rx="2" fill="#111111"/>
+  <!-- Ears -->
+  <circle cx="31" cy="36" r="3" fill="#d9a06b"/>
+  <circle cx="69" cy="36" r="3" fill="#d9a06b"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="33" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="33" r="3" fill="#2c3e50"/>
+  <!-- Confident grin -->
+  <path d="M43 43 Q50 48 57 43" stroke="#2c3e50" stroke-width="2" fill="none"/>
+  <!-- Body: charcoal hoodie -->
+  <rect x="34" y="55" width="32" height="35" rx="6" fill="#374151"/>
+  <!-- Hood bunched around neck -->
+  <path d="M36 58 Q40 50 50 50 Q60 50 64 58 Q60 64 50 64 Q40 64 36 58 Z" fill="#1f2937"/>
+  <!-- Hoodie drawstrings -->
+  <line x1="46" y1="63" x2="45" y2="74" stroke="#9ca3af" stroke-width="1.5"/>
+  <line x1="54" y1="63" x2="55" y2="74" stroke="#9ca3af" stroke-width="1.5"/>
+  <circle cx="45" cy="75" r="1.3" fill="#9ca3af"/>
+  <circle cx="55" cy="75" r="1.3" fill="#9ca3af"/>
+  <!-- Kangaroo pocket -->
+  <path d="M40 80 L60 80 L58 88 L42 88 Z" fill="#1f2937"/>
+</svg>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Bikash - mechanic, olive work shirt with open vest -->
+
+  <!-- Head -->
+  <circle cx="50" cy="35" r="19" fill="#e8b88a"/>
+  <!-- Short dark hair -->
+  <ellipse cx="50" cy="25" rx="16" ry="9" fill="#2c2c2c"/>
+  <!-- Ears -->
+  <circle cx="31" cy="36" r="3" fill="#e8b88a"/>
+  <circle cx="69" cy="36" r="3" fill="#e8b88a"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="32" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="32" r="3" fill="#2c3e50"/>
+  <!-- Smile -->
+  <path d="M43 42 Q50 48 57 42" stroke="#2c3e50" stroke-width="2" fill="none"/>
+  <!-- Body: olive work shirt -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#6b8e23"/>
+  <!-- Open dark vest panels -->
+  <path d="M35 55 L42 55 L42 90 L35 90 Z" fill="#4a4a3a"/>
+  <path d="M58 55 L65 55 L65 90 L58 90 Z" fill="#4a4a3a"/>
+  <!-- Chest pocket -->
+  <rect x="45" y="62" width="10" height="8" rx="1" fill="#5d7a1d" stroke="#4a6316" stroke-width="1"/>
+  <!-- Wrench in pocket (geometric) -->
+  <rect x="48" y="56" width="3" height="10" rx="1" fill="#95a5a6"/>
+  <circle cx="49.5" cy="56" r="2.5" fill="none" stroke="#95a5a6" stroke-width="1.5"/>
+  <!-- Collar -->
+  <path d="M44 55 L50 60 L56 55" fill="none" stroke="#4a6316" stroke-width="1.5"/>
+</svg>

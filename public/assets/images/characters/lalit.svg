@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Lalit - rider with two-tone orange jacket and textured hair -->
+
+  <!-- Head -->
+  <circle cx="50" cy="35" r="19" fill="#e0a878"/>
+  <!-- Short textured dark hair (choppy layers) -->
+  <path d="M31 31 L35 24 L40 28 L45 21 L50 26 L55 21 L60 28 L65 24 L69 31 Q60 25 50 26 Q40 25 31 31 Z" fill="#1c1917"/>
+  <!-- Ears -->
+  <circle cx="31" cy="36" r="3" fill="#e0a878"/>
+  <circle cx="69" cy="36" r="3" fill="#e0a878"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="33" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="33" r="3" fill="#2c3e50"/>
+  <!-- Confident friendly smile -->
+  <path d="M43 42 Q50 48 57 42" stroke="#2c3e50" stroke-width="2" fill="none"/>
+  <!-- Body: orange jacket left / brown right -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#ea580c"/>
+  <path d="M50 55 L65 55 L65 90 L50 90 Z" fill="#9a3412"/>
+  <!-- Light inner shirt centre panel -->
+  <rect x="46" y="55" width="8" height="14" fill="#fef9c3"/>
+  <path d="M46 69 Q50 73 54 69 L54 90 L46 90 Z" fill="#ea580c"/>
+  <path d="M54 69 L54 90 L65 90 L65 55 L50 55 Z" fill="#9a3412" opacity="0"/>
+  <!-- Jacket zip edges -->
+  <line x1="46" y1="55" x2="46" y2="90" stroke="#7c2d12" stroke-width="1.2"/>
+  <line x1="54" y1="69" x2="54" y2="90" stroke="#7c2d12" stroke-width="1.2"/>
+  <!-- Wrist wrap detail -->
+  <ellipse cx="38" cy="78" rx="4" ry="2.5" fill="#7c2d12"/>
+  <ellipse cx="62" cy="78" rx="4" ry="2.5" fill="#7c2d12"/>
+  <!-- Collar -->
+  <path d="M44 55 L50 59 L56 55" fill="none" stroke="#7c2d12" stroke-width="1.5"/>
+</svg>

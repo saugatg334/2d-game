@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Sunita - female rider with headband and shoulder-length hair -->
+
+  <!-- Shoulder-length hair panels, flicked ends -->
+  <path d="M31 30 Q29 48 35 54 L41 54 L40 30 Z" fill="#1f1f1f"/>
+  <path d="M69 30 Q71 48 65 54 L59 54 L60 30 Z" fill="#1f1f1f"/>
+  <path d="M35 54 L30 58 L37 57 Z" fill="#1f1f1f"/>
+  <path d="M65 54 L70 58 L63 57 Z" fill="#1f1f1f"/>
+  <!-- Head -->
+  <circle cx="50" cy="35" r="18" fill="#eebe96"/>
+  <!-- Hair top -->
+  <path d="M32 32 Q32 20 50 20 Q68 20 68 32 Q60 26 50 27 Q40 26 32 32 Z" fill="#1f1f1f"/>
+  <!-- Magenta headband across hair -->
+  <path d="M31 30 Q50 22 69 30 L69 34 Q50 26 31 34 Z" fill="#d946ef"/>
+  <!-- Ears -->
+  <circle cx="31" cy="36" r="2.5" fill="#eebe96"/>
+  <circle cx="68" cy="36" r="2.5" fill="#eebe96"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="34" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="34" r="3" fill="#2c3e50"/>
+  <!-- Cheerful open smile -->
+  <path d="M43 43 Q50 50 57 43 Z" fill="#7a4a32"/>
+  <!-- Body: sky-blue sporty riding top -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#0ea5e9"/>
+  <!-- Contrast raglan panels -->
+  <path d="M35 55 L42 55 L40 90 L35 90 Z" fill="#0369a1"/>
+  <path d="M65 55 L58 55 L60 90 L65 90 Z" fill="#0369a1"/>
+  <!-- Wrist sweatband detail -->
+  <ellipse cx="38" cy="76" rx="4" ry="2.5" fill="#d946ef"/>
+  <ellipse cx="62" cy="76" rx="4" ry="2.5" fill="#d946ef"/>
+</svg>

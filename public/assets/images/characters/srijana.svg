@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Srijana - female rider with mustard jacket and side-swept hair -->
+
+  <!-- Shoulder-length hair panels -->
+  <path d="M31 30 Q29 48 35 54 L41 54 L40 30 Z" fill="#2e2118"/>
+  <path d="M69 30 Q71 48 65 54 L59 54 L60 30 Z" fill="#2e2118"/>
+  <!-- Head -->
+  <circle cx="50" cy="35" r="18" fill="#f0c8a0"/>
+  <!-- Hair top with deep side sweep -->
+  <path d="M32 32 Q32 20 50 20 Q68 20 68 32 Q68 24 52 24 Q38 24 34 34 Z" fill="#2e2118"/>
+  <path d="M52 24 Q66 26 68 34" fill="none" stroke="#2e2118" stroke-width="3"/>
+  <!-- Ears + earring -->
+  <circle cx="32" cy="36" r="2.5" fill="#f0c8a0"/>
+  <circle cx="68" cy="36" r="2.5" fill="#f0c8a0"/>
+  <circle cx="68" cy="41" r="1.5" fill="#fbbf24"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="33" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="33" r="3" fill="#2c3e50"/>
+  <!-- Friendly smile -->
+  <path d="M44 42 Q50 48 56 42" stroke="#2c3e50" stroke-width="2" fill="none"/>
+  <!-- Body: dark inner shirt -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#292524"/>
+  <!-- Mustard outer jacket panels -->
+  <path d="M35 55 L45 55 L45 90 L35 90 Z" fill="#d97706"/>
+  <path d="M55 55 L65 55 L65 90 L55 90 Z" fill="#d97706"/>
+  <!-- Jacket edges -->
+  <line x1="45" y1="55" x2="45" y2="90" stroke="#92400e" stroke-width="1.2"/>
+  <line x1="55" y1="55" x2="55" y2="90" stroke="#92400e" stroke-width="1.2"/>
+  <!-- Jacket buttons -->
+  <circle cx="40" cy="66" r="1.1" fill="#fef3c7"/>
+  <circle cx="60" cy="66" r="1.1" fill="#fef3c7"/>
+</svg>

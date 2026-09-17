@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Sabin - rider in denim jacket -->
+
+  <!-- Head -->
+  <circle cx="50" cy="35" r="19" fill="#e8b88a"/>
+  <!-- Short dark hair, side part -->
+  <path d="M31 32 Q31 19 50 19 Q69 19 69 32 Q64 24 52 25 Q38 26 31 34 Z" fill="#1c1917"/>
+  <!-- Ears -->
+  <circle cx="31" cy="36" r="3" fill="#e8b88a"/>
+  <circle cx="69" cy="36" r="3" fill="#e8b88a"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="33" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="33" r="3" fill="#2c3e50"/>
+  <!-- Confident smile -->
+  <path d="M44 42 Q50 47 56 42" stroke="#2c3e50" stroke-width="2" fill="none"/>
+  <!-- Body: denim jacket -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#3b82f6"/>
+  <!-- Denim seams -->
+  <line x1="43" y1="55" x2="43" y2="90" stroke="#1d4ed8" stroke-width="1.2"/>
+  <line x1="57" y1="55" x2="57" y2="90" stroke="#1d4ed8" stroke-width="1.2"/>
+  <!-- Denim chest pockets -->
+  <path d="M37 64 L42 64 L42 70 L37 70 Z" fill="none" stroke="#1d4ed8" stroke-width="1.2"/>
+  <path d="M58 64 L63 64 L63 70 L58 70 Z" fill="none" stroke="#1d4ed8" stroke-width="1.2"/>
+  <!-- Buttons -->
+  <circle cx="50" cy="62" r="1.2" fill="#fbbf24"/>
+  <circle cx="50" cy="70" r="1.2" fill="#fbbf24"/>
+  <!-- Riding glove on hip -->
+  <ellipse cx="40" cy="79" rx="4.5" ry="3.5" fill="#292524"/>
+  <line x1="38" y1="78" x2="42" y2="81" stroke="#57534e" stroke-width="1"/>
+  <!-- Collar -->
+  <path d="M44 55 L50 59 L56 55" fill="none" stroke="#1d4ed8" stroke-width="1.5"/>
+</svg>

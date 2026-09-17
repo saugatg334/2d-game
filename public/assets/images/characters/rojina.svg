@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Rojina - female rider with high ponytail and neck scarf -->
+
+  <!-- High ponytail swinging out -->
+  <path d="M66 26 Q80 22 82 36 Q83 48 74 52 Q79 44 76 34 Q74 28 66 26 Z" fill="#33221a"/>
+  <!-- Hair tie -->
+  <circle cx="68" cy="27" r="2.5" fill="#f1c40f"/>
+  <!-- Head -->
+  <circle cx="50" cy="35" r="18" fill="#e8b088"/>
+  <!-- Sleek tied-back hair -->
+  <path d="M33 31 Q33 20 50 20 Q67 20 67 31 Q58 25 50 26 Q42 25 33 31 Z" fill="#33221a"/>
+  <!-- Ears -->
+  <circle cx="32" cy="36" r="2.5" fill="#e8b088"/>
+  <circle cx="68" cy="36" r="2.5" fill="#e8b088"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="33" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="33" r="3" fill="#2c3e50"/>
+  <!-- Friendly smile -->
+  <path d="M44 42 Q50 47 56 42" stroke="#2c3e50" stroke-width="2" fill="none"/>
+  <!-- Body: coral sporty riding top -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#f97316"/>
+  <!-- White side panels -->
+  <rect x="35" y="55" width="5" height="35" fill="#fdba74"/>
+  <rect x="60" y="55" width="5" height="35" fill="#fdba74"/>
+  <!-- Small neck scarf -->
+  <path d="M43 55 L57 55 L54 62 L46 62 Z" fill="#0ea5e9"/>
+  <path d="M47 61 L49 68 L51 61 Z" fill="#0284c7"/>
+</svg>

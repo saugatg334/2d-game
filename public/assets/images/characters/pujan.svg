@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Pujan - rider with wavy hair and waist pouch -->
+
+  <!-- Head -->
+  <circle cx="50" cy="35" r="19" fill="#d9a06b"/>
+  <!-- Wavy hair: layered bumps -->
+  <path d="M31 33 Q28 26 34 22 Q36 17 44 18 Q50 14 57 18 Q64 17 66 23 Q72 27 68 34 Q62 26 50 27 Q38 26 31 33 Z" fill="#292524"/>
+  <!-- Side wave tufts -->
+  <path d="M30 32 Q27 34 28 39" fill="none" stroke="#292524" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M70 32 Q73 34 72 39" fill="none" stroke="#292524" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Ears -->
+  <circle cx="31" cy="36" r="3" fill="#d9a06b"/>
+  <circle cx="69" cy="36" r="3" fill="#d9a06b"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="33" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="33" r="3" fill="#2c3e50"/>
+  <!-- Friendly smile -->
+  <path d="M43 42 Q50 48 57 42" stroke="#2c3e50" stroke-width="2" fill="none"/>
+  <!-- Body: olive outdoor shirt -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#84cc16"/>
+  <!-- Shirt button placket -->
+  <line x1="50" y1="57" x2="50" y2="88" stroke="#4d7c0f" stroke-width="1.5"/>
+  <circle cx="50" cy="63" r="1.1" fill="#f7fee7"/>
+  <circle cx="50" cy="71" r="1.1" fill="#f7fee7"/>
+  <circle cx="50" cy="79" r="1.1" fill="#f7fee7"/>
+  <!-- Chest flap pockets -->
+  <rect x="37" y="63" width="8" height="7" rx="1" fill="none" stroke="#4d7c0f" stroke-width="1"/>
+  <rect x="55" y="63" width="8" height="7" rx="1" fill="none" stroke="#4d7c0f" stroke-width="1"/>
+  <!-- Waist pouch -->
+  <rect x="38" y="78" width="12" height="9" rx="2" fill="#a16207"/>
+  <rect x="40" y="80" width="8" height="3" rx="1" fill="#ca8a04"/>
+</svg>

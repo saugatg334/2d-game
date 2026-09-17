@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Saraswati - female rider with long braid over shoulder and teal jacket -->
+
+  <!-- Long braid draped over left shoulder to waist -->
+  <path d="M34 30 Q26 36 26 48 Q26 62 32 72 Q36 78 40 78 Q36 68 35 56 Q34 42 38 34 Z" fill="#241a12"/>
+  <!-- Braid segment arcs -->
+  <path d="M28 40 Q33 42 36 40 M28 48 Q33 50 36 48 M29 56 Q34 58 37 56 M31 64 Q35 66 38 64" fill="none" stroke="#4a3826" stroke-width="1"/>
+  <!-- Braid end tie -->
+  <circle cx="37" cy="76" r="2.5" fill="#ec4899"/>
+  <!-- Small hair flower -->
+  <circle cx="34" cy="26" r="2.5" fill="#f472b6"/>
+  <circle cx="34" cy="26" r="1" fill="#fbcfe8"/>
+  <!-- Head -->
+  <circle cx="50" cy="35" r="18" fill="#eebe96"/>
+  <!-- Hair top -->
+  <path d="M32 32 Q32 20 50 20 Q68 20 68 32 Q60 25 50 26 Q40 25 32 32 Z" fill="#241a12"/>
+  <!-- Ears -->
+  <circle cx="32" cy="36" r="2.5" fill="#eebe96"/>
+  <circle cx="68" cy="36" r="2.5" fill="#eebe96"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="33" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="33" r="3" fill="#2c3e50"/>
+  <!-- Warm friendly smile -->
+  <path d="M43 42 Q50 48 57 42 Z" fill="#7a4a32"/>
+  <!-- Body: teal riding jacket -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#0f766e"/>
+  <!-- Placket -->
+  <line x1="50" y1="59" x2="50" y2="88" stroke="#134e4a" stroke-width="1.5"/>
+  <!-- Small patterned neck scarf -->
+  <path d="M42 55 L58 55 L56 62 L44 62 Z" fill="#fbbf24"/>
+  <circle cx="47" cy="58.5" r="1" fill="#78350f"/>
+  <circle cx="52" cy="58.5" r="1" fill="#78350f"/>
+  <circle cx="49.5" cy="60.5" r="1" fill="#78350f"/>
+  <!-- Jacket buttons -->
+  <circle cx="50" cy="68" r="1.1" fill="#99f6e4"/>
+  <circle cx="50" cy="76" r="1.1" fill="#99f6e4"/>
+</svg>

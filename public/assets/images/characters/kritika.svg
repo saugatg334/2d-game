@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Kritika - woman with shawl drape and bindi -->
+
+  <!-- Long hair panels (behind head) -->
+  <path d="M30 30 Q28 52 33 60 L42 60 L40 30 Z" fill="#241a12"/>
+  <path d="M70 30 Q72 52 67 60 L58 60 L60 30 Z" fill="#241a12"/>
+  <!-- Head -->
+  <circle cx="50" cy="35" r="18" fill="#e8b088"/>
+  <!-- Hair top with center part -->
+  <path d="M32 32 Q32 20 50 20 Q68 20 68 32 Q60 26 50 27 Q40 26 32 32 Z" fill="#241a12"/>
+  <!-- Ears -->
+  <circle cx="32" cy="36" r="2.5" fill="#e8b088"/>
+  <circle cx="68" cy="36" r="2.5" fill="#e8b088"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="33" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="33" r="3" fill="#2c3e50"/>
+  <!-- Smile -->
+  <path d="M44 42 Q50 47 56 42" stroke="#2c3e50" stroke-width="2" fill="none"/>
+  <!-- Bindi -->
+  <circle cx="50" cy="26" r="1.8" fill="#c0392b"/>
+  <!-- Earring dots -->
+  <circle cx="32" cy="40" r="1.3" fill="#f1c40f"/>
+  <circle cx="68" cy="40" r="1.3" fill="#f1c40f"/>
+  <!-- Body: maroon kurta -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#8e3b46"/>
+  <!-- Draped shawl (diagonal sash) -->
+  <path d="M35 56 L47 56 L62 88 L52 90 L35 70 Z" fill="#d4a017" opacity="0.9"/>
+  <!-- Kurta trim -->
+  <line x1="50" y1="57" x2="50" y2="88" stroke="#6e2d37" stroke-width="1.5"/>
+  <circle cx="50" cy="62" r="1" fill="#f5e9d3"/>
+  <circle cx="50" cy="68" r="1" fill="#f5e9d3"/>
+  <circle cx="50" cy="74" r="1" fill="#f5e9d3"/>
+</svg>

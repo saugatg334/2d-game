@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Aastha - tourist with backpack and camera -->
+
+  <!-- Long hair panels (behind head) -->
+  <path d="M31 32 Q29 52 34 58 L42 58 L40 32 Z" fill="#2e2118"/>
+  <path d="M69 32 Q71 52 66 58 L58 58 L60 32 Z" fill="#2e2118"/>
+  <!-- Head -->
+  <circle cx="50" cy="35" r="18" fill="#eebe96"/>
+  <!-- Hair top -->
+  <path d="M32 32 Q32 20 50 20 Q68 20 68 32 Q60 26 50 27 Q40 26 32 32 Z" fill="#2e2118"/>
+  <!-- Sunglasses perched on hair -->
+  <rect x="38" y="22" width="24" height="3.5" rx="1.5" fill="#1a1a1a"/>
+  <circle cx="42" cy="25" r="3" fill="#2c3e50"/>
+  <circle cx="58" cy="25" r="3" fill="#2c3e50"/>
+  <!-- Ears + earrings -->
+  <circle cx="32" cy="36" r="2.5" fill="#eebe96"/>
+  <circle cx="68" cy="36" r="2.5" fill="#eebe96"/>
+  <circle cx="32" cy="40" r="1.2" fill="#f1c40f"/>
+  <circle cx="68" cy="40" r="1.2" fill="#f1c40f"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="33" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="33" r="3" fill="#2c3e50"/>
+  <!-- Friendly curious smile -->
+  <path d="M44 42 Q50 48 56 42" stroke="#2c3e50" stroke-width="2" fill="none"/>
+  <!-- Backpack peeking behind shoulders -->
+  <path d="M27 62 Q25 55 31 53 L36 55 L36 72 L30 72 Q27 68 27 62 Z" fill="#ca6f1e"/>
+  <path d="M73 62 Q75 55 69 53 L64 55 L64 72 L70 72 Q73 68 73 62 Z" fill="#ca6f1e"/>
+  <!-- Body: light travel jacket -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#7fb3d5"/>
+  <!-- Khaki trousers base -->
+  <rect x="35" y="82" width="30" height="8" rx="3" fill="#b7a05a"/>
+  <!-- Jacket zip -->
+  <line x1="50" y1="57" x2="50" y2="82" stroke="#5d8aa8" stroke-width="1.5"/>
+  <!-- Backpack straps over chest -->
+  <path d="M40 55 L44 55 L46 74 L42 74 Z" fill="#a04000"/>
+  <path d="M60 55 L56 55 L54 74 L58 74 Z" fill="#a04000"/>
+  <!-- Camera on neck strap -->
+  <path d="M43 56 Q50 64 57 56" fill="none" stroke="#2c3e50" stroke-width="1.5"/>
+  <rect x="45" y="64" width="10" height="7" rx="1.5" fill="#2c3e50"/>
+  <circle cx="50" cy="67.5" r="2.2" fill="#7fb3d5" stroke="#1a252f" stroke-width="0.8"/>
+  <!-- Collar -->
+  <path d="M44 55 L50 59 L56 55" fill="none" stroke="#5d8aa8" stroke-width="1.5"/>
+</svg>

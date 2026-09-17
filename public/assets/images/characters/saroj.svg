@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Saroj - rider with dhaka topi and plain kurta style -->
+
+  <!-- Head -->
+  <circle cx="50" cy="36" r="18" fill="#e8b88a"/>
+  <!-- Dhaka topi: tapered Nepali cap with pattern band -->
+  <path d="M35 28 Q37 18 50 18 Q63 18 65 28 L66 30 L34 30 Z" fill="#b91c1c"/>
+  <path d="M34 30 L66 30 L65 24 Q50 20 35 24 Z" fill="#7f1d1d" opacity="0.0"/>
+  <rect x="35" y="24" width="30" height="4" fill="#facc15"/>
+  <line x1="41" y1="24" x2="41" y2="28" stroke="#7f1d1d" stroke-width="1"/>
+  <line x1="47" y1="24" x2="47" y2="28" stroke="#7f1d1d" stroke-width="1"/>
+  <line x1="53" y1="24" x2="53" y2="28" stroke="#7f1d1d" stroke-width="1"/>
+  <line x1="59" y1="24" x2="59" y2="28" stroke="#7f1d1d" stroke-width="1"/>
+  <!-- Topi top edge -->
+  <path d="M37 24 Q50 15 63 24" fill="none" stroke="#991b1b" stroke-width="2"/>
+  <!-- Dark hair visible at sideburns -->
+  <path d="M32 34 Q32 29 35 27 L35 34 Z" fill="#262626"/>
+  <path d="M68 34 Q68 29 65 27 L65 34 Z" fill="#262626"/>
+  <!-- Ears -->
+  <circle cx="32" cy="37" r="2.5" fill="#e8b88a"/>
+  <circle cx="68" cy="37" r="2.5" fill="#e8b88a"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="34" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="34" r="3" fill="#2c3e50"/>
+  <!-- Relaxed smile -->
+  <path d="M44 44 Q50 48 56 44" stroke="#2c3e50" stroke-width="2" fill="none"/>
+  <!-- Body: beige local riding kurta -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#d6c9a8"/>
+  <!-- Kurta placket + buttons -->
+  <line x1="50" y1="57" x2="50" y2="88" stroke="#a89968" stroke-width="1.5"/>
+  <circle cx="50" cy="62" r="1.1" fill="#78716c"/>
+  <circle cx="50" cy="70" r="1.1" fill="#78716c"/>
+  <circle cx="50" cy="78" r="1.1" fill="#78716c"/>
+  <!-- Dark vest overlay -->
+  <path d="M35 55 L42 55 L42 90 L35 90 Z" fill="#57534e"/>
+  <path d="M58 55 L65 55 L65 90 L58 90 Z" fill="#57534e"/>
+</svg>

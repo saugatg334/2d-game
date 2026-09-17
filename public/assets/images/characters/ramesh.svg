@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Ramesh - sturdy farmer with straw hat and vest -->
+
+  <!-- Head (broad) -->
+  <circle cx="50" cy="36" r="20" fill="#d9a06b"/>
+  <!-- Straw hat: wide brim + dome -->
+  <ellipse cx="50" cy="24" rx="26" ry="6" fill="#d9b44a"/>
+  <path d="M36 24 A14 11 0 0 1 64 24 Z" fill="#e6c565"/>
+  <!-- Hat band -->
+  <rect x="37" y="21" width="26" height="3.5" fill="#8d6e4a"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="34" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="34" r="3" fill="#2c3e50"/>
+  <!-- Broad grin -->
+  <path d="M42 43 Q50 50 58 43 Z" fill="#7a4a32"/>
+  <!-- Body: cream shirt with brown vest -->
+  <rect x="35" y="56" width="30" height="34" rx="5" fill="#e8dcc0"/>
+  <!-- Vest panels -->
+  <path d="M35 56 L43 56 L43 90 L35 90 Z" fill="#7a5c3a"/>
+  <path d="M57 56 L65 56 L65 90 L57 90 Z" fill="#7a5c3a"/>
+  <!-- Hoe handle over shoulder (geometric) -->
+  <rect x="58" y="48" width="4" height="34" rx="2" transform="rotate(14 60 65)" fill="#8d6e4a"/>
+  <rect x="70" y="44" width="9" height="6" rx="1.5" transform="rotate(14 74 47)" fill="#5d6d7e"/>
+  <!-- Shirt buttons -->
+  <circle cx="50" cy="62" r="1.2" fill="#b8a284"/>
+  <circle cx="50" cy="70" r="1.2" fill="#b8a284"/>
+  <circle cx="50" cy="78" r="1.2" fill="#b8a284"/>
+</svg>

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Deepak - rider with bucket hat and green overshirt -->
+
+  <!-- Head -->
+  <circle cx="50" cy="36" r="18" fill="#e8b88a"/>
+  <!-- Bucket hat: dome + downward all-round brim -->
+  <path d="M35 29 Q36 18 50 18 Q64 18 65 29 Z" fill="#fef3c7"/>
+  <path d="M31 29 Q50 24 69 29 Q71 30 69 33 Q50 29 31 33 Q29 30 31 29 Z" fill="#fde68a"/>
+  <!-- Hat band -->
+  <rect x="36" y="26" width="28" height="3" fill="#166534"/>
+  <!-- Dark hair peeking under brim -->
+  <path d="M33 34 Q33 31 35 30 L35 34 Z" fill="#262626"/>
+  <path d="M67 34 Q67 31 65 30 L67 34 Z" fill="#262626"/>
+  <!-- Ears -->
+  <circle cx="32" cy="37" r="2.5" fill="#e8b88a"/>
+  <circle cx="68" cy="37" r="2.5" fill="#e8b88a"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="35" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="35" r="3" fill="#2c3e50"/>
+  <!-- Relaxed smile -->
+  <path d="M44 44 Q50 48 56 44" stroke="#2c3e50" stroke-width="2" fill="none"/>
+  <!-- Body: green overshirt over cream tee -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#166534"/>
+  <rect x="45" y="55" width="10" height="35" fill="#fefce8"/>
+  <line x1="45" y1="55" x2="45" y2="90" stroke="#14532d" stroke-width="1.5"/>
+  <line x1="55" y1="55" x2="55" y2="90" stroke="#14532d" stroke-width="1.5"/>
+  <!-- Tee buttons -->
+  <circle cx="50" cy="63" r="1" fill="#78716c"/>
+  <circle cx="50" cy="71" r="1" fill="#78716c"/>
+  <!-- Waist pouch -->
+  <rect x="38" y="78" width="11" height="8" rx="2" fill="#14532d"/>
+  <rect x="40" y="80" width="7" height="2.5" rx="1" fill="#4ade80"/>
+</svg>

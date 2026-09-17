@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Puja - female courier with helmet and shoulder bag -->
+
+  <!-- Long hair panels (below helmet, behind head) -->
+  <path d="M30 34 Q28 54 34 60 L42 60 L41 34 Z" fill="#3a2a1a"/>
+  <path d="M70 34 Q72 54 66 60 L58 60 L59 34 Z" fill="#3a2a1a"/>
+  <!-- Head -->
+  <circle cx="50" cy="35" r="18" fill="#f0c8a0"/>
+  <!-- Helmet: dome + brim band -->
+  <path d="M31 30 A19 17 0 0 1 69 30 L69 34 L31 34 Z" fill="#8e44ad"/>
+  <rect x="29" y="32" width="42" height="4.5" rx="2" fill="#6c3483"/>
+  <!-- Helmet stripe -->
+  <rect x="47" y="15" width="6" height="17" fill="#d2b4de"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="35" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="35" r="3" fill="#2c3e50"/>
+  <!-- Friendly smile -->
+  <path d="M44 44 Q50 49 56 44" stroke="#2c3e50" stroke-width="2" fill="none"/>
+  <!-- Chin strap -->
+  <path d="M33 36 Q36 48 47 50" fill="none" stroke="#6c3483" stroke-width="1.5"/>
+  <path d="M67 36 Q64 48 53 50" fill="none" stroke="#6c3483" stroke-width="1.5"/>
+  <!-- Body: plum practical jacket -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#7d5ba6"/>
+  <!-- Jacket zip -->
+  <line x1="50" y1="57" x2="50" y2="88" stroke="#5b3a7e" stroke-width="1.5"/>
+  <!-- Shoulder bag strap + pouch -->
+  <path d="M38 57 L58 88 L51 90 L32 64 Z" fill="#2c3e50"/>
+  <rect x="54" y="77" width="14" height="11" rx="1.5" fill="#148f77" stroke="#0e6655" stroke-width="1"/>
+  <rect x="57" y="79" width="8" height="3" rx="1" fill="#ecf0f1"/>
+  <!-- Collar -->
+  <path d="M44 55 L50 59 L56 55" fill="none" stroke="#5b3a7e" stroke-width="1.5"/>
+</svg>

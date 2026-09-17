@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Kiran - rider with wool beanie and tan outdoor jacket -->
+
+  <!-- Head -->
+  <circle cx="50" cy="36" r="18" fill="#d9a06b"/>
+  <!-- Wool beanie: dome + folded brim + pom -->
+  <path d="M34 30 Q35 17 50 17 Q65 17 66 30 Z" fill="#9a3412"/>
+  <rect x="33" y="27" width="34" height="6" rx="3" fill="#7c2d12"/>
+  <circle cx="50" cy="14" r="3.5" fill="#c2410c"/>
+  <!-- Beanie knit ridges -->
+  <line x1="42" y1="18" x2="42" y2="27" stroke="#7c2d12" stroke-width="1"/>
+  <line x1="50" y1="17" x2="50" y2="27" stroke="#7c2d12" stroke-width="1"/>
+  <line x1="58" y1="18" x2="58" y2="27" stroke="#7c2d12" stroke-width="1"/>
+  <!-- Short dark hair visible at edges -->
+  <path d="M32 35 Q32 31 34 30 L34 35 Z" fill="#262626"/>
+  <path d="M68 35 Q68 31 66 30 L66 35 Z" fill="#262626"/>
+  <!-- Ears -->
+  <circle cx="32" cy="37" r="2.5" fill="#d9a06b"/>
+  <circle cx="68" cy="37" r="2.5" fill="#d9a06b"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="34" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="34" r="3" fill="#2c3e50"/>
+  <!-- Friendly smile -->
+  <path d="M44 44 Q50 49 56 44" stroke="#2c3e50" stroke-width="2" fill="none"/>
+  <!-- Body: tan outdoor jacket -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#a16207"/>
+  <!-- Zip + wind flap -->
+  <line x1="50" y1="57" x2="50" y2="88" stroke="#713f12" stroke-width="1.5"/>
+  <path d="M50 57 L58 57 L58 60 L50 60 Z" fill="#713f12"/>
+  <!-- Shoulder stitching -->
+  <path d="M35 62 Q42 60 46 62" fill="none" stroke="#713f12" stroke-width="1"/>
+  <path d="M65 62 Q58 60 54 62" fill="none" stroke="#713f12" stroke-width="1"/>
+</svg>

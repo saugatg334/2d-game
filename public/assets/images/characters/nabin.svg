@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Nabin - young delivery rider with box bag -->
+
+  <!-- Head -->
+  <circle cx="50" cy="35" r="18" fill="#e8b88a"/>
+  <!-- Short dark hair (simple crop) -->
+  <path d="M33 31 Q33 20 50 20 Q67 20 67 31 L67 34 Q60 28 50 28 Q40 28 33 34 Z" fill="#171717"/>
+  <!-- Ears -->
+  <circle cx="32" cy="36" r="2.5" fill="#e8b88a"/>
+  <circle cx="68" cy="36" r="2.5" fill="#e8b88a"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="32" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="32" r="3" fill="#2c3e50"/>
+  <!-- Energetic open grin -->
+  <path d="M42 41 Q50 50 58 41 Z" fill="#7a4a32"/>
+  <!-- Body: blue delivery jacket -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#2980b9"/>
+  <!-- Reflective chest stripe -->
+  <rect x="35" y="66" width="30" height="4" fill="#f1c40f"/>
+  <!-- Jacket zip -->
+  <line x1="50" y1="57" x2="50" y2="66" stroke="#1f618d" stroke-width="1.5"/>
+  <!-- Small delivery box at hip -->
+  <rect x="58" y="74" width="15" height="13" rx="1.5" fill="#c0392b" stroke="#922b21" stroke-width="1"/>
+  <rect x="60" y="76" width="11" height="3" rx="1" fill="#ecf0f1"/>
+  <!-- Box strap over shoulder -->
+  <line x1="65" y1="74" x2="56" y2="56" stroke="#2c3e50" stroke-width="3"/>
+  <!-- Collar -->
+  <path d="M44 55 L50 59 L56 55" fill="none" stroke="#1f618d" stroke-width="1.5"/>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Prabin - young rider with goggles at neck -->
+
+  <!-- Head -->
+  <circle cx="50" cy="35" r="19" fill="#e8b88a"/>
+  <!-- Short dark hair -->
+  <path d="M31 32 Q31 19 50 19 Q69 19 69 32 Q60 25 50 26 Q40 25 31 32 Z" fill="#1a1a1a"/>
+  <!-- Ears -->
+  <circle cx="31" cy="36" r="3" fill="#e8b88a"/>
+  <circle cx="69" cy="36" r="3" fill="#e8b88a"/>
+  <!-- Eyes -->
+  <circle cx="43" cy="33" r="3" fill="#2c3e50"/>
+  <circle cx="57" cy="33" r="3" fill="#2c3e50"/>
+  <!-- Energetic smile -->
+  <path d="M42 42 Q50 49 58 42 Z" fill="#7a4a32"/>
+  <!-- Body: teal casual riding jacket -->
+  <rect x="35" y="55" width="30" height="35" rx="5" fill="#0e7490"/>
+  <!-- Chest stripe -->
+  <rect x="35" y="63" width="30" height="4" fill="#f5f5f4"/>
+  <!-- Goggles hanging at neck -->
+  <circle cx="44" cy="63" r="3.5" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+  <circle cx="56" cy="63" r="3.5" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+  <line x1="47.5" y1="63" x2="52.5" y2="63" stroke="#1a1a1a" stroke-width="2"/>
+  <!-- Collar -->
+  <path d="M44 55 L50 59 L56 55" fill="none" stroke="#0a5468" stroke-width="1.5"/>
+</svg>
