@@ -43,7 +43,17 @@ export const PHYSICS = {
   GRAVITY: 980,
   FRICTION: 0.98,
   AIR_RESISTANCE: 0.995,
-  GROUND_FRICTION: 0.96
+  GROUND_FRICTION: 0.96,
+  // P3 Step 5: reverse + jump mechanics — values scale with each vehicle's
+  // own stats so they fit existing physics without altering any vehicle data.
+  // Reverse uses a fraction of the vehicle's forward acceleration/maxSpeed,
+  // so S/Down first slows toward zero, then drives backward gently and clamps.
+  REVERSE_ACCELERATION_MULTIPLIER: 0.6,
+  REVERSE_MAX_SPEED_MULTIPLIER: 0.4,
+  // Upward impulse (px/s) applied on a grounded player jump; with gravity 980
+  // this yields roughly a ~52px arc and leaves the ground via the existing
+  // gravity / ground-collision system.
+  JUMP_VELOCITY: 320
 };
 
 export const VEHICLE_DEFAULTS = {

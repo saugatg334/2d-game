@@ -8,6 +8,7 @@ import { CurrencyDisplay } from '../ui/CurrencyDisplay.js';
 import { SelectionPanel } from '../ui/SelectionPanel.js';
 import { stages } from '../data/stages.js';
 import { saveSystem } from '../systems/SaveSystem.js';
+import { isStageProgressionUnlocked, isStagePlayable } from '../game/StageProgression.js';
 
 export class StageSelectScene extends Phaser.Scene {
   constructor() {
@@ -29,7 +30,15 @@ export class StageSelectScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(COLORS.DARK);
     this.cameras.main.fadeIn(300, 0, 0, 0);
 
-    this.selectedStage = stages.find(stage => stage.id === saveSystem.getSelectedStage()) || stages[0];
+    // P3 Step 3: resolve the selected stage to a stage the player may actually
+    // play (progression + ownership). A stale/invalid, or a previously-saved
+    // but now progression-blocked, selection falls back to the first playable
+    // main stage so the game never lands the player on a blocked stage.
+    let selected = stages.find(stage => stage.id === saveSystem.getSelectedStage());
+    if (!selected || !isStagePlayable(selected.id, saveSystem)) {
+      selected = stages.find(s => isStagePlayable(s.id, saveSystem)) || stages[0];
+    }
+    this.selectedStage = selected;
 
     // F7: if the saved ID was stale/invalid, persist the fallback we resolved to.
     saveSystem.persistSelectionIfStale('selectedStage', this.selectedStage.id);
@@ -58,7 +67,7 @@ export class StageSelectScene extends Phaser.Scene {
       width: 160, height: 50, bgColor: COLORS.SUCCESS, fontSize: 16
     });
     this.startButton.onClick(() => {
-      if (this.selectedStage) {
+      if (this.selectedStage && isStagePlayable(this.selectedStage.id, saveSystem)) {
         saveSystem.setSelectedStage(this.selectedStage.id);
         this.cameras.main.fadeOut(200, 0, 0, 0);
         this.cameras.main.once('camerafadeoutcomplete', () => {
@@ -86,7 +95,11 @@ export class StageSelectScene extends Phaser.Scene {
       imageKey: stage => 'stage_' + stage.id,
       imageWidth: 170,
       imageHeight: 62,
-      getUnlocked: stage => saveSystem.isStageUnlocked(stage.id),
+      getUnlocked: stage => isStagePlayable(stage.id, saveSystem),
+      getLockHint: stage =>
+        isStageProgressionUnlocked(stage.id, saveSystem.data)
+          ? null // progression OK -> existing cost/price display already applies
+          : 'Complete previous stage',
       getStats: stage => [`${stage.targetDistance}m`, '⭐'.repeat(stage.difficulty)]
     });
     this.selectionPanel.setItems(stages, this.selectedStage?.id);

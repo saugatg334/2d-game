@@ -20,6 +20,10 @@ export class SelectionPanel extends Phaser.GameObjects.Container {
       imageHeight: 70,
       getUnlocked: item => item.unlocked !== false,
       getStats: () => [],
+      // P3 Step 3: optional per-item lock explanation shown on locked cards
+      // (e.g. "Complete previous stage"). Defaults to null so generic panels
+      // (characters/vehicles) are unaffected.
+      getLockHint: () => null,
       selectedId: null,
       pageSize: 4,
       ...options
@@ -165,6 +169,22 @@ export class SelectionPanel extends Phaser.GameObjects.Container {
         );
         costText.setOrigin(0.5);
         card.add(costText);
+
+        // P3 Step 3: optional progression/block reason shown on locked cards
+        // WITHOUT removing the existing cost/price display above.
+        const lockHint = typeof this.options.getLockHint === 'function'
+          ? this.options.getLockHint(item)
+          : null;
+        if (lockHint && String(lockHint).trim() !== '') {
+          const hintText = this.scene.add.text(0, cardHeight / 2 - 62, String(lockHint), {
+            fontSize: '11px',
+            color: COLORS.WARNING,
+            align: 'center',
+            wordWrap: { width: cardWidth - 20 }
+          });
+          hintText.setOrigin(0.5);
+          card.add(hintText);
+        }
       } else {
         const unlockedText = this.scene.add.text(0, cardHeight / 2 - 30,
           index === this.selectedIndex ? '✓ SELECTED' : '✓ UNLOCKED', {

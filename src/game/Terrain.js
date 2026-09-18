@@ -4,6 +4,24 @@
 
 import { resolveStagePlan } from './StagePlan.js';
 
+// ---- P3 Step 2: profile definitions for legacy terrain ----
+// Feature-mix weights and rhythm per existing terrain.profile value (only the
+// profile names already present in stages.js are defined here). Weights are
+// the base probabilities BEFORE the stage's jumpChance / valleyChance factors
+// are applied (those factors scale the ramp/valley weights); `amplitude`
+// scales how much of the stage's minHeight..maxHeight elevation band each
+// feature uses; runMin/runMax bound how many segments one hill feature spans
+// (sustained climbs vs choppy terrain).
+const LEGACY_TERRAIN_PROFILES = {
+  flat:          { flatWeight: 0.55, hillWeight: 0.25, rampWeight: 0.10, valleyWeight: 0.10, amplitude: 0.30, runMin: 1, runMax: 2 },
+  rolling_hills: { flatWeight: 0.30, hillWeight: 0.45, rampWeight: 0.12, valleyWeight: 0.13, amplitude: 0.65, runMin: 2, runMax: 4 },
+  steep_hills:   { flatWeight: 0.18, hillWeight: 0.52, rampWeight: 0.15, valleyWeight: 0.15, amplitude: 1.00, runMin: 2, runMax: 5 },
+  valley:        { flatWeight: 0.22, hillWeight: 0.38, rampWeight: 0.10, valleyWeight: 0.30, amplitude: 0.85, runMin: 2, runMax: 5 },
+  mountain_road: { flatWeight: 0.15, hillWeight: 0.55, rampWeight: 0.12, valleyWeight: 0.18, amplitude: 0.95, runMin: 3, runMax: 6 },
+  rocky:         { flatWeight: 0.20, hillWeight: 0.40, rampWeight: 0.22, valleyWeight: 0.18, amplitude: 0.90, runMin: 1, runMax: 3 },
+  expressway:    { flatWeight: 0.60, hillWeight: 0.28, rampWeight: 0.04, valleyWeight: 0.08, amplitude: 0.35, runMin: 2, runMax: 4 }
+};
+
 export class Terrain {
   constructor(scene, theme) {
     this.scene = scene;
@@ -42,6 +60,19 @@ export class Terrain {
     // legacy/procedural stages AND for Fast Track stages whose data does not
     // (yet) define sections - those keep using the legacy fallback below.
     this.fastTrackSections = this.stagePlan.terrain.sections;
+
+    // ---- P3 Step 2: data-driven legacy terrain configuration ----
+    // Non-Fast-Track stages now generate from their own resolved stage data
+    // (terrain.profile / minHeight / maxHeight / jumpChance / valleyChance /
+    // segmentWidth). Fast Track stages are untouched: the sections-based paths
+    // handle them exclusively and this config is never consulted for them.
+    // Every value resolves with a safe fallback so stages with missing or
+    // invalid data keep generating playable terrain.
+    this.legacyTerrain = this.resolveLegacyTerrainConfig();
+    this.legacyRun = { remaining: 0, afterRemaining: 0, stepY: 0, afterStepY: 0 };
+    if (!this.isFastTrack) {
+      this.segmentWidth = this.legacyTerrain.segmentWidth;
+    }
   }
 
   // Generate initial terrain
@@ -134,42 +165,147 @@ export class Terrain {
       return;
     }
 
-    // Random terrain type for other procedural stages - gentler slopes for better gameplay
-    const rand = Math.random();
-    let endY, type;
+    // P3 Step 2: every non-Fast-Track stage now generates from its own
+    // resolved stage data (terrain.profile, minHeight/maxHeight, jumpChance,
+    // valleyChance, segmentWidth). The previous fixed distribution (35% flat /
+    // 20/20 hills / 13% ramp / 12% valley with fixed 15..50px magnitudes,
+    // identical for all 48 legacy stages) is replaced by the profile-weighted,
+    // data-bounded generator below.
+    this.generateLegacySegment(startX, prevY);
+  }
 
-    // Max slope: ~25 degrees (50px over 100px horizontal)
-    const maxSlope = 50;
+  // Resolve the legacy terrain configuration ONCE per Terrain instance from
+  // the already-resolved StagePlan (never per segment). Missing/invalid
+  // values fall back to safe defaults so a stage with unexpected data keeps
+  // generating playable terrain instead of crashing or producing walls.
+  resolveLegacyTerrainConfig() {
+    const t = this.stagePlan.terrain || {};
+    const fin = (v, fallback) => (typeof v === 'number' && Number.isFinite(v)) ? v : fallback;
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
-    if (rand < 0.35) {
-      // Flat - more common for stability
-      endY = prevY;
-      type = 'flat';
-    } else if (rand < 0.55) {
-      // Hill up - gentle slope
-      endY = prevY - 15 - Math.random() * 35;
-      type = 'hillUp';
-    } else if (rand < 0.75) {
-      // Hill down - gentle slope
-      endY = prevY + 15 + Math.random() * 35;
-      type = 'hillDown';
-    } else if (rand < 0.88) {
-      // Ramp - moderate jump
-      endY = prevY - 20 - Math.random() * 30;
-      type = 'ramp';
-    } else {
-      // Valley - gentle dip
-      endY = prevY + 20 + Math.random() * 25;
-      type = 'valley';
+    const profileKey = LEGACY_TERRAIN_PROFILES[t.profile] ? t.profile : 'rolling_hills';
+    const profile = LEGACY_TERRAIN_PROFILES[profileKey];
+
+    // minHeight/maxHeight are stage-data feature heights ABOVE groundY
+    // (stages.js: 20 + difficulty*10 / 60 + difficulty*25 -> 30..85 at
+    // difficulty 1, 70..185 at difficulty 5). The clamps only guard against
+    // invalid/extreme future data; every current stage resolves unchanged.
+    const minHeight = clamp(fin(t.minHeight, 30), 10, 120);
+    const maxHeight = clamp(fin(t.maxHeight, 85), minHeight, 200);
+
+    // Stage chances -> normalized feature-weight factors. Current data
+    // ranges: jumpChance 0.025..0.125 (factor 0.2..1.0), valleyChance
+    // 0.14..0.30 (factor ~0.47..1.0). A factor above 1 (future data) stays
+    // valid because the final weights are normalized to sum to 1.
+    const jumpFactor = clamp(fin(t.jumpChance, 0.1) / 0.125, 0, 2);
+    const valleyFactor = clamp(fin(t.valleyChance, 0.25) / 0.3, 0, 2);
+
+    const rampW = profile.rampWeight * jumpFactor;
+    const valleyW = profile.valleyWeight * valleyFactor;
+    const total = profile.flatWeight + profile.hillWeight + rampW + valleyW;
+    const weights = {
+      flat: profile.flatWeight / total,
+      up: (profile.hillWeight / 2) / total,
+      down: (profile.hillWeight / 2) / total,
+      ramp: rampW / total,
+      valley: valleyW / total
+    };
+
+    return {
+      profileKey,
+      profile,
+      minHeight,
+      maxHeight,
+      weights,
+      segmentWidth: clamp(Math.round(fin(t.segmentWidth, 100)), 50, 200)
+    };
+  }
+
+  // Generate one legacy-stage segment from the resolved stage configuration.
+  // Hills/descents are multi-segment "runs" so stage data can express tall
+  // elevation (up to maxHeight) without ever creating a vertical wall: run
+  // length is stretched until every per-segment step stays inside the slope
+  // guard, and every Y is clamped to the stage's elevation envelope.
+  generateLegacySegment(startX, prevY) {
+    const cfg = this.legacyTerrain;
+    const endX = startX + this.segmentWidth;
+    const envelopeTop = this.groundY - cfg.maxHeight;  // highest playable Y
+    const envelopeBottom = this.groundY + 80;          // deepest playable Y
+    const clampY = (y) => Phaser.Math.Clamp(y, envelopeTop, envelopeBottom);
+    const MAX_STEP = 45; // per-segment slope guard (runs stretch, never wall)
+
+    // Continue an active multi-segment run (climb/descent, or valley climb-out).
+    if (this.legacyRun.remaining > 0 || this.legacyRun.afterRemaining > 0) {
+      const inMainPhase = this.legacyRun.remaining > 0;
+      const step = inMainPhase ? this.legacyRun.stepY : this.legacyRun.afterStepY;
+      if (inMainPhase) this.legacyRun.remaining -= 1;
+      else this.legacyRun.afterRemaining -= 1;
+      this.addSegment(startX, prevY, endX, clampY(prevY + step), false);
+      return;
     }
 
-    // Clamp Y values - limit max height change for smoother terrain
-    const maxRise = maxSlope;
-    const maxDrop = maxSlope;
-    endY = Phaser.Math.Clamp(endY, prevY - maxRise, prevY + maxDrop);
-    endY = Phaser.Math.Clamp(endY, this.groundY - 150, this.groundY + 80);
+    // Pick the next feature from the profile-weighted mix (weights already
+    // include this stage's jumpChance / valleyChance factors).
+    const w = cfg.weights;
+    const roll = Math.random();
+    let feature;
+    if (roll < w.flat) feature = 'flat';
+    else if (roll < w.flat + w.up) feature = 'hillUp';
+    else if (roll < w.flat + w.up + w.down) feature = 'hillDown';
+    else if (roll < w.flat + w.up + w.down + w.ramp) feature = 'ramp';
+    else feature = 'valley';
 
-    this.addSegment(startX, prevY, startX + this.segmentWidth, endY, false);
+    const band = Math.max(0, cfg.maxHeight - cfg.minHeight);
+    const elevationTarget = () =>
+      Math.max(8, (cfg.minHeight + Math.random() * band) * cfg.profile.amplitude);
+
+    if (feature === 'flat') {
+      this.addSegment(startX, prevY, endX, prevY, true);
+      return;
+    }
+
+    if (feature === 'ramp') {
+      // Single-segment jump feature, bounded by the slope guard.
+      const rise = Math.min(MAX_STEP, 20 + Math.random() * Math.max(10, cfg.maxHeight * 0.25));
+      this.addSegment(startX, prevY, endX, clampY(prevY - rise), false);
+      return;
+    }
+
+    if (feature === 'hillUp' || feature === 'hillDown') {
+      const goingUp = feature === 'hillUp';
+      const delta = goingUp
+        ? Math.min(elevationTarget(), prevY - envelopeTop)      // headroom above
+        : Math.min(elevationTarget() * 0.8, envelopeBottom - prevY); // floor below
+      if (delta < 10) {
+        // Too close to the envelope to shape the feature - emit flat ground.
+        this.addSegment(startX, prevY, endX, prevY, true);
+        return;
+      }
+      const minLen = Math.ceil(delta / MAX_STEP);
+      const wantedLen = cfg.profile.runMin +
+        Math.round(Math.random() * (cfg.profile.runMax - cfg.profile.runMin));
+      const len = Math.min(8, Math.max(minLen, wantedLen, 1));
+      const step = (goingUp ? -1 : 1) * (delta / len);
+      this.legacyRun = { remaining: len - 1, afterRemaining: 0, stepY: step, afterStepY: 0 };
+      this.addSegment(startX, prevY, endX, clampY(prevY + step), false);
+      return;
+    }
+
+    // valley: V-shaped dip - descend for `out` segments, then climb back out
+    // over `back` segments toward the pre-dip elevation. valleyChance scales
+    // how often this feature is chosen; the stage band scales its depth.
+    const depth = Math.min(20 + Math.random() * Math.max(20, cfg.maxHeight * 0.35), envelopeBottom - prevY);
+    if (depth < 10) {
+      this.addSegment(startX, prevY, endX, prevY, true);
+      return;
+    }
+    const out = Math.max(1, Math.min(4, Math.ceil(depth / MAX_STEP)));
+    const back = Math.max(1, Math.min(4, Math.ceil(depth / MAX_STEP)));
+    // First descent step is emitted below; remaining = out - 1 so the total
+    // descent is exactly `depth` and the climb-out returns to the start Y
+    // (same convention as the hill-run above).
+    this.legacyRun = { remaining: out - 1, afterRemaining: back, stepY: depth / out, afterStepY: -(depth / back) };
+    this.addSegment(startX, prevY, endX, clampY(prevY + depth / out), false);
   }
 
   // ---- P0 Step 2: Fast Track section-selection helpers ----

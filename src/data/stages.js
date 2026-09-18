@@ -68,6 +68,91 @@ const themes = {
   mountain: ['#b0e0e6', '#708090', '#696969', '#778899', '#00ced1']
 };
 
+// P3 Step 6: Stage-specific collectible spawn chances (data only).
+// Each of the 50 main stages declares its own coin/fuel/diamond spawn
+// probabilities so the existing Terrain -> StagePlan -> Collectibles pipeline
+// stays fully data-driven. Values are the independent chances consumed by
+// Collectibles.generate() (cumulative thresholds are derived there).
+// Reward VALUES are untouched and still live in Collectibles.js:
+//   coin = 1, diamond = 1, fuel = 25
+// Balancing philosophy (variety, not an economy rebalance):
+//   flat / plains ......... most coins, low fuel, normal diamonds
+//   valley / river ........ coin-leaning, moderate fuel
+//   rolling_hills ......... balanced, slightly more fuel than flat
+//   expressway / Fast Track highest coin density, moderate fuel
+//   steep_hills ........... more fuel, fewer coins (still very playable)
+//   mountain_road ......... fuel-heavy to support long climbs
+//   rocky / high mountain . most fuel, fewest coins
+// Every stage's three chances sum to exactly 1, diamonds stay scarce
+// everywhere, and the overall average stays close to the 70/20/10 baseline.
+const DEFAULT_COLLECTIBLES = { coinChance: 0.7, fuelChance: 0.2, diamondChance: 0.1 };
+
+const collectibleChances = {
+  // --- flat / plains (easy, coin-dense) -------------------------------
+  ew_highway:                 { coinChance: 0.77, fuelChance: 0.14, diamondChance: 0.09 },
+  chitwan:                    { coinChance: 0.79, fuelChance: 0.12, diamondChance: 0.09 },
+  narayangadh:                { coinChance: 0.76, fuelChance: 0.15, diamondChance: 0.09 },
+  bharatpur:                  { coinChance: 0.78, fuelChance: 0.14, diamondChance: 0.08 },
+  bardibas:                   { coinChance: 0.80, fuelChance: 0.12, diamondChance: 0.08 },
+  janakpur:                   { coinChance: 0.78, fuelChance: 0.14, diamondChance: 0.08 },
+  birgunj:                    { coinChance: 0.77, fuelChance: 0.15, diamondChance: 0.08 },
+  biratnagar:                 { coinChance: 0.79, fuelChance: 0.13, diamondChance: 0.08 },
+  itahari:                    { coinChance: 0.80, fuelChance: 0.12, diamondChance: 0.08 },
+  birtamod:                   { coinChance: 0.76, fuelChance: 0.16, diamondChance: 0.08 },
+  lumbini:                    { coinChance: 0.79, fuelChance: 0.13, diamondChance: 0.08 },
+
+  // --- valley / river (coin-leaning) ----------------------------------
+  khokana:                    { coinChance: 0.76, fuelChance: 0.16, diamondChance: 0.08 },
+  muglin_road:                { coinChance: 0.72, fuelChance: 0.20, diamondChance: 0.08 },
+  begnas:                     { coinChance: 0.75, fuelChance: 0.17, diamondChance: 0.08 },
+  narayangadh_muglin:         { coinChance: 0.71, fuelChance: 0.20, diamondChance: 0.09 },
+  khurkot:                    { coinChance: 0.73, fuelChance: 0.18, diamondChance: 0.09 },
+  kanyam:                     { coinChance: 0.74, fuelChance: 0.17, diamondChance: 0.09 },
+  beni:                       { coinChance: 0.70, fuelChance: 0.22, diamondChance: 0.08 },
+  kagbeni:                    { coinChance: 0.70, fuelChance: 0.21, diamondChance: 0.09 },
+
+  // --- rolling_hills (balanced) ---------------------------------------
+  ktm_valley:                 { coinChance: 0.73, fuelChance: 0.19, diamondChance: 0.08 },
+  pokhara_hills:              { coinChance: 0.71, fuelChance: 0.20, diamondChance: 0.09 },
+  nijgadh_hetauda:            { coinChance: 0.72, fuelChance: 0.19, diamondChance: 0.09 },
+  prithvi_highway:            { coinChance: 0.70, fuelChance: 0.21, diamondChance: 0.09 },
+  pokhara_valley:             { coinChance: 0.72, fuelChance: 0.20, diamondChance: 0.08 },
+  tanahun_hills:              { coinChance: 0.69, fuelChance: 0.22, diamondChance: 0.09 },
+  dharan:                     { coinChance: 0.70, fuelChance: 0.20, diamondChance: 0.10 },
+  ilam:                       { coinChance: 0.71, fuelChance: 0.21, diamondChance: 0.08 },
+  butwal:                     { coinChance: 0.69, fuelChance: 0.21, diamondChance: 0.10 },
+
+  // --- expressway / Fast Track (highest coin density) -----------------
+  ktm_nijgadh_fast_track:     { coinChance: 0.79, fuelChance: 0.14, diamondChance: 0.07 },
+  nijgadh_fast_track:         { coinChance: 0.78, fuelChance: 0.15, diamondChance: 0.07 },
+
+  // --- steep_hills (fuel-leaning) -------------------------------------
+  himalayan_route:            { coinChance: 0.64, fuelChance: 0.27, diamondChance: 0.09 },
+  hetauda_hills:              { coinChance: 0.67, fuelChance: 0.24, diamondChance: 0.09 },
+  makwanpur_hills:            { coinChance: 0.66, fuelChance: 0.25, diamondChance: 0.09 },
+  sarangkot:                  { coinChance: 0.68, fuelChance: 0.23, diamondChance: 0.09 },
+  gorkha:                     { coinChance: 0.67, fuelChance: 0.25, diamondChance: 0.08 },
+  sindhuli:                   { coinChance: 0.65, fuelChance: 0.26, diamondChance: 0.09 },
+  dhankuta:                   { coinChance: 0.64, fuelChance: 0.26, diamondChance: 0.10 },
+  palpa:                      { coinChance: 0.65, fuelChance: 0.25, diamondChance: 0.10 },
+  jumla:                      { coinChance: 0.62, fuelChance: 0.29, diamondChance: 0.09 },
+
+  // --- mountain_road (fuel-heavy long climbs) -------------------------
+  tribhuvan_highway:          { coinChance: 0.64, fuelChance: 0.27, diamondChance: 0.09 },
+  kathmandu_pokhara:          { coinChance: 0.65, fuelChance: 0.26, diamondChance: 0.09 },
+  bandipur:                   { coinChance: 0.63, fuelChance: 0.28, diamondChance: 0.09 },
+  bp_highway:                 { coinChance: 0.61, fuelChance: 0.30, diamondChance: 0.09 },
+  tansen:                     { coinChance: 0.62, fuelChance: 0.29, diamondChance: 0.09 },
+  annapurna_mountain_road:    { coinChance: 0.60, fuelChance: 0.31, diamondChance: 0.09 },
+
+  // --- rocky / dry mountain (most fuel, fewest coins) ------------------
+  mustang_road:               { coinChance: 0.62, fuelChance: 0.29, diamondChance: 0.09 },
+  jomsom:                     { coinChance: 0.58, fuelChance: 0.33, diamondChance: 0.09 },
+  mustang:                    { coinChance: 0.59, fuelChance: 0.32, diamondChance: 0.09 },
+  manang:                     { coinChance: 0.57, fuelChance: 0.34, diamondChance: 0.09 },
+  karnali_highway:            { coinChance: 0.58, fuelChance: 0.32, diamondChance: 0.10 }
+};
+
 function createStage([id, name, location, environment, profile, distance, difficulty, unlockType, unlockAmount]) {
   const colors = themes[environment] || themes.hills;
   const assetName = existingStageAssets.has(id) ? `${id}.svg` : null;
@@ -78,7 +163,7 @@ function createStage([id, name, location, environment, profile, distance, diffic
     assets: { preview: thumbnail, background }, unlocked: unlockType === 'free', cost: unlockAmount, currency: unlockType === 'diamonds' ? 'diamonds' : 'coins',
     targetDistance: distance, distance, environment,
     terrain: { profile, segmentWidth: 100, minHeight: 20 + difficulty * 10, maxHeight: 60 + difficulty * 25, jumpChance: Math.min(0.2, difficulty * 0.025), valleyChance: Math.min(0.35, 0.1 + difficulty * 0.04) },
-    physics: { gravity: 980 }, collectibles: { coinChance: 0.7, fuelChance: 0.2, diamondChance: 0.1 },
+    physics: { gravity: 980 }, collectibles: { ...(collectibleChances[id] || DEFAULT_COLLECTIBLES) },
     thumbnail, theme: { skyColor: colors[0], hillColor: colors[1], groundColor: colors[2], mountainColor: colors[3], accentColor: colors[4] }, difficulty,
     unlock: { type: unlockType, amount: unlockAmount }
   };

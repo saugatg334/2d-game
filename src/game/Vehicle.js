@@ -1,4 +1,4 @@
-import { COLORS } from '../config/constants.js';
+import { COLORS, PHYSICS } from '../config/constants.js';
 
 export class Vehicle {
   constructor(scene, stats, x, y, options = {}) {
@@ -21,6 +21,8 @@ export class Vehicle {
     this.width = stats.width;
     this.height = stats.height;
     this.wheelRadius = stats.wheelRadius;
+    // mass is data-only and intentionally NOT wired into physics: applying it
+    // (inertia / F=ma) would change gravity, acceleration and flip gameplay.
     this.mass = stats.mass;
     this.acceleration = stats.acceleration * (1 + (characterBonuses.acceleration || 0));
     this.maxSpeed = stats.maxSpeed * (1 + (characterBonuses.maxSpeed || 0));
@@ -33,6 +35,9 @@ export class Vehicle {
     this.flipped = false;
     this.flipTimer = 0;
     this.airTime = 0;
+    // P3 Step 5: jump rising-edge tracker. Reset per instance so a fresh
+    // run/Replay starts with no held-jump state.
+    this.jumpPressedLast = false;
 
     this.graphics = scene.add.graphics();
     this.wheelGraphics = scene.add.graphics();
@@ -113,6 +118,16 @@ export class Vehicle {
     else if (this.velocityX < 0) this.velocityX = Math.min(0, this.velocityX + bf);
   }
 
+  // P3 Step 5: reverse — drives velocityX negative, scaled from this vehicle's
+  // own acceleration, clamped to a fraction of its maxSpeed. While moving
+  // forward this first reduces velocityX toward zero, then into reverse.
+  reverse(delta) {
+    const reverseAcceleration = this.acceleration * PHYSICS.REVERSE_ACCELERATION_MULTIPLIER;
+    this.velocityX -= reverseAcceleration * delta;
+    const reverseMaxSpeed = this.maxSpeed * PHYSICS.REVERSE_MAX_SPEED_MULTIPLIER;
+    if (this.velocityX < -reverseMaxSpeed) this.velocityX = -reverseMaxSpeed;
+  }
+
   applyGravity(gravity, delta) {
     if (!this.grounded) this.velocityY += gravity * delta;
   }
@@ -123,6 +138,16 @@ export class Vehicle {
 
   rotateAir(direction, delta) {
     if (!this.grounded) this.angularVelocity += direction * this.airRotationSpeed * delta;
+  }
+
+  // P3 Step 5: grounded, edge-triggered jump. Leaves the ground through the
+  // existing gravity / ground-collision system; holding W/Up will not re-jump.
+  updateJump(jumpPressed) {
+    const risingEdge = jumpPressed && !this.jumpPressedLast;
+    if (risingEdge && this.grounded) {
+      this.velocityY = -PHYSICS.JUMP_VELOCITY;
+    }
+    this.jumpPressedLast = jumpPressed;
   }
 
   updateRotation(delta) {
@@ -492,6 +517,7 @@ export class Vehicle {
 
     if (input.accelerate) this.accelerate(dt);
     if (input.brake) this.brake(dt);
+    if (input.reverse) this.reverse(dt);
     if (input.tiltLeft) this.rotateAir(-1, dt);
     if (input.tiltRight) this.rotateAir(1, dt);
 
@@ -500,6 +526,9 @@ export class Vehicle {
     this.updateRotation(dt);
     this.updatePosition(dt);
     this.checkGroundCollision(terrain, terrainAlignmentRate);
+    // Jump runs after ground collision so grounded state and velocityY are
+    // already settled before the impulse is applied.
+    this.updateJump(input.jump);
     this.render();
   }
 

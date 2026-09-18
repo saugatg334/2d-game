@@ -57,6 +57,10 @@ const characterSpecs = [
 
 function createCharacter([id, name, category, region, weight, handling, amount, type, fuelEfficiency = 0, asset]) {
   const thumbnail = asset ? `/assets/images/characters/${asset}` : null;
+  // NOTE (P3 Step 10): `stats.weight`, `bonuses.stability` and
+  // `bonuses.coinMultiplier` are data-only and intentionally NOT wired into
+  // gameplay — applying weight/stability would alter physics, and
+  // coinMultiplier would alter reward behavior. They are kept as inert data.
   const character = {
     id, name, description: `${name}, a Nepali ${category} ready for the road.`, category, region,
     assets: { thumbnail, sprite: thumbnail }, unlock: { type, amount },
@@ -71,6 +75,8 @@ function createCharacter([id, name, category, region, weight, handling, amount, 
       handling: 0,
       airControl: 0.3,
       fuelEfficiency: 0.25,
+      // coinBonus is the LIVE reward modifier (read in GameScene);
+      // coinMultiplier below is currently UNUSED — do not change the reward calc.
       coinBonus: 0.15,
       coinMultiplier: 0,
       stability: 0.25
