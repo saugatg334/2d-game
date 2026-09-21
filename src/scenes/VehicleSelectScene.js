@@ -8,6 +8,8 @@ import { CurrencyDisplay } from '../ui/CurrencyDisplay.js';
 import { SelectionPanel } from '../ui/SelectionPanel.js';
 import { vehicles } from '../data/vehicles.js';
 import { saveSystem } from '../systems/SaveSystem.js';
+import { buyVehicle } from '../systems/purchase.js';
+import { showToast } from '../ui/Toast.js';
 
 export class VehicleSelectScene extends Phaser.Scene {
   constructor() {
@@ -97,6 +99,41 @@ export class VehicleSelectScene extends Phaser.Scene {
     this.selectionPanel.onSelectItem(vehicle => {
       this.selectedVehicle = vehicle;
     });
+    // P6B: locked cards open the purchase prompt; the panel fully rebuilds so
+    // the unlocked state and currency display refresh immediately.
+    this.selectionPanel.onLockedItem(vehicle => this.promptPurchase(vehicle));
+  }
+
+  // P6B: shared confirmation prompt for locked vehicles. Purchase runs only
+  // after the player confirms, and the grid + currency display refresh on both
+  // outcomes (success -> unlocked; failure -> still locked with a message).
+  promptPurchase(vehicle) {
+    if (!vehicle || saveSystem.isVehicleUnlocked(vehicle.id)) return;
+    const currencyIcon = vehicle.currency === 'diamonds' ? '💎' : '🪙';
+    const button = this.add.text(this.scale.width / 2, this.scale.height / 2 + 40,
+      `UNLOCK FOR ${vehicle.cost} ${currencyIcon}?`, {
+        fontSize: '20px', color: COLORS.WHITE, backgroundColor: COLORS.PRIMARY,
+        padding: { x: 16, y: 8 }
+      }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    const cancel = this.add.text(this.scale.width / 2, this.scale.height / 2 + 90,
+      'CANCEL', {
+        fontSize: '14px', color: COLORS.WHITE, backgroundColor: '#333333',
+        padding: { x: 12, y: 6 }
+      }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    const cleanup = () => { button.destroy(); cancel.destroy(); };
+    button.on('pointerup', () => {
+      cleanup();
+      const result = buyVehicle(saveSystem, vehicle);
+      if (result.ok) {
+        this.selectedVehicle = vehicle;
+      } else if (result.message) {
+        showToast(this, result.message);
+      }
+      this.createVehicleGrid(this.scale.width / 2, this.scale.height / 2 - 20);
+      this.currencyDisplay.setCoins(saveSystem.getCoins());
+      this.currencyDisplay.setDiamonds(saveSystem.getDiamonds());
+    });
+    cancel.on('pointerup', cleanup);
   }
 }
 

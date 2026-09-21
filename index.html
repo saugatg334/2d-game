@@ -3,14 +3,165 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#1a1a2e" />
-  <meta name="description" content="🇳🇵 Nepali Racer - A 2D Hill-Climbing Racing Game" />
+  <meta name="theme-color" content="#14142a" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="robots" content="index, follow" />
+  <meta name="description" content="Nepali Racer — a free 2D hill-climbing racing game inspired by Nepal. Race 50 Nepal-themed stages, 51 vehicles and 50 riders right in your browser." />
+  <meta name="application-name" content="Nepali Racer" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="Nepali Racer" />
+  <meta property="og:title" content="Nepali Racer — Nepal's Hill Climb Adventure" />
+  <meta property="og:description" content="A free 2D hill-climbing racing game inspired by Nepal. 50 stages, 51 vehicles, 50 riders." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter / X card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Nepali Racer — Nepal's Hill Climb Adventure" />
+  <meta name="twitter:description" content="A free 2D hill-climbing racing game inspired by Nepal. 50 stages, 51 vehicles, 50 riders." />
+
+  <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <title>🇳🇵 Nepali Racer 🚗</title>
+  <title>Nepali Racer — Nepal's Hill Climb Adventure</title>
   <link rel="stylesheet" href="/src/styles/main.css" />
+  <link rel="stylesheet" href="/src/site/styles/site.css" />
 </head>
 <body>
+  <header class="site-nav">
+    <div class="site-nav__inner">
+      <a class="site-brand" href="#home">🏔️ Nepali Racer</a>
+      <button class="site-nav-toggle" id="site-nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="site-nav-links">☰</button>
+      <nav class="site-nav-links" id="site-nav-links" aria-label="Primary">
+        <a class="site-nav-link" href="#home">Home</a>
+        <a class="site-nav-link" href="#vehicles">Vehicles</a>
+        <a class="site-nav-link" href="#characters">Characters</a>
+        <a class="site-nav-link" href="#stages">Stages</a>
+        <a class="site-nav-link" href="#how-to-play">How to Play</a>
+        <a class="site-nav-link" href="#about">About</a>
+        <a class="site-nav-cta" href="#how-to-play" data-action="play">PLAY NOW</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section id="home" class="site-hero" aria-label="Nepali Racer hero">
+      <span class="site-hero__eyebrow">🇳🇵 A 2D Hill-Climbing Racing Game</span>
+      <h1 class="site-hero__title">Nepali Racer</h1>
+      <p class="site-hero__tagline">Race the highways and hill roads of Nepal.</p>
+      <p class="site-hero__desc">
+        Climb legendary routes from the Kathmandu Valley to the high trails of
+        Mustang and Manang. Master 51 vehicles, unlock 50 characters and conquer
+        50 Nepal-themed stages — all for free, right in your browser.
+      </p>
+      <div class="site-hero__actions">
+        <a class="site-btn site-btn--primary" href="#how-to-play" data-action="play">▶ PLAY NOW</a>
+        <a class="site-btn site-btn--ghost" href="#vehicles">Explore the Game</a>
+      </div>
+      <div class="site-hero__art" aria-hidden="true">
+        <img src="/assets/images/vehicles/nepal_racer.svg" alt="" width="300" />
+      </div>
+    </section>
+
+    <section id="features" class="site-section site-features" aria-label="Game features">
+      <div class="site-section__inner">
+        <span class="site-section__eyebrow">Race Features</span>
+        <h2 class="site-section__title">Built for the Open Road</h2>
+        <div class="site-feature-grid">
+          <div class="site-feature-card"><span class="site-feature-card__icon">🚗</span><h3 class="site-feature-card__title">51 Vehicles</h3><p class="site-feature-card__copy">From tempo and jeeps to rally cars and electric buses.</p></div>
+          <div class="site-feature-card"><span class="site-feature-card__icon">👤</span><h3 class="site-feature-card__title">50 Characters</h3><p class="site-feature-card__copy">Riders from every region with unique handling stats.</p></div>
+          <div class="site-feature-card"><span class="site-feature-card__icon">🗺️</span><h3 class="site-feature-card__title">50 Nepal Stages</h3><p class="site-feature-card__copy">Valleys, highways, bridges and high-mountain climbs.</p></div>
+          <div class="site-feature-card"><span class="site-feature-card__icon">🏁</span><h3 class="site-feature-card__title">Fast Track</h3><p class="site-feature-card__copy">High-speed expressway stages inspired by real projects.</p></div>
+          <div class="site-feature-card"><span class="site-feature-card__icon">💎</span><h3 class="site-feature-card__title">Collectibles &amp; Rewards</h3><p class="site-feature-card__copy">Gather coins and diamonds, climb the leaderboard.</p></div>
+        </div>
+      </div>
+    </section>
+    <section id="vehicles" class="site-section site-preview-section" aria-label="Vehicles preview">
+      <div class="site-section__inner">
+        <span class="site-section__eyebrow">Garage</span>
+        <h2 class="site-section__title">Vehicles</h2>
+        <div class="site-preview-grid" id="vehicles-preview-grid"></div>
+      </div>
+    </section>
+
+    <section id="characters" class="site-section site-preview-section" aria-label="Characters preview">
+      <div class="site-section__inner">
+        <span class="site-section__eyebrow">Riders</span>
+        <h2 class="site-section__title">Characters</h2>
+        <div class="site-preview-grid" id="characters-preview-grid"></div>
+      </div>
+    </section>
+
+    <section id="stages" class="site-section site-preview-section" aria-label="Stages preview">
+      <div class="site-section__inner">
+        <span class="site-section__eyebrow">Routes</span>
+        <h2 class="site-section__title">Stages</h2>
+        <div class="site-preview-grid" id="stages-preview-grid"></div>
+      </div>
+    </section>
+
+    <section id="how-to-play" class="site-section site-howto" aria-label="How to play">
+      <div class="site-section__inner">
+        <span class="site-section__eyebrow">Controls</span>
+        <h2 class="site-section__title">How to Play</h2>
+        <div class="site-key-grid">
+          <div class="site-key"><span class="site-key__keys">D / →</span><div><p class="site-key__label">GAS</p><p class="site-key__desc">Accelerate</p></div></div>
+          <div class="site-key"><span class="site-key__keys">A / ←</span><div><p class="site-key__label">BRAKE</p><p class="site-key__desc">Slow down</p></div></div>
+          <div class="site-key"><span class="site-key__keys">S / ↓</span><div><p class="site-key__label">REVERSE</p><p class="site-key__desc">Back up</p></div></div>
+          <div class="site-key"><span class="site-key__keys">W / ↑</span><div><p class="site-key__label">JUMP</p><p class="site-key__desc">Hop over obstacles</p></div></div>
+        </div>
+        <p class="site-howto__mobile">📱 <strong>Touch &amp; mobile:</strong> on-screen <strong>GAS</strong>, <strong>BRAKE</strong>, <strong>REVERSE</strong> and <strong>JUMP</strong> buttons support two-finger play. Collect fuel to keep going and coins/diamonds to unlock more.</p>
+      </div>
+    </section>
+
+    <section id="about" class="site-section site-about" aria-label="About Nepali Racer">
+      <div class="site-section__inner">
+        <span class="site-section__eyebrow">About</span>
+        <h2 class="site-section__title">About Nepali Racer</h2>
+        <p class="site-about__body">
+          Nepali Racer is a browser-built 2D hill-climbing racing game inspired by
+          the roads, culture and landscapes of Nepal. Ride the Kathmandu Valley,
+          push across the East-West Highway, and climb towards the high Himalaya —
+          tuning your chosen vehicle, unlocking regional riders and mastering each
+          stage. It runs entirely in your browser with no downloads, and your
+          progress is saved locally on your device.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <h3>🏔️ Nepali Racer</h3>
+        <p>A 2D hill-climbing racing game inspired by Nepal.</p>
+      </div>
+      <div class="site-footer__links">
+        <h3>Game</h3>
+        <a href="#home">Home</a>
+        <a href="#vehicles">Vehicles</a>
+        <a href="#characters">Characters</a>
+        <a href="#stages">Stages</a>
+      </div>
+      <div class="site-footer__links">
+        <h3>Support</h3>
+        <a href="#how-to-play">How to Play</a>
+        <a href="#about">About</a>
+      </div>
+    </div>
+    <p class="site-footer__bottom">© <span id="site-copyright-year">2026</span> Nepali Racer. All rights reserved.</p>
+  </footer>
+
+  <!-- ============ Phaser game shell (hidden on the landing page; shown by PLAY NOW) ============ -->
   <div id="game-container"></div>
+
+  <!-- Back-to-website control: DOM overlay OUTSIDE the Phaser canvas; visible only while the game is active -->
+  <button id="site-back-btn" class="site-back-btn" type="button">← Website</button>
+
   <script type="module" src="/src/main.js"></script>
+  <script type="module" src="/src/site/main-site.js"></script>
 </body>
 </html>

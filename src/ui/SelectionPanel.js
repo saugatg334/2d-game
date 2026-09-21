@@ -24,6 +24,10 @@ export class SelectionPanel extends Phaser.GameObjects.Container {
       // (e.g. "Complete previous stage"). Defaults to null so generic panels
       // (characters/vehicles) are unaffected.
       getLockHint: () => null,
+      // P6B: optional handler for clicks on LOCKED cards (e.g. purchase
+      // prompt). When null, locked cards stay silently unclickable (old
+      // behavior). Unlocked-card selection is unaffected.
+      onLockedItem: null,
       selectedId: null,
       pageSize: 4,
       ...options
@@ -197,8 +201,21 @@ export class SelectionPanel extends Phaser.GameObjects.Container {
         card.add(unlockedText);
       }
 
-      // Make interactive
-      card.onClick(() => this.selectItem(index));
+      // Make interactive. P6B: locked cards route their click to the optional
+      // onLockedItem handler (purchase flow) instead of being silently
+      // ignored; selectItem still guards against selecting locked items.
+      // P6B-FIX: the handler is resolved AT CLICK TIME so it may also be
+      // registered after setItems() via the onLockedItem(callback) method
+      // (all three select scenes register it exactly that way). When no
+      // handler is registered, locked clicks stay silent (old behavior).
+      if (isUnlocked) {
+        card.onClick(() => this.selectItem(index));
+      } else {
+        card.onClick(() => {
+          const lockedHandler = this.options.onLockedItem;
+          if (typeof lockedHandler === 'function') lockedHandler(item);
+        });
+      }
 
       this.add(card);
       this.cards.push({ card, item, index });
@@ -260,6 +277,16 @@ export class SelectionPanel extends Phaser.GameObjects.Container {
 
   onSelectItem(callback) {
     this.onSelect = callback;
+  }
+
+  // P6B-FIX: register the locked-card click handler at runtime, mirroring
+  // onSelectItem(). CharacterSelectScene / VehicleSelectScene / StageSelectScene
+  // all call this after setItems(); before this method existed they crashed
+  // with "onLockedItem is not a function". options.onLockedItem stays the
+  // single source of truth (also settable via the constructor), and
+  // createCards() resolves it at click time, so both registration orders work.
+  onLockedItem(callback) {
+    this.options.onLockedItem = typeof callback === 'function' ? callback : null;
   }
 }
 

@@ -14,6 +14,8 @@
 //     and emit a development-only warning.
 
 import { PHYSICS } from '../config/constants.js';
+// P7E-2: resolved region visual theme (data registry + safe resolver).
+import { resolveRegionTheme } from '../data/regionThemes.js';
 
 // Existing collectible defaults mirrored from src/data/stages.js createStage
 // and src/game/Collectibles.js generate(). There is no exported constant for
@@ -207,7 +209,10 @@ export function resolveStagePlan(stage) {
     environment,
     terrain: resolveTerrain(stage, environment),
     physics: resolvePhysics(stage),
-    collectibles: resolveCollectibles(stage)
+    collectibles: resolveCollectibles(stage),
+    // P7E-2: resolved region visual theme (always a valid registry object,
+    // never null — unknown/missing ids fall back to the DEFAULT theme).
+    visual: resolveRegionTheme(stringOr(stage.regionTheme))
   };
 }
 

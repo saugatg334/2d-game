@@ -1,0 +1,339 @@
+/* ============================================================
+   Nepali Racer - Website Landing Styles (Phase 2)
+   Scope: presentational styles for the professional landing page.
+   Loaded AFTER src/styles/main.css, so site rules win where needed
+   (e.g. enabling page scroll + hiding the Phaser shell on landing).
+   No gameplay logic or Phaser styles are modified.
+   ============================================================ */
+
+:root {
+  --nr-bg: #0f0f1a;
+  --nr-bg-2: #14142a;
+  --nr-panel: rgba(20, 26, 46, 0.82);
+  --nr-red: #e63946;
+  --nr-red-deep: #b5222f;
+  --nr-saffron: #f4a261;
+  --nr-teal: #2a9d8f;
+  --nr-blue: #1f3066;
+  --nr-gold: #ffd700;
+  --nr-text: #f1faee;
+  --nr-muted: #aab3c4;
+  --nr-border: rgba(230, 57, 70, 0.35);
+  --nr-radius: 16px;
+  --nr-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+  --nr-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 70px; color-scheme: dark; }
+
+body {
+  overflow: auto;
+  color: var(--nr-text);
+  font-family: var(--nr-font);
+  background:
+    radial-gradient(1100px 700px at 85% -10%, rgba(46, 58, 110, 0.45), transparent 70%),
+    radial-gradient(900px 640px at -10% 20%, rgba(231, 76, 60, 0.16), transparent 70%),
+    var(--nr-bg);
+}
+
+/* ---- Phaser shell: hidden on the landing page; shown full-viewport in game view ---- */
+#game-container {
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Game view (body.is-game, set by PLAY NOW): show the shell full-viewport,
+   hide the landing page and stop page scrolling. Phaser Scale.FIT fills it. */
+body.is-game #game-container {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 40;
+}
+body.is-game .site-nav,
+body.is-game #main,
+body.is-game .site-footer { display: none; }
+body.is-game { overflow: hidden; }
+
+/* Back-to-website overlay button (DOM element OUTSIDE the Phaser canvas). */
+.site-back-btn {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 60;
+  display: none;
+  padding: 8px 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(20, 20, 42, 0.85);
+  color: #fff;
+  font-family: var(--nr-font);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.site-back-btn:hover,
+.site-back-btn:focus-visible { background: rgba(230, 57, 70, 0.9); color: #fff; }
+body.is-game .site-back-btn { display: inline-flex; }
+
+/* ============================ Navbar ============================ */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: linear-gradient(180deg, rgba(20, 20, 42, 0.92), rgba(20, 20, 42, 0.98));
+  border-bottom: 1px solid var(--nr-border);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+}
+.site-nav__inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.site-brand {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--nr-text);
+  text-decoration: none;
+  letter-spacing: 0.2px;
+}
+.site-nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+.site-nav-link,
+.site-nav-cta {
+  padding: 9px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--nr-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+.site-nav-link:hover,
+.site-nav-link:focus-visible { color: var(--nr-saffron); }
+.site-nav-cta {
+  background: linear-gradient(135deg, var(--nr-red), var(--nr-red-deep));
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(230, 57, 70, 0.35);
+}
+.site-nav-toggle {
+  display: none;
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid var(--nr-border);
+  color: var(--nr-text);
+  font-size: 22px;
+  line-height: 1;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* [SITE-CSS-HERO] */
+/* ============================ Hero ============================ */
+.site-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 96px 24px 110px;
+  background:
+    radial-gradient(900px 520px at 50% 120%, rgba(122, 61, 33, 0.5), transparent 70%),
+    linear-gradient(175deg, #7c1426 0%, #a3202f 45%, #9c1e2c 100%);
+  border-top: 6px solid #1f3066; /* nod to the Nepali flag's crimson + blue border */
+}
+.site-hero__eyebrow {
+  display: inline-block;
+  margin: 0 0 10px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--nr-saffron);
+  font-size: 14px;
+  letter-spacing: 0.6px;
+}
+.site-hero__title {
+  margin: 0;
+  font-size: clamp(44px, 8vw, 76px);
+  font-weight: 900;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 4px 22px rgba(0, 0, 0, 0.55);
+}
+.site-hero__tagline {
+  margin: 12px 0 4px;
+  font-size: clamp(18px, 3vw, 26px);
+  font-weight: 700;
+  color: #ffe9c2;
+}
+.site-hero__desc { margin: 18px 0 30px; max-width: 56ch; font-size: 16px; line-height: 1.65; color: rgba(255, 255, 255, 0.88); }
+.site-hero__actions { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+
+.site-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 15px 30px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 800;
+  transition: transform 120ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+.site-btn:hover,
+.site-btn:focus-visible { transform: translateY(-2px); }
+.site-btn--primary {
+  background: linear-gradient(135deg, #e63946, #b5222f);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(230, 57, 70, 0.45);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+}
+.site-btn--ghost {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+}
+.site-hero__art { width: 300px; position: absolute; right: 6%; bottom: 8%; opacity: 0.9; animation: siteFloat 6s ease-in-out infinite; }
+@keyframes siteFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+
+/* [SITE-CSS-SECTIONS] */
+/* ============================ Section shell ============================ */
+.site-section { padding: 84px 24px; }
+.site-section__inner { max-width: 1080px; margin: 0 auto; }
+.site-section__eyebrow { display: block; margin: 0 0 6px; color: var(--nr-saffron); font-size: 13px; letter-spacing: 0.6px; text-transform: uppercase; }
+.site-section__title { margin: 0 0 8px; font-size: clamp(26px, 4vw, 40px); font-weight: 800; color: var(--nr-text); }
+
+/* ============================ Features ============================ */
+.site-features { background: var(--nr-bg-2); }
+.site-feature-grid {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 20px;
+}
+.site-feature-card {
+  padding: 22px;
+  border-radius: var(--nr-radius);
+  background: var(--nr-panel);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: var(--nr-shadow);
+}
+.site-feature-card__icon { font-size: 30px; }
+.site-feature-card__title { margin: 10px 0 6px; font-size: 18px; font-weight: 800; }
+.site-feature-card__copy { margin: 0; font-size: 14px; color: var(--nr-muted); }
+
+/* ============================ Previews ============================ */
+.site-preview-section { background: var(--nr-bg); }
+.site-preview-grid {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 20px;
+}
+.site-preview__card {
+  border-radius: var(--nr-radius);
+  overflow: hidden;
+  background: var(--nr-panel);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: transform 160ms ease, border-color 160ms ease;
+}
+.site-preview__card:hover,
+.site-preview__card:focus-within { transform: translateY(-4px); border-color: var(--nr-border); }
+.site-preview__media { aspect-ratio: 4 / 3; background: linear-gradient(135deg, #11132a, #232a4d); display: flex; align-items: center; justify-content: center; }
+.site-preview__img { max-width: 82%; max-height: 82%; object-fit: contain; width: 70%; }
+.site-preview__img--alt { font-size: 40px; }
+.site-preview__name { margin: 0; font-size: 16px; font-weight: 700; padding: 10px 14px; }
+.site-preview__sub { margin: 0; font-size: 12.5px; color: var(--nr-muted); padding: 0 14px 10px; }
+
+/* [SITE-CSS-HOWTO] */
+/* ============================ How to Play ============================ */
+.site-howto { background: var(--nr-bg-2); }
+.site-key-grid {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px;
+}
+.site-key {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--nr-panel);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.site-key__keys { min-width: 96px; font-weight: 800; color: var(--nr-saffron); text-align: center; }
+.site-key__label { margin: 0; font-weight: 600; font-size: 15px; }
+.site-key__desc { margin: 2px 0 0; font-size: 13px; color: var(--nr-muted); }
+.site-howto__mobile {
+  margin-top: 22px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: rgba(42, 157, 143, 0.14);
+  border: 1px solid rgba(42, 157, 143, 0.4);
+  font-size: 15px;
+}
+.site-howto__mobile strong { color: var(--nr-teal); }
+
+/* ============================ About ============================ */
+.site-about { background: var(--nr-bg); }
+.site-about__body { margin-top: 18px; max-width: 72ch; line-height: 1.7; font-size: 16px; color: #d9ddee; }
+
+/* ============================ Footer ============================ */
+.site-footer {
+  margin-top: 0;
+  padding: 48px 24px;
+  background: #0a0a14;
+  border-top: 1px solid var(--nr-border);
+}
+.site-footer__grid { max-width: 1080px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; }
+.site-footer__brand p { max-width: 40ch; margin: 8px 0 0; font-size: 14px; color: var(--nr-muted); }
+.site-footer__links { min-width: 200px; }
+.site-footer__links a { display: block; margin: 4px 0; color: var(--nr-muted); text-decoration: none; }
+.site-footer__links a:hover { color: var(--nr-saffron); }
+.site-footer__bottom { max-width: 1080px; margin: 30px auto 0; text-align: center; color: var(--nr-muted); font-size: 13px; }
+
+/* ============================ Buttons / focus ============================ */
+:focus-visible { outline: 3px solid var(--nr-saffron); outline-offset: 2px; }
+
+/* ============================ Responsive ============================ */
+@media (max-width: 900px) {
+  .site-hero { padding: 60px 20px 70px; }
+  .site-hero__art { display: none; }
+  .site-feature-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+}
+
+@media (max-width: 680px) {
+  .site-nav-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px 16px;
+    background: var(--nr-bg-2);
+    display: none;
+  }
+  .site-nav-links.is-open { display: flex; }
+  .site-nav-toggle { display: inline-flex; }
+  .site-nav-links a { width: 100%; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .site-hero__title { font-size: 40px; }
+  .site-hero__actions .site-btn { width: 100%; text-align: center; }
+  .site-preview-grid { grid-template-columns: repeat(2, 1fr); }
+  .site-section { padding: 56px 16px; }
+}

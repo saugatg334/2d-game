@@ -5,12 +5,14 @@ import { characters } from '../data/characters.js';
 import { vehicles } from '../data/vehicles.js';
 import { Vehicle } from '../game/Vehicle.js';
 import { Terrain } from '../game/Terrain.js';
-import { Collectibles } from '../game/Collectibles.js';
+import { Collectibles, paintCoinIcon, paintDiamondIcon, paintFuelCanIcon } from '../game/Collectibles.js';
 import { EnvironmentRenderer } from '../game/EnvironmentRenderer.js';
+import { SceneryRenderer } from '../game/SceneryRenderer.js';
 import { resolveVehicleTuning } from '../game/VehicleTuning.js';
 import { resolveCharacterAbility } from '../game/CharacterAbility.js';
 import { device } from '../utils/device.js';
 import { isStagePlayable } from '../game/StageProgression.js';
+import { milestoneIndexAt, nextMilestoneDistance, milestoneReward, resolveDifficulty } from '../game/RunProgress.js';
 
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -61,7 +63,10 @@ export class GameScene extends Phaser.Scene {
     this.gameState = {
       distance: 0, fuel: this.vehicleTuning.fuelCapacity, coins: 0, diamonds: 0,
       score: 0, speed: 0, isGameOver: false, isPaused: false,
-      isComplete: false
+      isComplete: false,
+      // Run-progress (endless normal stages): count of milestones reached this
+      // run and the highest milestone index, awarded once each (see updateMilestones).
+      milestonesReached: 0, highestMilestone: 0
     };
     // P3 Step 4: idempotent guard so a single run's collected coins/diamonds
     // are persisted to the player's save at most once (across Game Over, fuel,
@@ -93,8 +98,21 @@ export class GameScene extends Phaser.Scene {
     this.controls = { accelerate: false, brake: false, jump: false, reverse: false, tiltLeft: false, tiltRight: false };
 
     this.terrain = new Terrain(this, this.stage.theme);
-    this.terrain.generate(this.stage.targetDistance + 1000);
+    // P7B: bounded initial window only (platform + ~4000m). Terrain extends
+    // per-frame via generateAhead(scrollX, maxRunDistance) below.
+    this.terrain.generate();
     this.environmentRenderer = new EnvironmentRenderer(this, this.terrain, this.stage);
+    // P7E-3: procedural region scenery on its own world-space Graphics layer.
+    // Created BEFORE the vehicle so the vehicle always draws above scenery;
+    // disabled internally for Fast Track (its EnvironmentRenderer owns visuals).
+    this.sceneryRenderer = new SceneryRenderer(this, this.terrain, this.terrain.stagePlan);
+
+    // P7B: maximum run distance (data-driven). Fast Track stages keep their
+    // stage-specific targets (2500m/3400m); normal stages run to 100,000m.
+    // targetDistance stays untouched for stage-select/progression UI.
+    this.maxRunDistance = (typeof this.stage.maxRunDistance === 'number' && Number.isFinite(this.stage.maxRunDistance) && this.stage.maxRunDistance > 0)
+      ? this.stage.maxRunDistance
+      : (typeof this.stage.targetDistance === 'number' && this.stage.targetDistance > 0 ? this.stage.targetDistance : 100000);
 
     // P0 Step 3: cache stage-specific gravity from the already-resolved plan.
     // Single gravity source — Vehicle.applyGravity() integration is untouched,
@@ -112,9 +130,16 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.collectibles = new Collectibles(this, this.terrain, this.terrain.stagePlan.collectibles);
-    this.collectibles.generate(this.stage.targetDistance);
+    // P7B: windowed spawning - only the initial ~3000m window now, extended
+    // per-frame alongside terrain generation (capped at maxRunDistance).
+    this.collectibles.generate(0, this.maxRunDistance);
 
-    this.cameras.main.setBounds(0, -500, this.terrain.getLength() + 1000, this.scale.height + 500);
+    // P7E-3: seed the initial scenery window at the start position.
+    this.sceneryRenderer.update(0);
+
+    // P7B: camera bounds follow the maximum run distance, not the initial
+    // terrain length (which is now a bounded window and grows over time).
+    this.cameras.main.setBounds(0, -500, this.maxRunDistance + 1000, this.scale.height + 500);
 
     this.createHUD();
     this.createControls();
@@ -183,9 +208,28 @@ export class GameScene extends Phaser.Scene {
 
   createHUD() {
     const w = this.scale.width;
-    
+
+    // P7E-6: strong dark outline + soft shadow so HUD text stays readable over
+    // the bright region skies. Presentation only — values/positions unchanged.
+    const HUD_OUTLINE = {
+      stroke: '#000000',
+      strokeThickness: 2,
+      shadowOffsetX: 1,
+      shadowOffsetY: 2,
+      shadowColor: '#000000',
+      shadowAlpha: 0.5,
+      shadowBlur: 1
+    };
+
     // All HUD elements use setScrollFactor(0) to stay fixed on screen
-    this.add.text(20, 20, 'Fuel:', { fontSize: '16px', color: '#fff' }).setScrollFactor(0);
+
+    // P7E-7: small procedural red fuel-can icon before the fuel label, using
+    // the SAME painter as the world collectible (drawn ONCE on a static
+    // scroll-factor-0 Graphics: no per-frame redraw). Presentation only -
+    // the label shifts right by the icon width; bar/percentage logic untouched.
+    this.fuelIconGfx = this.add.graphics().setScrollFactor(0);
+    paintFuelCanIcon(this.fuelIconGfx, 28, 30, 0.8);
+    this.add.text(44, 20, 'Fuel:', { fontSize: '16px', color: '#fff', ...HUD_OUTLINE }).setScrollFactor(0);
     
     this.fuelBarBg = this.add.graphics().setScrollFactor(0);
     this.fuelBarBg.fillStyle(0x333333, 1);
@@ -194,12 +238,25 @@ export class GameScene extends Phaser.Scene {
     this.fuelBar = this.add.graphics().setScrollFactor(0);
     this.updateFuelBar();
     
-    this.fuelText = this.add.text(145, 32, '100%', { fontSize: '12px', color: '#fff' }).setOrigin(0.5).setScrollFactor(0);
-    this.distanceText = this.add.text(20, 55, 'Distance: 0m / ' + this.stage.targetDistance + 'm', { fontSize: '16px', color: '#fff' }).setScrollFactor(0);
-    this.speedText = this.add.text(20, 80, 'Speed: 0 km/h', { fontSize: '16px', color: '#f4a261' }).setScrollFactor(0);
-    this.currencyText = this.add.text(w - 150, 20, 'Coins: 0  Diamonds: 0', { fontSize: '16px', color: '#ffd700' }).setScrollFactor(0);
-    this.scoreText = this.add.text(w - 150, 50, 'Score: 0', { fontSize: '16px', color: '#fff' }).setScrollFactor(0);
-    
+    this.fuelText = this.add.text(145, 32, '100%', { fontSize: '12px', color: '#fff', ...HUD_OUTLINE }).setOrigin(0.5).setScrollFactor(0);
+    this.distanceText = this.add.text(20, 55, 'Distance: 0m / ' + this.maxRunDistance.toLocaleString('en-US') + 'm', { fontSize: '16px', color: '#fff', ...HUD_OUTLINE }).setScrollFactor(0);
+    this.speedText = this.add.text(20, 80, 'Speed: 0 km/h', { fontSize: '16px', color: '#f4a261', ...HUD_OUTLINE }).setScrollFactor(0);
+    // P7E-7: [icon] count pairs replace the text-only counter. Icons reuse the
+    // exact world-collectible painters (gold coin / cyan diamond) at 0.8 scale,
+    // each drawn ONCE on a static Graphics. Counts and reward logic unchanged.
+    this.coinIconGfx = this.add.graphics().setScrollFactor(0);
+    paintCoinIcon(this.coinIconGfx, w - 160, 29, 0.8);
+    this.coinText = this.add.text(w - 146, 20, '0', { fontSize: '16px', color: '#ffd700', ...HUD_OUTLINE }).setScrollFactor(0);
+    this.diamondIconGfx = this.add.graphics().setScrollFactor(0);
+    paintDiamondIcon(this.diamondIconGfx, w - 84, 29, 0.8);
+    this.diamondText = this.add.text(w - 70, 20, '0', { fontSize: '16px', color: '#b9f2ff', ...HUD_OUTLINE }).setScrollFactor(0);
+    this.scoreText = this.add.text(w - 150, 50, 'Score: 0', { fontSize: '16px', color: '#fff', ...HUD_OUTLINE }).setScrollFactor(0);
+    this.milestoneText = this.add.text(20, 105, 'BONUS @ 275m', { fontSize: '12px', color: '#ffd700', ...HUD_OUTLINE }).setScrollFactor(0);
+    // BONUS! banner (hidden; shown briefly when a milestone is reached).
+    this.bonusBanner = this.add.text(w / 2, 120, 'BONUS!', {
+      fontSize: '20px', color: '#ffd700', fontStyle: 'bold', ...HUD_OUTLINE
+    }).setOrigin(0.5).setScrollFactor(0).setDepth(90);
+    this.bonusBanner.setVisible(false);
     const exitBtn = this.add.text(w - 60, 80, 'X', { fontSize: '24px', color: '#fff' }).setOrigin(0.5).setScrollFactor(0).setInteractive({ useHandCursor: true });
     exitBtn.on('pointerup', () => {
       this.scene.start(SCENES.MAIN_MENU);
@@ -439,12 +496,21 @@ export class GameScene extends Phaser.Scene {
     this.consumeFuel(delta);
     this.gameState.distance = this.vehicle.getDistance();
     this.gameState.speed = this.vehicle.getSpeedKmh();
+    this.updateMilestones();
     this.updateHUD();
     this.checkGameConditions();
-    this.terrain.generateAhead(this.cameras.main.scrollX);
+    this.terrain.generateAhead(this.cameras.main.scrollX, this.maxRunDistance);
     this.terrain.cleanup(this.cameras.main.scrollX);
+    // P7B: collectibles follow the same bounded window as terrain, and their
+    // behind-camera cleanup is now actually wired (it existed but was never called).
+    this.collectibles.generateAhead(this.cameras.main.scrollX, this.maxRunDistance);
+    this.collectibles.cleanup(this.cameras.main.scrollX);
     if (this.environmentRenderer) {
       this.environmentRenderer.update(this.cameras.main.scrollX, this.cameras.main.scrollY);
+    }
+    // P7E-3: keep the scenery window synchronized with the camera.
+    if (this.sceneryRenderer) {
+      this.sceneryRenderer.update(this.cameras.main.scrollX);
     }
   }
 
@@ -480,16 +546,65 @@ export class GameScene extends Phaser.Scene {
   updateHUD() {
     this.fuelText.setText(Math.floor(this.gameState.fuel) + '%');
     this.updateFuelBar();
-    this.distanceText.setText('Distance: ' + Math.floor(this.gameState.distance) + 'm / ' + this.stage.targetDistance + 'm');
+    // P7B: locale-grouped distance (25,000m / 100,000m) - no fixed-width assumption.
+    this.distanceText.setText(Math.floor(this.gameState.distance).toLocaleString('en-US') + 'm / ' + this.maxRunDistance.toLocaleString('en-US') + 'm');
     this.speedText.setText('Speed: ' + Math.floor(this.gameState.speed) + ' km/h');
-    this.currencyText.setText('Coins: ' + this.gameState.coins + '  Diamonds: ' + this.gameState.diamonds);
+    // P7E-7: split counters; values/format unchanged (icons are static).
+    this.coinText.setText(String(this.gameState.coins));
+    this.diamondText.setText(String(this.gameState.diamonds));
     this.scoreText.setText('Score: ' + this.gameState.score);
+
+    // Next-milestone progress indicator (small, unobtrusive).
+    this.milestoneText.setText('BONUS @ ' + Math.floor(nextMilestoneDistance(this.gameState.distance)).toLocaleString('en-US') + 'm');
 
     // Update ability HUD
     if (this.abilityState.available && this.abilityText) {
       this.abilityText.setText(this.getAbilityHUDText());
       this.abilityText.setColor(this.getAbilityHUDColor());
     }
+  }
+
+  // Award each newly-reached milestone exactly once this run. Pure + data-driven
+  // via RunProgress (interval + reward). No per-frame double-award.
+  updateMilestones() {
+    const k = milestoneIndexAt(this.gameState.distance);
+    // Safe difficulty effect: higher distance tiers slightly scale the milestone
+    // coin bonus. Never touches terrain collision/geometry — so it cannot create
+    // impossible slopes. Pure reward scaling, data-driven via RunProgress.
+    const diff = resolveDifficulty(this.gameState.distance);
+    const coinScale = 1 + diff.factor * 0.5;
+    while (this.gameState.milestonesReached < k) {
+      const idx = this.gameState.milestonesReached + 1;
+      this.gameState.milestonesReached = idx;
+      this.gameState.highestMilestone = idx;
+      const reward = milestoneReward(idx);
+      const coins = Math.max(1, Math.round(reward.coins * coinScale));
+      this.gameState.coins += coins;
+      this.gameState.diamonds += reward.diamonds;
+      if (reward.fuel > 0) {
+        this.gameState.fuel = Math.min(this.vehicleTuning.fuelCapacity, this.gameState.fuel + reward.fuel);
+      }
+      this.showMilestoneBanner(idx, { coins, diamonds: reward.diamonds, fuel: reward.fuel });
+    }
+  }
+
+  showMilestoneBanner(idx, reward) {
+    const parts = ['BONUS! +' + reward.coins + ' COINS'];
+    if (reward.diamonds > 0) parts.push('+' + reward.diamonds + ' 💎');
+    if (reward.fuel > 0) parts.push('+' + reward.fuel + ' fuel');
+    if (this.bonusBanner) {
+      this.bonusBanner.setText(parts.join('  '));
+      this.bonusBanner.setVisible(true);
+      this.time.delayedCall(1600, () => this.bonusBanner.setVisible(false));
+    }
+  }
+
+  // Persist run "bests" (distance, coins-in-a-run, highest milestone) using the
+  // version/default-safe SaveSystem fields. Idempotent; survives page reload.
+  saveRunBests() {
+    saveSystem.updateBestDistance(this.gameState.distance);
+    saveSystem.updateBestRunCoins(this.gameState.coins);
+    saveSystem.updateBestMilestone(this.gameState.highestMilestone);
   }
 
   checkGameConditions() {
@@ -512,7 +627,10 @@ export class GameScene extends Phaser.Scene {
       return;
     }
     if (this.vehicle.fellOffTrack(this.scale.height)) { this.gameOver('Fell off track!'); return; }
-    if (this.gameState.distance >= this.stage.targetDistance) { this.stageComplete(); }
+    // P7B: completion now keys on the stage's maximum RUN distance (100,000m
+    // for normal stages; the unchanged 2500m/3400m Fast Track targets). The
+    // display-only targetDistance no longer terminates a run.
+    if (this.gameState.distance >= this.maxRunDistance) { this.stageComplete(); }
   }
 
   // P3 Step 4: persist this run's collected coins/diamonds exactly once.
@@ -528,20 +646,33 @@ export class GameScene extends Phaser.Scene {
     return true;
   }
 
+  // RUN COMPLETE results block (game-over resolution). Shows current run + bests.
+  showRunResults(y0) {
+    const w = this.scale.width;
+    const dist = Math.floor(this.gameState.distance).toLocaleString('en-US');
+    const bd = Math.floor(saveSystem.getBestDistance()).toLocaleString('en-US');
+    const st = { fontSize: '15px', color: '#ffffff', fontFamily: 'monospace' };
+    this.add.text(w / 2, y0, 'RUN COMPLETE', { fontSize: '20px', color: '#ffd700', fontStyle: 'bold', fontFamily: 'monospace' }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
+    this.add.text(w / 2, y0 + 22, 'Distance   ' + dist + 'm       Best   ' + bd + 'm', st).setOrigin(0.5).setScrollFactor(0).setDepth(101);
+    this.add.text(w / 2, y0 + 44, 'Coins   ' + this.gameState.coins + '       Best   ' + saveSystem.getBestRunCoins(), st).setOrigin(0.5).setScrollFactor(0).setDepth(101);
+    this.add.text(w / 2, y0 + 66, 'Milestones   ' + this.gameState.highestMilestone + '       Best   ' + saveSystem.getBestMilestone(), st).setOrigin(0.5).setScrollFactor(0).setDepth(101);
+  }
+
   gameOver(reason) {
     // P3 Step 4: bank run rewards first so they persist whether the player
     // Replays or returns to Menu. The flag makes this a no-op on repeat calls.
     this.bankRunRewards();
+    this.saveRunBests();
     this.gameState.isGameOver = true;
     const w = this.scale.width;
     const h = this.scale.height;
     this.add.rectangle(w / 2, h / 2, w, h, 0x000000, 0.7).setScrollFactor(0).setDepth(100);
-    this.add.text(w / 2, h / 2 - 60, 'GAME OVER', { fontSize: '48px', color: '#e63946', fontStyle: 'bold' }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
-    this.add.text(w / 2, h / 2, reason, { fontSize: '20px', color: '#fff' }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
-    this.add.text(w / 2, h / 2 + 30, `Collected: ${this.gameState.coins} 🪙  ${this.gameState.diamonds} 💎`, { fontSize: '16px', color: '#ffd700' }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
-    const retryBtn = this.add.text(w / 2 - 80, h / 2 + 60, 'RETRY', { fontSize: '20px', color: '#fff', backgroundColor: '#2a9d8f', padding: { x: 20, y: 10 } }).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive({ useHandCursor: true });
+    this.add.text(w / 2, h / 2 - 100, 'GAME OVER', { fontSize: '48px', color: '#e63946', fontStyle: 'bold' }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
+    this.add.text(w / 2, h / 2 - 52, reason, { fontSize: '18px', color: '#fff' }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
+    this.showRunResults(h / 2 - 12);
+    const retryBtn = this.add.text(w / 2 - 80, h / 2 + 120, 'RETRY', { fontSize: '20px', color: '#fff', backgroundColor: '#2a9d8f', padding: { x: 20, y: 10 } }).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive({ useHandCursor: true });
     retryBtn.on('pointerup', () => this.scene.restart());
-    const menuBtn = this.add.text(w / 2 + 80, h / 2 + 60, 'MENU', { fontSize: '20px', color: '#fff', backgroundColor: '#457b9d', padding: { x: 20, y: 10 } }).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive({ useHandCursor: true });
+    const menuBtn = this.add.text(w / 2 + 80, h / 2 + 120, 'MENU', { fontSize: '20px', color: '#fff', backgroundColor: '#457b9d', padding: { x: 20, y: 10 } }).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive({ useHandCursor: true });
     menuBtn.on('pointerup', () => this.scene.start(SCENES.MAIN_MENU));
   }
 
@@ -557,6 +688,7 @@ export class GameScene extends Phaser.Scene {
     saveSystem.completeStage(this.stage.id);
     saveSystem.updateBestDistance(this.gameState.distance);
     saveSystem.updateBestScore(this.gameState.score);
+    this.saveRunBests();
     // P3 Step 4: mark rewards as banked so this run cannot also be banked by a
     // later Game Over path. The win reward behavior above is exactly preserved.
     this.hasBankedRunRewards = true;

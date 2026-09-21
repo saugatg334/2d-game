@@ -23,6 +23,8 @@ export const defaultPlayerData = {
 
   bestDistance: 0,
   bestScore: 0,
+  bestRunCoins: 0,
+  bestMilestone: 0,
   completedStages: [],
 
   settings: {

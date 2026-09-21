@@ -9,6 +9,8 @@ import { SelectionPanel } from '../ui/SelectionPanel.js';
 import { stages } from '../data/stages.js';
 import { saveSystem } from '../systems/SaveSystem.js';
 import { isStageProgressionUnlocked, isStagePlayable } from '../game/StageProgression.js';
+import { unlockStageWithProgression } from '../systems/purchase.js';
+import { showToast } from '../ui/Toast.js';
 
 export class StageSelectScene extends Phaser.Scene {
   constructor() {
@@ -106,6 +108,44 @@ export class StageSelectScene extends Phaser.Scene {
     this.selectionPanel.onSelectItem(stage => {
       this.selectedStage = stage;
     });
+    // P6B: locked cards show their unlock requirement (existing lock hint +
+    // cost display) and now open the purchase prompt when progression allows
+    // it. Sequential progression stays enforced — currency alone can never
+    // bypass the previous-stage requirement.
+    this.selectionPanel.onLockedItem(stage => this.promptStageUnlock(stage));
+  }
+
+  // P6B: purchase prompt for locked stages. The progression gate is evaluated
+  // FIRST: a progression-locked stage only explains the requirement and never
+  // shows a price prompt, so currency can never bypass progression. When
+  // progression is satisfied, unlock requires BOTH progression AND currency.
+  promptStageUnlock(stage) {
+    if (!stage || isStagePlayable(stage.id, saveSystem)) return;
+    if (!isStageProgressionUnlocked(stage.id, saveSystem.data)) {
+      showToast(this, 'Complete the previous stage first!');
+      return;
+    }
+    const currencyIcon = stage.currency === 'diamonds' ? '💎' : '🪙';
+    const button = this.add.text(this.scale.width / 2, this.scale.height / 2 + 40,
+      `UNLOCK FOR ${stage.cost} ${currencyIcon}?`, {
+        fontSize: '20px', color: COLORS.WHITE, backgroundColor: COLORS.PRIMARY,
+        padding: { x: 16, y: 8 }
+      }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    const cancel = this.add.text(this.scale.width / 2, this.scale.height / 2 + 90,
+      'CANCEL', {
+        fontSize: '14px', color: COLORS.WHITE, backgroundColor: '#333333',
+        padding: { x: 12, y: 6 }
+      }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    const cleanup = () => { button.destroy(); cancel.destroy(); };
+    button.on('pointerup', () => {
+      cleanup();
+      const result = unlockStageWithProgression(saveSystem, stage);
+      if (!result.ok && result.message) showToast(this, result.message);
+      this.createStageGrid(this.scale.width / 2, this.scale.height / 2 - 20);
+      this.currencyDisplay.setCoins(saveSystem.getCoins());
+      this.currencyDisplay.setDiamonds(saveSystem.getDiamonds());
+    });
+    cancel.on('pointerup', cleanup);
   }
 }
 

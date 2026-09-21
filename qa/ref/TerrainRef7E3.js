@@ -3,28 +3,6 @@
 // ============================================
 
 import { resolveStagePlan } from './StagePlan.js';
-import { resolveDifficulty } from './RunProgress.js';
-
-// P8 difficulty levers for endless normal stages (data-driven via
-// RunProgress.resolveDifficulty's 0..1 factor; never applied to Fast Track).
-// Every lever is safely bounded and deliberately avoids fighting the stage's
-// elevation envelope: scaling hill heights UP would saturate the envelope
-// top more often, which the existing "no headroom -> flat" fallback converts
-// back into flat ground, canceling the ramp. Difficulty therefore comes from
-// the feature MIX and run RHYTHM, which cannot produce impossible geometry.
-const DIFFICULTY_LEVERS = Object.freeze({
-  // Flat-feature weight scales from 100% down to 62%, making choppier mixes
-  // at higher distance (weights renormalize to sum 1; less rest, more action).
-  flatWeightScale: (f) => 1 - f * 0.38,
-  // P8 note: ramp/valley weights are deliberately NOT boosted. Valleys pull
-  // the terrain toward the envelope floor; pressed against the floor the
-  // existing safety fallback (delta < 10 -> flat) converts downs/valleys into
-  // flat ground, canceling the ramp. Proportional renormalization below
-  // already raises their share as flat weight shrinks.
-  // Multi-segment runs lengthen slightly (max +1 segment), stretching hills
-  // instead of steepening them - sustained terrain rather than walls.
-  runLengthBonus: (f) => Math.round(f)
-});
 
 // P7E-1: cheap deterministic hash -> [0, 1). The same world X always produces
 // the same decoration placement, so roadside details never flicker between
@@ -227,29 +205,6 @@ export class Terrain {
     this.generateLegacySegment(startX, prevY);
   }
 
-  // P8: difficulty-shifted feature weights. Single helper so no distance
-  // checks are duplicated elsewhere; returns weights that always sum to 1
-  // (all inputs clamped to [0,1] before normalization), so downstream
-  // comparisons remain total.
-  difficultyShiftedWeights(weights, factor) {
-    const f = (typeof factor === 'number' && Number.isFinite(factor))
-      ? Math.max(0, Math.min(1, factor)) : 0;
-    // Flat is scaled down by the difficulty factor; every other feature
-    // scales up proportionally to absorb exactly that share, so the mix
-    // stays balanced and always sums to 1 (never a wall of one type).
-    const flat = Math.max(0, weights.flat * (1 - f * 0.38));
-    const restOld = Math.max(1e-9, 1 - weights.flat);
-    const restNew = Math.max(1e-9, 1 - flat);
-    const scale = restNew / restOld;
-    return {
-      flat,
-      up: Math.max(0, weights.up) * scale,
-      down: Math.max(0, weights.down) * scale,
-      ramp: Math.max(0, weights.ramp) * scale,
-      valley: Math.max(0, weights.valley) * scale
-    };
-  }
-
   // Resolve the legacy terrain configuration ONCE per Terrain instance from
   // the already-resolved StagePlan (never per segment). Missing/invalid
   // values fall back to safe defaults so a stage with unexpected data keeps
@@ -302,11 +257,6 @@ export class Terrain {
   // elevation (up to maxHeight) without ever creating a vertical wall: run
   // length is stretched until every per-segment step stays inside the slope
   // guard, and every Y is clamped to the stage's elevation envelope.
-  // P8: endless difficulty ramp for normal stages - the distance-derived
-  // factor (RunProgress.resolveDifficulty) gently shifts the feature mix,
-  // elevation band and run lengths. All scaled values stay inside the
-  // existing envelope clamps and MAX_STEP slope guard, so terrain can never
-  // become impossible; Fast Track stages never reach this method.
   generateLegacySegment(startX, prevY) {
     const cfg = this.legacyTerrain;
     const endX = startX + this.segmentWidth;
@@ -314,9 +264,6 @@ export class Terrain {
     const envelopeBottom = this.groundY + 80;          // deepest playable Y
     const clampY = (y) => Phaser.Math.Clamp(y, envelopeTop, envelopeBottom);
     const MAX_STEP = 45; // per-segment slope guard (runs stretch, never wall)
-    // Distance-based difficulty factor 0..1 (easy -> advanced), resolved via
-    // the shared RunProgress resolver (single source of truth).
-    const f = resolveDifficulty(endX).factor;
 
     // Continue an active multi-segment run (climb/descent, or valley climb-out).
     if (this.legacyRun.remaining > 0 || this.legacyRun.afterRemaining > 0) {
@@ -329,10 +276,8 @@ export class Terrain {
     }
 
     // Pick the next feature from the profile-weighted mix (weights already
-    // include this stage's jumpChance / valleyChance factors). P8: the mix is
-    // then shifted by the distance-derived difficulty factor - less flat,
-    // slightly more ramp/valley at higher distances - and renormalized.
-    const w = this.difficultyShiftedWeights(cfg.weights, f);
+    // include this stage's jumpChance / valleyChance factors).
+    const w = cfg.weights;
     const roll = Math.random();
     let feature;
     if (roll < w.flat) feature = 'flat';
@@ -342,11 +287,6 @@ export class Terrain {
     else feature = 'valley';
 
     const band = Math.max(0, cfg.maxHeight - cfg.minHeight);
-    // P8 note: elevation targets intentionally stay UNSCALED by distance -
-    // the stage's minHeight..maxHeight band already encodes vertical scale,
-    // and the envelope-saturation fallback (delta < 10 -> flat) would turn
-    // bigger targets back into flat ground. Difficulty shifts the mix/rhythm
-    // instead (see DIFFICULTY_LEVERS).
     const elevationTarget = () =>
       Math.max(8, (cfg.minHeight + Math.random() * band) * cfg.profile.amplitude);
 
@@ -363,16 +303,7 @@ export class Terrain {
     }
 
     if (feature === 'hillUp' || feature === 'hillDown') {
-      // P8: when the terrain is already pressed against an envelope limit,
-      // flip the direction instead of emitting dead flat ground. This keeps
-      // the difficulty ramp intact at long distances (the old fallback turned
-      // downs at the floor into flats, canceling the mix shift) while every
-      // Y stays inside the same envelope and slope guard - no physics change.
-      let goingUp = feature === 'hillUp';
-      const headroom = prevY - envelopeTop;
-      const floorRoom = envelopeBottom - prevY;
-      if (goingUp && headroom < 10 && floorRoom >= 10) goingUp = false;      // pinned at top -> descend
-      else if (!goingUp && floorRoom < 10 && headroom >= 10) goingUp = true; // pinned at floor -> climb
+      const goingUp = feature === 'hillUp';
       const delta = goingUp
         ? Math.min(elevationTarget(), prevY - envelopeTop)      // headroom above
         : Math.min(elevationTarget() * 0.8, envelopeBottom - prevY); // floor below
@@ -384,9 +315,7 @@ export class Terrain {
       const minLen = Math.ceil(delta / MAX_STEP);
       const wantedLen = cfg.profile.runMin +
         Math.round(Math.random() * (cfg.profile.runMax - cfg.profile.runMin));
-      // P8: longer sustained runs at higher difficulty (max +1 segment),
-      // stretching climbs/descents instead of steepening them.
-      const len = Math.min(8, Math.max(minLen, wantedLen + DIFFICULTY_LEVERS.runLengthBonus(f), 1));
+      const len = Math.min(8, Math.max(minLen, wantedLen, 1));
       const step = (goingUp ? -1 : 1) * (delta / len);
       this.legacyRun = { remaining: len - 1, afterRemaining: 0, stepY: step, afterStepY: 0 };
       this.addSegment(startX, prevY, endX, clampY(prevY + step), false);
@@ -396,15 +325,9 @@ export class Terrain {
     // valley: V-shaped dip - descend for `out` segments, then climb back out
     // over `back` segments toward the pre-dip elevation. valleyChance scales
     // how often this feature is chosen; the stage band scales its depth.
-    // P8: when the terrain already sits at the envelope floor (nowhere to
-    // dip), emit a climb instead of flat ground - same envelope/slope guards.
     const depth = Math.min(20 + Math.random() * Math.max(20, cfg.maxHeight * 0.35), envelopeBottom - prevY);
     if (depth < 10) {
-      const climb = Math.max(10, Math.min(elevationTarget(), prevY - envelopeTop));
-      const len = Math.max(1, Math.min(4, Math.ceil(climb / MAX_STEP)));
-      const step = -(climb / len);
-      this.legacyRun = { remaining: len - 1, afterRemaining: 0, stepY: step, afterStepY: 0 };
-      this.addSegment(startX, prevY, endX, clampY(prevY + step), false);
+      this.addSegment(startX, prevY, endX, prevY, true);
       return;
     }
     const out = Math.max(1, Math.min(4, Math.ceil(depth / MAX_STEP)));
@@ -591,6 +514,8 @@ export class Terrain {
       return fallback;
     };
     const groundColor = visual ? themeNum(visual.ground.base, 0x8b4513) : (this.theme ? parseInt(this.theme.groundColor.replace('#', '0x')) : 0x8b4513);
+    const hillColor = visual ? themeNum(visual.background.nearMountain, 0x4a7c59) : (this.theme ? parseInt(this.theme.hillColor.replace('#', '0x')) : 0x4a7c59);
+    const mountainColor = visual ? themeNum(visual.background.farMountain, 0x6b8e23) : (this.theme ? parseInt(this.theme.mountainColor.replace('#', '0x')) : 0x6b8e23);
     const accentColor = visual ? themeNum(visual.ground.accent, 0x228b22) : (this.theme ? parseInt(this.theme.accentColor.replace('#', '0x')) : 0x228b22);
 
     // P7B: viewport culling (performance only - visuals unchanged). Every
@@ -615,12 +540,35 @@ export class Terrain {
       this.lastVisibleSegment = this.segments[lastVisibleIndex];
     }
 
-    // P7E-4: the old per-segment background mountain/hill triangle layer is
-    // REMOVED for normal stages. Backgrounds now come exclusively from
-    // EnvironmentRenderer.renderNormalBackground (deterministic region
-    // parallax). Fast Track backgrounds are EnvironmentRenderer-owned too, so
-    // these legacy triangles were already skipped there.
+    // Draw mountains and hills only if NOT an expressway/fast_track (handled by EnvironmentRenderer)
     const isExpressway = this.theme && (this.theme.environment === 'fast_track' || this.theme.environment === 'highway');
+    if (!isExpressway) {
+      // Draw mountains in far background
+      this.graphics.fillStyle(mountainColor, 0.3);
+      for (let i = 0; i < this.segments.length; i += 4) {
+        const seg = this.segments[i];
+        if (seg.endX < viewLeft || seg.startX > viewRight) continue;
+        const mh = 120 + Math.sin(seg.startX * 0.005) * 60;
+        this.graphics.fillTriangle(
+          seg.startX - 50, seg.startY + 50,
+          seg.startX + 80, seg.startY - mh,
+          seg.startX + 200, seg.startY + 50
+        );
+      }
+
+      // Draw hills in background
+      this.graphics.fillStyle(hillColor, 0.5);
+      for (let i = 0; i < this.segments.length; i += 3) {
+        const seg = this.segments[i];
+        if (seg.endX < viewLeft || seg.startX > viewRight) continue;
+        const hillHeight = 60 + Math.sin(seg.startX * 0.01) * 35;
+        this.graphics.fillTriangle(
+          seg.startX - 30, seg.startY + 20,
+          seg.startX + 50, seg.startY - hillHeight,
+          seg.startX + 120, seg.startY + 20
+        );
+      }
+    }
 
     // Draw ground fill (main terrain body) - P7B: culled to visible segments
     this.graphics.fillStyle(groundColor, 1);

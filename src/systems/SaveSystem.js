@@ -37,8 +37,12 @@ class SaveSystem {
     // F1: normalize corrupted/legacy fields before anything reads them.
     this.sanitizeSaveData(data);
     // Development-only: unlock legendary characters and Fast Track stage for local testing
-    // This does NOT affect production builds (import.meta.env.DEV is false in production)
-    if (import.meta.env.DEV) {
+    // This does NOT affect production builds (import.meta.env.DEV is false in production).
+    // P8 QA-safety: plain Node (QA harnesses) has no import.meta.env - guard the
+    // access so importing this module headless cannot throw. Behavior is
+    // identical in Vite, which statically replaces import.meta.env.DEV.
+    const isDev = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV === true);
+    if (isDev) {
       if (!data.unlockedCharacters.includes('saugat_legendary')) {
         data.unlockedCharacters = [...data.unlockedCharacters, 'saugat_legendary'];
       }
@@ -99,6 +103,8 @@ class SaveSystem {
     data.diamonds = toFiniteNumber(data.diamonds, defaultPlayerData.diamonds);
     data.bestDistance = toFiniteNumber(data.bestDistance, defaultPlayerData.bestDistance);
     data.bestScore = toFiniteNumber(data.bestScore, defaultPlayerData.bestScore);
+    data.bestRunCoins = toFiniteNumber(data.bestRunCoins, defaultPlayerData.bestRunCoins);
+    data.bestMilestone = toFiniteNumber(data.bestMilestone, defaultPlayerData.bestMilestone);
 
     // Selection fields: non-string/empty values fall back to the default.
     data.selectedCharacter = toIdString(data.selectedCharacter, defaultPlayerData.selectedCharacter);
@@ -193,7 +199,9 @@ class SaveSystem {
   }
 
   isStageUnlocked(id) {
-    if (import.meta.env.DEV && id === 'ktm_nijgadh_fast_track') {
+    // P8 QA-safety: same Node-safe DEV guard as load() (see above).
+    const isDev = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV === true);
+    if (isDev && id === 'ktm_nijgadh_fast_track') {
       return true;
     }
     return this.data.unlockedStages.includes(id);
@@ -287,6 +295,35 @@ class SaveSystem {
     if (!Number.isFinite(this.data.bestScore)) this.data.bestScore = 0;
     if (Number.isFinite(score) && score > this.data.bestScore) {
       this.data.bestScore = score;
+      this.save();
+      return true;
+    }
+    return false;
+  }
+
+  getBestRunCoins() {
+    return this.data.bestRunCoins;
+  }
+
+  updateBestRunCoins(coins) {
+    if (!Number.isFinite(this.data.bestRunCoins)) this.data.bestRunCoins = 0;
+    if (Number.isFinite(coins) && coins > this.data.bestRunCoins) {
+      this.data.bestRunCoins = coins;
+      this.save();
+      return true;
+    }
+    return false;
+  }
+
+  getBestMilestone() {
+    return this.data.bestMilestone;
+  }
+
+  updateBestMilestone(count) {
+    if (!Number.isFinite(this.data.bestMilestone)) this.data.bestMilestone = 0;
+    const c = Math.floor(Number.isFinite(count) ? count : 0);
+    if (c > this.data.bestMilestone) {
+      this.data.bestMilestone = c;
       this.save();
       return true;
     }
