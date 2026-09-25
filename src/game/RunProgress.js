@@ -59,6 +59,49 @@ export function resolveDifficulty(worldX) {
   return { tier: 4, label: 'ADVANCED', factor: 1.0 };
 }
 
+// ---------------------------------------------------------------
+// Bonus Resolver (P9) — pure, data-driven thresholds + rewards.
+// Stateful once-per-event/cooldown guards live in the scene; this module only
+// owns the DATA and the pure decision helpers (no Math.random, testable).
+// All bonuses are modest so the existing coin/diamond economy is not inflated.
+// ---------------------------------------------------------------
+
+// AIR TIME: seconds airborne before an air-time bonus is earned (per jump).
+export const AIR_TIME_THRESHOLD_S = 1.2;
+export const AIR_TIME_BONUS = 20;      // coins
+
+// LONG JUMP: seconds airborne for the bigger long-jump bonus (per jump).
+export const LONG_JUMP_THRESHOLD_S = 2.0;
+export const LONG_JUMP_BONUS = 30;     // coins
+
+// NEW RECORD: coins when the current run passes the stored best distance.
+export const RECORD_BONUS = 40;        // coins
+
+// STAGE TARGET: coins when the endless run passes the stage target distance.
+export const TARGET_BONUS = 50;        // coins
+
+// Decide the airborne bonus for a completed jump's air-seconds (0 = none).
+export function airborneBonus(airSeconds) {
+  if (typeof airSeconds !== 'number' || !Number.isFinite(airSeconds)) return null;
+  if (airSeconds >= LONG_JUMP_THRESHOLD_S) {
+    return { type: 'longJump', label: 'LONG JUMP!', coins: LONG_JUMP_BONUS };
+  }
+  if (airSeconds >= AIR_TIME_THRESHOLD_S) {
+    return { type: 'airTime', label: 'AIR TIME', coins: AIR_TIME_BONUS };
+  }
+  return null;
+}
+
+// New-record crossing bonus (awarded at most once per run by the caller).
+export function recordBonus() {
+  return { type: 'record', label: 'NEW RECORD!', coins: RECORD_BONUS };
+}
+
+// Stage-target crossing bonus (awarded at most once per run by the caller).
+export function targetBonus() {
+  return { type: 'target', label: 'TARGET REACHED!', coins: TARGET_BONUS };
+}
+
 export default {
   MILESTONE_INTERVAL,
   milestoneIndexAt,
@@ -66,5 +109,14 @@ export default {
   nextMilestoneDistance,
   milestoneReward,
   DIFFICULTY_TIERS,
-  resolveDifficulty
+  resolveDifficulty,
+  AIR_TIME_THRESHOLD_S,
+  AIR_TIME_BONUS,
+  LONG_JUMP_THRESHOLD_S,
+  LONG_JUMP_BONUS,
+  RECORD_BONUS,
+  TARGET_BONUS,
+  airborneBonus,
+  recordBonus,
+  targetBonus
 };

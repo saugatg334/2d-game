@@ -12,7 +12,7 @@ import { resolveVehicleTuning } from '../game/VehicleTuning.js';
 import { resolveCharacterAbility } from '../game/CharacterAbility.js';
 import { device } from '../utils/device.js';
 import { isStagePlayable } from '../game/StageProgression.js';
-import { milestoneIndexAt, nextMilestoneDistance, milestoneReward, resolveDifficulty } from '../game/RunProgress.js';
+import { milestoneIndexAt, nextMilestoneDistance, milestoneReward, resolveDifficulty, airborneBonus, recordBonus, targetBonus } from '../game/RunProgress.js';
 
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -68,6 +68,16 @@ export class GameScene extends Phaser.Scene {
       // run and the highest milestone index, awarded once each (see updateMilestones).
       milestonesReached: 0, highestMilestone: 0
     };
+    // P9: per-run bonus/bonus-guard state (air time accumulates while airborne
+    // and is settled on landing; record/target cross once each run).
+    this.bonusCounts = { airTime: 0, longJump: 0, record: 0, target: 0 };
+    this.wasAirborne = false;
+    this.airTime = 0;
+    this.recordAwarded = false;
+    this.targetAwarded = false;
+    // Fast Track keeps its own finite behavior — the P9 record/target/air bonuses
+    // apply to NORMAL (endless) stages only, so Fast Track stays unchanged.
+    this.isFastTrack = this.stage.environment === 'fast_track';
     // P3 Step 4: idempotent guard so a single run's collected coins/diamonds
     // are persisted to the player's save at most once (across Game Over, fuel,
     // flip, fall and win paths). Reset every run so Replay/menu starts fresh.
@@ -113,6 +123,11 @@ export class GameScene extends Phaser.Scene {
     this.maxRunDistance = (typeof this.stage.maxRunDistance === 'number' && Number.isFinite(this.stage.maxRunDistance) && this.stage.maxRunDistance > 0)
       ? this.stage.maxRunDistance
       : (typeof this.stage.targetDistance === 'number' && this.stage.targetDistance > 0 ? this.stage.targetDistance : 100000);
+    // P9 fix: HUD 'TARGET' line and the one-time target bonus read this value.
+    // It must be initialized here (after maxRunDistance is fully resolved) so
+    // updateHUD()/checkRecords() never read undefined. Fast Track keeps its own
+    // finite targets via the same fallback chain (2500m/3400m).
+    this.displayTargetDistance = this.maxRunDistance;
 
     // P0 Step 3: cache stage-specific gravity from the already-resolved plan.
     // Single gravity source — Vehicle.applyGravity() integration is untouched,
@@ -252,6 +267,9 @@ export class GameScene extends Phaser.Scene {
     this.diamondText = this.add.text(w - 70, 20, '0', { fontSize: '16px', color: '#b9f2ff', ...HUD_OUTLINE }).setScrollFactor(0);
     this.scoreText = this.add.text(w - 150, 50, 'Score: 0', { fontSize: '16px', color: '#fff', ...HUD_OUTLINE }).setScrollFactor(0);
     this.milestoneText = this.add.text(20, 105, 'BONUS @ 275m', { fontSize: '12px', color: '#ffd700', ...HUD_OUTLINE }).setScrollFactor(0);
+    // P9: compact stage target + best line, and a small arcade speed meter.
+    this.progressText = this.add.text(20, 120, '', { fontSize: '12px', color: '#fff', ...HUD_OUTLINE }).setScrollFactor(0);
+    this.speedMeterGfx = this.add.graphics().setScrollFactor(0);
     // BONUS! banner (hidden; shown briefly when a milestone is reached).
     this.bonusBanner = this.add.text(w / 2, 120, 'BONUS!', {
       fontSize: '20px', color: '#ffd700', fontStyle: 'bold', ...HUD_OUTLINE
@@ -478,6 +496,18 @@ export class GameScene extends Phaser.Scene {
     // 1) resolves to exactly the previous hardcoded 0.05.
     this.vehicle.update(this.controls, this.terrain, this.gravity, this.vehicleTuning.groundFriction, delta, this.vehicleTuning.terrainAlignmentRate);
 
+    // P9: airborne-time tracking — accumulate while off the ground, settle the
+    // air-time/long-jump bonus once on landing (never per frame). Normal stages only.
+    if (!this.isFastTrack) {
+      if (!this.vehicle.grounded) {
+        this.wasAirborne = true;
+        this.airTime += dt;
+      } else if (this.wasAirborne) {
+        this.wasAirborne = false;
+        this.awardAirTimeBonus();
+      }
+    }
+
     // Update camera to follow vehicle
     const targetScrollX = this.vehicle.x - this.scale.width * 0.3;
     this.cameras.main.scrollX = Math.max(0, targetScrollX);
@@ -496,6 +526,7 @@ export class GameScene extends Phaser.Scene {
     this.consumeFuel(delta);
     this.gameState.distance = this.vehicle.getDistance();
     this.gameState.speed = this.vehicle.getSpeedKmh();
+    this.checkRecords();
     this.updateMilestones();
     this.updateHUD();
     this.checkGameConditions();
@@ -556,6 +587,12 @@ export class GameScene extends Phaser.Scene {
 
     // Next-milestone progress indicator (small, unobtrusive).
     this.milestoneText.setText('BONUS @ ' + Math.floor(nextMilestoneDistance(this.gameState.distance)).toLocaleString('en-US') + 'm');
+    // New P9 HUD (target/best + speed meter) is normal-stage only; Fast Track's
+    // HUD stays exactly as before.
+    if (!this.isFastTrack) {
+      this.updateSpeedMeter();
+      this.progressText.setText('TARGET ' + this.displayTargetDistance.toLocaleString('en-US') + 'm   BEST ' + Math.floor(saveSystem.getBestDistance()).toLocaleString('en-US') + 'm');
+    }
 
     // Update ability HUD
     if (this.abilityState.available && this.abilityText) {
@@ -607,6 +644,64 @@ export class GameScene extends Phaser.Scene {
     saveSystem.updateBestMilestone(this.gameState.highestMilestone);
   }
 
+  // P9: settle the airborne bonus exactly once per landing (data-driven via
+  // RunProgress.airborneBonus; thresholds in seconds).
+  awardAirTimeBonus() {
+    const secs = this.airTime;
+    this.airTime = 0;
+    const bonus = airborneBonus(secs);
+    if (!bonus) return;
+    this.bonusCounts[bonus.type] += 1;
+    this.grantBonus(bonus.label, bonus.coins);
+  }
+
+  // P9: NEW RECORD + STAGE TARGET each cross EXACTLY once per run.
+  checkRecords() {
+    // Normal (endless) stages only — Fast Track keeps its own finite behavior.
+    if (this.isFastTrack) return;
+    if (!this.recordAwarded && this.gameState.distance > saveSystem.getBestDistance()) {
+      this.recordAwarded = true;
+      this.bonusCounts.record += 1;
+      const b = recordBonus();
+      this.grantBonus(b.label, b.coins);
+    }
+    if (!this.targetAwarded && this.gameState.distance >= this.displayTargetDistance) {
+      this.targetAwarded = true;
+      this.bonusCounts.target += 1;
+      const b = targetBonus();
+      this.grantBonus(b.label, b.coins);
+    }
+  }
+
+  // Shared lightweight bonus feedback (banner + coins). No audio; no pause;
+  // the banner auto-hides. Guards all live in the callers.
+  grantBonus(label, coins) {
+    this.gameState.coins += coins;
+    if (this.bonusBanner) {
+      this.bonusBanner.setText(label + '  +' + coins + ' COINS');
+      this.bonusBanner.setVisible(true);
+      this.time.delayedCall(1600, () => this.bonusBanner.setVisible(false));
+    }
+  }
+
+  // Compact arcade speed meter (bar reflects real velocity / vehicle max speed).
+  updateSpeedMeter() {
+    const g = this.speedMeterGfx;
+    if (!g) return;
+    g.clear();
+    const x = this.scale.width - 150;
+    const y = 96;
+    const w = 90;
+    const h = 8;
+    const cap = (this.vehicleData && this.vehicleData.stats && this.vehicleData.stats.maxSpeed) || 300;
+    const ratio = Math.max(0, Math.min(1, this.gameState.speed / cap));
+    g.fillStyle(0x333333, 0.85);
+    g.fillRoundedRect(x, y, w, h, 4);
+    const col = ratio < 0.5 ? 0x2a9d8f : (ratio < 0.85 ? 0xf4a261 : 0xe63946);
+    g.fillStyle(col, 1);
+    g.fillRoundedRect(x, y, Math.max(4, w * ratio), h, 4);
+  }
+
   checkGameConditions() {
     if (this.gameState.fuel <= 0) { this.gameOver('Out of fuel!'); return; }
     // More forgiving flip detection - require sustained flipping for 3 seconds
@@ -656,6 +751,8 @@ export class GameScene extends Phaser.Scene {
     this.add.text(w / 2, y0 + 22, 'Distance   ' + dist + 'm       Best   ' + bd + 'm', st).setOrigin(0.5).setScrollFactor(0).setDepth(101);
     this.add.text(w / 2, y0 + 44, 'Coins   ' + this.gameState.coins + '       Best   ' + saveSystem.getBestRunCoins(), st).setOrigin(0.5).setScrollFactor(0).setDepth(101);
     this.add.text(w / 2, y0 + 66, 'Milestones   ' + this.gameState.highestMilestone + '       Best   ' + saveSystem.getBestMilestone(), st).setOrigin(0.5).setScrollFactor(0).setDepth(101);
+    const b = this.bonusCounts;
+    this.add.text(w / 2, y0 + 88, 'Bonuses  AIR ' + b.airTime + '   LONG JUMP ' + b.longJump + '   RECORD ' + (b.record > 0 ? '1' : '0'), { fontSize: '13px', color: '#ffffff', fontFamily: 'monospace' }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
   }
 
   gameOver(reason) {
