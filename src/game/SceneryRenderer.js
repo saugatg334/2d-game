@@ -30,6 +30,9 @@ function hash01(n) {
   return s - Math.floor(s);
 }
 
+// P12: stage visual identity resolver (spacing overrides, temple style).
+import { resolveStageVisualIdentity } from './StageVisualIdentity.js';
+
 // Stable string seed (per stage) so different stages decorrelate placement.
 function stringSeed(str) {
   let h = 0;
@@ -46,15 +49,17 @@ const CATEGORY_DEFS = [
   { kind: 'tea', spacing: 120, seed: 37, density: t => (t.vegetation.type === 'tea' ? t.vegetation.density * 0.9 : 0) },
   { kind: 'rock', spacing: 350, seed: 53, density: t => t.scenery.rocks },
   { kind: 'tree', spacing: 260, seed: 71, density: t => t.scenery.trees },
-  { kind: 'house', spacing: 3000, seed: 89, density: t => t.scenery.houses },
-  { kind: 'pole', spacing: 520, seed: 101, density: t => t.scenery.poles },
-  { kind: 'sign', spacing: 2400, seed: 127, density: t => t.scenery.signs },
+  { kind: 'house', spacing: 3000, seed: 89, density: t => (t && t.scenery ? t.scenery.houses : 0) },
+  { kind: 'pole', spacing: 520, seed: 101, p12Spaced: true, density: t => (t && t.scenery ? t.scenery.poles : 0) },
+  { kind: 'sign', spacing: 2400, seed: 127, density: t => (t && t.scenery ? t.scenery.signs : 0) },
   // P7E-5: Nepal landmark categories (visual-only; densities from landmarkDensity()).
-  { kind: 'wall', spacing: 720, seed: 201, density: t => landmarkDensity(t.id).wall },
-  { kind: 'flag', spacing: 900, seed: 211, density: t => landmarkDensity(t.id).flag },
-  { kind: 'temple', spacing: 4200, seed: 223, density: t => landmarkDensity(t.id).temple },
-  { kind: 'bridge', spacing: 2600, seed: 227, density: t => landmarkDensity(t.id).bridge },
-  { kind: 'tunnel', spacing: 3400, seed: 229, density: t => landmarkDensity(t.id).tunnel }
+  // P12: spacing for p12Spaced categories comes from the stage's resolved
+  // visual identity (see StageVisualIdentity.js) when it provides one.
+  { kind: 'wall', spacing: 720, seed: 201, p12Spaced: true, density: t => (t && t.id ? landmarkDensity(t.id).wall : 0) },
+  { kind: 'flag', spacing: 900, seed: 211, p12Spaced: true, density: t => (t && t.id ? landmarkDensity(t.id).flag : 0) },
+  { kind: 'temple', spacing: 4200, seed: 223, p12Spaced: true, density: t => (t && t.id ? landmarkDensity(t.id).temple : 0) },
+  { kind: 'bridge', spacing: 2600, seed: 227, p12Spaced: true, density: t => (t && t.id ? landmarkDensity(t.id).bridge : 0) },
+  { kind: 'tunnel', spacing: 3400, seed: 229, p12Spaced: true, density: t => (t && t.id ? landmarkDensity(t.id).tunnel : 0) }
 ];
 
 // Roadside sign texts per region theme (visual identity only, no gameplay).
@@ -140,6 +145,15 @@ export class SceneryRenderer {
 
     this.stageSeed = stringSeed(this.plan && this.plan.stageId);
     this.themeId = this.visual ? this.visual.id : 'DEFAULT';
+    // P12: stage visual identity — landmark spacing overrides (e.g. pagoda
+    // temples every ~2600m in KTM_URBAN) and pole wire-span behavior. Pure
+    // resolver output; themes without identity data keep the defaults above.
+    this.identity = resolveStageVisualIdentity(this.plan ? { id: this.plan.stageId, regionTheme: this.themeId } : null);
+    this.identityLandmarkSpacing = {};
+    for (const lm of this.identity.midLandmarks) {
+      if (lm && typeof lm.kind === 'string' && lm.spacing > 0) this.identityLandmarkSpacing[lm.kind] = lm.spacing;
+    }
+    if (this.identity.poleSpacing > 0) this.identityLandmarkSpacing.pole = this.identity.poleSpacing;
   }
 
   // ---------- windowed, deterministic generation ----------
@@ -163,9 +177,11 @@ export class SceneryRenderer {
         const x = this.cursors[c];
         const roll = hash01(x * 0.731 + def.seed + this.stageSeed);
         if (roll < density) this.spawnItem(def, c, x);
-        // deterministic jittered spacing within the audit band
+        // deterministic jittered spacing within the audit band; P12 identity
+        // themes may override the baseline spacing per category.
+        const spacing = (def.p12Spaced && this.identityLandmarkSpacing && this.identityLandmarkSpacing[def.kind]) || def.spacing;
         const jitter = 0.9 + 0.2 * hash01(x * 3.17 + def.seed);
-        this.cursors[c] = x + def.spacing * jitter;
+        this.cursors[c] = x + spacing * jitter;
       }
     }
 
@@ -259,7 +275,11 @@ export class SceneryRenderer {
         case 'sign': this.drawSign(g, item, cameraX); break;
         case 'wall': this.drawWall(g, item, theme); break;
         case 'flag': this.drawFlag(g, item); break;
-        case 'temple': this.drawTemple(g, item); break;
+        case 'temple':
+          // P12: identity themes can restyle landmarks (pagoda for KTM_URBAN).
+          if (this.identity && this.identity.templeStyle === 'pagoda') this.drawPagodaTemple(g, item);
+          else this.drawTemple(g, item);
+          break;
         case 'bridge': this.drawBridge(g, item); break;
         case 'tunnel': this.drawTunnel(g, item); break;
         default: break;
@@ -267,10 +287,15 @@ export class SceneryRenderer {
     }
 
     // Small wire spans between consecutive visible poles (never a huge grid).
-    for (let i = 0; i < poles.length - 1; i++) {
-      const a = poles[i];
-      const b = poles[i + 1];
-      if (b.x - a.x < 900) this.drawWireSpan(g, a, b);
+    // P12: guard clause allows identity themes to disable wires (none today —
+    // every theme keeps the pre-P12 always-on behavior).
+    const wiresEnabled = !this.identity || this.identity.roadFeatures.wires !== false;
+    if (wiresEnabled) {
+      for (let i = 0; i < poles.length - 1; i++) {
+        const a = poles[i];
+        const b = poles[i + 1];
+        if (b.x - a.x < 900) this.drawWireSpan(g, a, b);
+      }
     }
   }
 
@@ -593,6 +618,48 @@ export class SceneryRenderer {
     }
     g.fillStyle(0xf0c040, 1);
     g.fillTriangle(x - 3 * s, base - h - 4 * s, x + 3 * s, base - h - 4 * s, x, base - h - 14 * s);
+  }
+
+  // P12: Kathmandu-style tiered pagoda temple silhouette (3 tapered tiers,
+  // warm brick body, darker roofs, gajur finial). Visual-only restyle of the
+  // generic temple for identity themes; anchored on the same collision-line
+  // anchor as every other roadside item.
+  drawPagodaTemple(g, item) {
+    const s = item.s;
+    const x = item.x;
+    const base = item.y;
+    const bodyW = (34 + item.v * 6) * s;
+    const totalH = (46 + item.v * 10) * s;
+    const tiers = 3;
+    const bodyColor = 0xb0703f;
+    const roofColor = 0x8a4a32;
+    for (let t = 0; t < tiers; t++) {
+      const tierH = totalH * 0.22;
+      const tw = bodyW * (1 - t * 0.24);
+      const y0 = base - (t + 1) * tierH;
+      // tier body
+      g.fillStyle(bodyColor, 1);
+      g.fillRect(x - tw / 2, y0, tw, tierH);
+      // flared, upturned pagoda roof over each tier
+      g.fillStyle(roofColor, 1);
+      g.fillTriangle(
+        x - tw / 2 - 7 * s, y0 - 2 * s,
+        x + tw / 2 + 7 * s, y0 - 2 * s,
+        x, y0 - 11 * s
+      );
+      g.fillStyle(roofColor, 1);
+      g.fillTriangle(
+        x - tw / 2 - 2 * s, y0 - 1 * s,
+        x + tw / 2 + 2 * s, y0 - 1 * s,
+        x, y0 - 8 * s
+      );
+    }
+    // gajur (finial)
+    g.fillStyle(0xf0c040, 1);
+    g.fillTriangle(x - 3 * s, base - totalH - 4 * s, x + 3 * s, base - totalH - 4 * s, x, base - totalH - 14 * s);
+    // doorway
+    g.fillStyle(0x3a2418, 1);
+    g.fillRect(x - 4 * s, base - 12 * s, 8 * s, 12 * s);
   }
 
   // Lightweight bridge: deck, rail, pillars and a soft shadow (visual only).

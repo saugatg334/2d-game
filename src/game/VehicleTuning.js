@@ -2,6 +2,8 @@
 // Nepali Racer - Vehicle Tuning Resolver
 // ============================================
 
+import { WORLD_UNITS_PER_METRE } from '../config/constants.js';
+
 // P0 Step 6B: Pure, data-driven resolution of vehicle tuning values, following
 // the existing StagePlan architecture (data in -> resolved values out, no side
 // effects, safe to unit-test without a scene). Only the FUEL domain is wired in
@@ -46,9 +48,18 @@ const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
  *   - fuelConsumption: vehicle stats value (tempo/default: 2), fallback 2.
  *   - fuelEfficiency:  character bonus (missing/invalid -> 0), clamped to [0, 1].
  *
- * Burn formula (identical to the pre-6B GameScene.consumeFuel() calculation):
- *   consumption = fuelConsumption * dt * throttleMultiplier * max(0, 1 - fuelEfficiency)
- * fuelEfficiency is resolved here so it can only ever be applied exactly once.
+ * Phase 1.7 (unit fix): world x-units are 1/3.6 metres (WORLD_UNITS_PER_METRE),
+ * so the data-authored per-second burn rate is converted to the EQUIVALENT
+ * per-metre rate here (÷3.6). Fuel consumed per real metre is unchanged:
+ *
+ *   BEFORE: burn/second = fuelConsumption * throttleMult * (1 - fuelEfficiency)
+ *           burn/metre  = burn/second ÷ (velocityX units/s)      [1 unit treated as 1 m]
+ *   AFTER:  burn/second = (fuelConsumption/3.6) * throttleMult * (1 - fuelEfficiency)
+ *           burn/metre  = burn/second ÷ (velocityX/3.6 m/s)
+ *                      = identical to BEFORE
+ *
+ * Real-time feel (seconds of full throttle per full tank) is also unchanged;
+ * only the metres those seconds now correspond to are physically correct.
  *
  * Ground friction domain (Step 6C):
  *   groundFriction = clamp(1 - (1 - 0.96) / grip, 0.5, 0.995)
@@ -67,7 +78,10 @@ export function resolveVehicleTuning(vehicleStats, characterData) {
     : {};
 
   const fuelCapacity = toFiniteNumber(stats.fuelCapacity, DEFAULT_FUEL_CAPACITY);
-  const fuelConsumption = toFiniteNumber(stats.fuelConsumption, DEFAULT_FUEL_CONSUMPTION);
+  // Phase 1.7: convert the data-authored per-second burn into the equivalent
+  // per-metre burn (world unit = 1/3.6 m). Fallback converted identically so a
+  // missing stat behaves exactly like the default vehicle.
+  const fuelConsumption = toFiniteNumber(stats.fuelConsumption, DEFAULT_FUEL_CONSUMPTION) / WORLD_UNITS_PER_METRE;
   const fuelEfficiency = Math.max(0, Math.min(1, toFiniteNumber(bonuses.fuelEfficiency, 0)));
 
   // P0 Step 6C: grip -> ground friction, resolved once. Valid finite positive

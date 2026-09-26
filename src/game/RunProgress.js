@@ -102,6 +102,25 @@ export function targetBonus() {
   return { type: 'target', label: 'TARGET REACHED!', coins: TARGET_BONUS };
 }
 
+// ---------------------------------------------------------------
+// Per-stage TARGET resolver (post-video fix) — pure.
+//
+// Per-stage target semantics: the HUD 'TARGET' line and the one-time target
+// bonus resolve from the stage's OWN targetDistance (2500-4950m), matching
+// what StageSelect already displays. The RUN itself stays endless up to
+// maxRunDistance (P7B, 100,000m) — the two values are intentionally separate.
+// Fast Track is unaffected (its targetDistance == maxRunDistance).
+// ---------------------------------------------------------------
+const DEFAULT_FALLBACK_TARGET = 100000;
+
+export function resolveDisplayTargetDistance(stage, maxRunDistance) {
+  const cap = (typeof maxRunDistance === 'number' && Number.isFinite(maxRunDistance) && maxRunDistance > 0)
+    ? maxRunDistance
+    : DEFAULT_FALLBACK_TARGET;
+  const t = (stage && typeof stage === 'object') ? stage.targetDistance : undefined;
+  return (typeof t === 'number' && Number.isFinite(t) && t > 0) ? t : cap;
+}
+
 export default {
   MILESTONE_INTERVAL,
   milestoneIndexAt,
@@ -118,5 +137,6 @@ export default {
   TARGET_BONUS,
   airborneBonus,
   recordBonus,
-  targetBonus
+  targetBonus,
+  resolveDisplayTargetDistance
 };

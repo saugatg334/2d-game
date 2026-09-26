@@ -1,4 +1,4 @@
-import { COLORS, PHYSICS } from '../config/constants.js';
+import { PHYSICS, WORLD_UNITS_PER_METRE } from '../config/constants.js';
 
 export class Vehicle {
   constructor(scene, stats, x, y, options = {}) {
@@ -214,12 +214,19 @@ export class Vehicle {
     return this.y > screenHeight + 200;
   }
 
+  // Phase 1.7 (unit fix): velocityX IS the km/h-like gameplay speed (vehicle
+  // data / VEHICLE_DEFAULTS.maxSpeed are authored in the same units and the
+  // Vehicle Select screen shows them raw). The previous ×0.36 understated the
+  // displayed speed by 10x vs distance physics — see qa/SpeedDistanceMathHarness.
   getSpeedKmh() {
-    return Math.abs(this.velocityX) * 0.36;
+    return Math.abs(this.velocityX);
   }
 
+  // Phase 1.7 (unit fix): one world x-unit = 1/WORLD_UNITS_PER_METRE metres.
+  // Physics (acceleration, braking, friction, terrain) is untouched — only the
+  // interpretation of world x as physical metres changed here.
   getDistance() {
-    return Math.max(0, this.x - 200);
+    return Math.max(0, (this.x - 200) / WORLD_UNITS_PER_METRE);
   }
 
   render() {

@@ -67,8 +67,19 @@ export const VEHICLE_DEFAULTS = {
   airRotationSpeed: 2.5
 };
 
+// Phase 1.7 (speed/distance unit fix): authoritative world-unit <-> metre
+// relationship. Vehicle velocityX is the km/h-like gameplay speed, so one
+// world x-unit represents 1/3.6 metres of physical distance:
+//   speedKmh = |velocityX|            (Vehicle.getSpeedKmh)
+//   metres   = worldXUnits / 3.6      (Vehicle.getDistance, save migration)
+// Single source of truth — do NOT duplicate the 3.6 factor elsewhere.
+export const WORLD_UNITS_PER_METRE = 3.6;
+
 export const FUEL = {
   MAX: 100,
+  // Phase 1.7: legacy per-second burn rate (unit audit). Runtime burn is now
+  // derived per metre via FUEL.BURN_PER_METRE = CONSUMPTION_RATE / WORLD_UNITS_PER_METRE
+  // (resolved in VehicleTuning); this legacy value is kept for reference only.
   CONSUMPTION_RATE: 2,
   ACCELERATION_MULTIPLIER: 1.5
 };

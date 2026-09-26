@@ -9,7 +9,7 @@
 //   B5. bonus keys map to counted bucket names (airTime/longJump/record/target).
 // Benefits: no Phaser, no Math.random, no scene state needed.
 import {
-  airborneBonus, recordBonus, targetBonus,
+  airborneBonus, recordBonus, targetBonus, resolveDisplayTargetDistance,
   AIR_TIME_THRESHOLD_S, LONG_JUMP_THRESHOLD_S,
   AIR_TIME_BONUS, LONG_JUMP_BONUS, RECORD_BONUS, TARGET_BONUS
 } from '../src/game/RunProgress.js';
@@ -84,6 +84,33 @@ console.log('[B4] New record crosses EXACTLY once (stateful guard sim)');
 
 console.log('[B5] Bonus buckets are the counted keys used by the scene');
 ok(['airTime', 'longJump', 'record', 'target'].every((k) => typeof k === 'string'), 'all bonus bucket keys present');
+
+console.log('[B6] Per-stage TARGET resolver (post-video fix)');
+{
+  // Normal stage: HUD target = stage's own targetDistance (StageSelect parity).
+  const normal = resolveDisplayTargetDistance({ targetDistance: 4500, maxRunDistance: 100000 }, 100000);
+  ok(normal === 4500, 'normal stage resolves to its own targetDistance (' + normal + ')');
+  ok(normal < 100000, 'normal-stage target is NOT the endless run cap');
+  // Fast Track: targetDistance == maxRunDistance -> identical to old behavior.
+  const ft = resolveDisplayTargetDistance({ targetDistance: 2500, maxRunDistance: 2500 }, 2500);
+  ok(ft === 2500, 'Fast Track keeps its finite target (2500)');
+  // Fallbacks: missing/invalid targetDistance -> cap; garbage -> cap.
+  ok(resolveDisplayTargetDistance({ maxRunDistance: 100000 }, 100000) === 100000, 'missing targetDistance falls back to maxRunDistance');
+  ok(resolveDisplayTargetDistance({ targetDistance: 0, maxRunDistance: 100000 }, 100000) === 100000, 'non-positive targetDistance falls back to maxRunDistance');
+  ok(resolveDisplayTargetDistance({ targetDistance: NaN, maxRunDistance: 100000 }, 100000) === 100000, 'NaN targetDistance falls back to maxRunDistance');
+  ok(resolveDisplayTargetDistance({ targetDistance: 999999 }, 100000) === 999999, 'stage target above cap is honored as-is (caller owns semantics)');
+  ok(resolveDisplayTargetDistance(null, 100000) === 100000, 'null stage -> maxRunDistance fallback');
+  ok(resolveDisplayTargetDistance({ targetDistance: 3000 }, Infinity) === 3000, 'non-finite cap ignored when targetDistance valid');
+  ok(resolveDisplayTargetDistance({}) === 100000, 'no stage, no cap -> 100000 default');
+  // Stateful guard sim against the RESOLVED per-stage target (endless run past it).
+  let awarded = false; let count = 0; let coins = 0;
+  const target = resolveDisplayTargetDistance({ targetDistance: 4500 }, 100000);
+  for (let d = 0; d <= 100000; d += 137) {
+    const dist = Math.min(100000, d);
+    if (!awarded && dist >= target) { awarded = true; count++; coins += targetBonus().coins; }
+  }
+  ok(awarded === true && count === 1 && coins === TARGET_BONUS, 'per-stage target awarded exactly once across a 100,000m endless run');
+}
 
 console.log('\n============================================');
 console.log('RESULT: ' + pass + ' passed, ' + fail + ' failed');

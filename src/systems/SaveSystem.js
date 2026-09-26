@@ -2,7 +2,7 @@
 // Nepali Racer - Save System
 // ============================================
 
-import { SAVE_KEY } from '../config/constants.js';
+import { SAVE_KEY, WORLD_UNITS_PER_METRE } from '../config/constants.js';
 import { defaultPlayerData, CURRENT_SAVE_VERSION } from '../data/playerData.js';
 
 class SaveSystem {
@@ -62,6 +62,13 @@ class SaveSystem {
   // - Version 1 has no prior structural migration, so this performs NO
   //   destructive field changes today.
   // - Safe for malformed/non-object input (returned untouched).
+  // Phase 1.7 (unit fix): step 1 -> 2 converts bestDistance from legacy world
+  // units to physical metres (legacy world units = metres x 3.6). EXACTLY ONCE
+  // per save (guarded by schemaVersion). Coins, diamonds, unlocks, selections,
+  // bestScore, bestRunCoins and bestMilestone are untouched. bestScore is NOT
+  // rescaled: its distance component is already sunk cost across past runs and
+  // rescaling would rewrite a like-for-like leaderboard field. bestMilestone
+  // is a count (versioned with metres since P7B) — already correct.
   migrateSaveData(data) {
     if (data === null || typeof data !== 'object') return data;
     const v = data.schemaVersion;
@@ -69,10 +76,19 @@ class SaveSystem {
       typeof v === 'number' && Number.isFinite(v) && v >= 0
         ? Math.floor(v)
         : 0; // missing/invalid => legacy save that can be migrated
-    if (version >= CURRENT_SAVE_VERSION) return data; // v1 (or future): keep as-is
-    // Stepwise migrations: 0 -> 1. Add future steps below as needed.
+    if (version >= CURRENT_SAVE_VERSION) return data; // v2 (or future): keep as-is
+    // Stepwise migrations: 0 -> 1 -> 2. Add future steps below as needed.
     if (version < 1) {
       data.schemaVersion = 1;
+    }
+    if (version < 2) {
+      // bestDistance: legacy world units -> metres (one-time, exact factor).
+      // Non-finite/garbage values are left for sanitizeSaveData to repair;
+      // finite values convert cleanly (0 stays 0, no NaN/Infinity produced).
+      if (typeof data.bestDistance === 'number' && Number.isFinite(data.bestDistance)) {
+        data.bestDistance = data.bestDistance / WORLD_UNITS_PER_METRE;
+      }
+      data.schemaVersion = 2;
     }
     return data;
   }

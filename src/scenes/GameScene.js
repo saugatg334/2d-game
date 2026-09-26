@@ -1,4 +1,5 @@
-import { COLORS, SCENES, FUEL, GAME_WIDTH } from '../config/constants.js';
+import { COLORS, SCENES, FUEL, GAME_WIDTH, WORLD_UNITS_PER_METRE } from '../config/constants.js';
+import { computeHudZoneRects } from '../ui/hudLayout.js';
 import { saveSystem } from '../systems/SaveSystem.js';
 import { stages } from '../data/stages.js';
 import { characters } from '../data/characters.js';
@@ -12,7 +13,10 @@ import { resolveVehicleTuning } from '../game/VehicleTuning.js';
 import { resolveCharacterAbility } from '../game/CharacterAbility.js';
 import { device } from '../utils/device.js';
 import { isStagePlayable } from '../game/StageProgression.js';
-import { milestoneIndexAt, nextMilestoneDistance, milestoneReward, resolveDifficulty, airborneBonus, recordBonus, targetBonus } from '../game/RunProgress.js';
+// P14 hotfix: milestoneDistanceAt was missing from this import (P11 session
+// cut-off lost it) — updateMilestoneBar() referenced it and crashed at boot's
+// first updateHUD. It already existed in RunProgress (pure, 275m helper).
+import { milestoneIndexAt, milestoneDistanceAt, nextMilestoneDistance, milestoneReward, resolveDifficulty, airborneBonus, recordBonus, targetBonus, resolveDisplayTargetDistance } from '../game/RunProgress.js';
 
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -56,8 +60,10 @@ export class GameScene extends Phaser.Scene {
     // bonuses (pure resolver, StagePlan-style; never recalculated per frame).
     // Replaces the hardcoded 100 capacity and the FUEL.CONSUMPTION_RATE literal
     // in consumeFuel(). The tempo/default_rider pair resolves to exactly the
-    // previous values (capacity 100, base burn 2), so baseline balance is
-    // preserved; non-tempo vehicles now honor their existing fuelConsumption data.
+    // previous values (capacity 100; base burn 2 per second, converted to the
+    // equivalent per-metre 2/3.6 by the Phase 1.7 unit fix — see VehicleTuning),
+    // so baseline balance is preserved; non-tempo vehicles now honor their
+    // existing fuelConsumption data.
     this.vehicleTuning = resolveVehicleTuning(this.vehicleData.stats, this.characterData);
 
     this.gameState = {
@@ -123,11 +129,21 @@ export class GameScene extends Phaser.Scene {
     this.maxRunDistance = (typeof this.stage.maxRunDistance === 'number' && Number.isFinite(this.stage.maxRunDistance) && this.stage.maxRunDistance > 0)
       ? this.stage.maxRunDistance
       : (typeof this.stage.targetDistance === 'number' && this.stage.targetDistance > 0 ? this.stage.targetDistance : 100000);
-    // P9 fix: HUD 'TARGET' line and the one-time target bonus read this value.
-    // It must be initialized here (after maxRunDistance is fully resolved) so
-    // updateHUD()/checkRecords() never read undefined. Fast Track keeps its own
-    // finite targets via the same fallback chain (2500m/3400m).
-    this.displayTargetDistance = this.maxRunDistance;
+    // Phase 1.7 (unit fix): configured run caps/targets are in PHYSICAL metres
+    // (data/docs unchanged: normal 100,000m; Fast Track 2500m/3400m), while
+    // world x advances 3.6x faster. Convert ONCE here and pass the world-unit
+    // equivalents to the world-space windows (terrain generation,
+    // collectible spawning, camera bounds) so every metre label from the fix
+    // is backed by real physical distance. runEndWorldX = metres x 3.6.
+    this.maxRunDistanceWorldX = this.maxRunDistance * WORLD_UNITS_PER_METRE;
+    this.runEndWorldX = this.maxRunDistanceWorldX + 2000; // + Terrain's documented +2000 overrun
+    // Post-video fix: HUD 'TARGET' line and the one-time target bonus now read
+    // the stage's OWN targetDistance (2500-4950m) — the same value StageSelect
+    // displays — instead of maxRunDistance (P7B endless 100,000m design). The
+    // RUN length is unchanged: normal stages stay endless to maxRunDistance.
+    // Fast Track is unaffected (its targetDistance == maxRunDistance, so the
+    // resolver returns it identically).
+    this.displayTargetDistance = resolveDisplayTargetDistance(this.stage, this.maxRunDistance);
 
     // P0 Step 3: cache stage-specific gravity from the already-resolved plan.
     // Single gravity source — Vehicle.applyGravity() integration is untouched,
@@ -147,14 +163,16 @@ export class GameScene extends Phaser.Scene {
     this.collectibles = new Collectibles(this, this.terrain, this.terrain.stagePlan.collectibles);
     // P7B: windowed spawning - only the initial ~3000m window now, extended
     // per-frame alongside terrain generation (capped at maxRunDistance).
-    this.collectibles.generate(0, this.maxRunDistance);
+    // Phase 1.7: cap in world units (metres x 3.6) — spawn spacing untouched.
+    this.collectibles.generate(0, this.maxRunDistanceWorldX);
 
     // P7E-3: seed the initial scenery window at the start position.
     this.sceneryRenderer.update(0);
 
     // P7B: camera bounds follow the maximum run distance, not the initial
     // terrain length (which is now a bounded window and grows over time).
-    this.cameras.main.setBounds(0, -500, this.maxRunDistance + 1000, this.scale.height + 500);
+    // Phase 1.7: world-x bound scales with the unit fix (metres x 3.6).
+    this.cameras.main.setBounds(0, -500, this.maxRunDistanceWorldX + 1000, this.scale.height + 500);
 
     this.createHUD();
     this.createControls();
@@ -224,6 +242,13 @@ export class GameScene extends Phaser.Scene {
   createHUD() {
     const w = this.scale.width;
 
+    // P11 (P13 hotfix): resolve the HUD zone geometry ONCE for this scene
+    // width. Single source of truth (hudLayout.js) shared with
+    // qa/HudZoneHarness.mjs. computeHudZoneRects() always returns the complete
+    // {left, center, right, pauseBtn} shape for any width input (clamped/
+    // squeezed), so the reads at L264/L276-277/L292 are always defined.
+    this.hudRects = computeHudZoneRects(w);
+
     // P7E-6: strong dark outline + soft shadow so HUD text stays readable over
     // the bright region skies. Presentation only — values/positions unchanged.
     const HUD_OUTLINE = {
@@ -243,41 +268,65 @@ export class GameScene extends Phaser.Scene {
     // scroll-factor-0 Graphics: no per-frame redraw). Presentation only -
     // the label shifts right by the icon width; bar/percentage logic untouched.
     this.fuelIconGfx = this.add.graphics().setScrollFactor(0);
-    paintFuelCanIcon(this.fuelIconGfx, 28, 30, 0.8);
-    this.add.text(44, 20, 'Fuel:', { fontSize: '16px', color: '#fff', ...HUD_OUTLINE }).setScrollFactor(0);
-    
+    paintFuelCanIcon(this.fuelIconGfx, 20, 40, 0.8);
     this.fuelBarBg = this.add.graphics().setScrollFactor(0);
     this.fuelBarBg.fillStyle(0x333333, 1);
-    this.fuelBarBg.fillRoundedRect(70, 22, 150, 20, 10);
+    this.fuelBarBg.fillRoundedRect(40, 32, 140, 16, 8);
     
     this.fuelBar = this.add.graphics().setScrollFactor(0);
     this.updateFuelBar();
     
-    this.fuelText = this.add.text(145, 32, '100%', { fontSize: '12px', color: '#fff', ...HUD_OUTLINE }).setOrigin(0.5).setScrollFactor(0);
-    this.distanceText = this.add.text(20, 55, 'Distance: 0m / ' + this.maxRunDistance.toLocaleString('en-US') + 'm', { fontSize: '16px', color: '#fff', ...HUD_OUTLINE }).setScrollFactor(0);
-    this.speedText = this.add.text(20, 80, 'Speed: 0 km/h', { fontSize: '16px', color: '#f4a261', ...HUD_OUTLINE }).setScrollFactor(0);
+    this.fuelText = this.add.text(110, 40, '100%', { fontSize: '12px', color: '#fff', ...HUD_OUTLINE }).setOrigin(0.5).setScrollFactor(0);
+    // P11: distance readout lives in the CENTER zone under the milestone bar.
+    this.distanceText = this.add.text(w / 2, 100, 'Distance: 0m / ' + this.maxRunDistance.toLocaleString('en-US') + 'm', { fontSize: '15px', color: '#fff', ...HUD_OUTLINE }).setOrigin(0.5, 0).setScrollFactor(0);
+    this.speedText = this.add.text(28, 92, 'Speed: 0 km/h', { fontSize: '15px', color: '#f4a261', ...HUD_OUTLINE }).setScrollFactor(0);
     // P7E-7: [icon] count pairs replace the text-only counter. Icons reuse the
     // exact world-collectible painters (gold coin / cyan diamond) at 0.8 scale,
     // each drawn ONCE on a static Graphics. Counts and reward logic unchanged.
+    const r = this.hudRects.right;
     this.coinIconGfx = this.add.graphics().setScrollFactor(0);
-    paintCoinIcon(this.coinIconGfx, w - 160, 29, 0.8);
-    this.coinText = this.add.text(w - 146, 20, '0', { fontSize: '16px', color: '#ffd700', ...HUD_OUTLINE }).setScrollFactor(0);
+    paintCoinIcon(this.coinIconGfx, r.x + 12, 36, 0.8);
+    this.coinText = this.add.text(r.x + 26, 28, '0', { fontSize: '16px', color: '#ffd700', ...HUD_OUTLINE }).setScrollFactor(0);
     this.diamondIconGfx = this.add.graphics().setScrollFactor(0);
-    paintDiamondIcon(this.diamondIconGfx, w - 84, 29, 0.8);
-    this.diamondText = this.add.text(w - 70, 20, '0', { fontSize: '16px', color: '#b9f2ff', ...HUD_OUTLINE }).setScrollFactor(0);
-    this.scoreText = this.add.text(w - 150, 50, 'Score: 0', { fontSize: '16px', color: '#fff', ...HUD_OUTLINE }).setScrollFactor(0);
-    this.milestoneText = this.add.text(20, 105, 'BONUS @ 275m', { fontSize: '12px', color: '#ffd700', ...HUD_OUTLINE }).setScrollFactor(0);
-    // P9: compact stage target + best line, and a small arcade speed meter.
-    this.progressText = this.add.text(20, 120, '', { fontSize: '12px', color: '#fff', ...HUD_OUTLINE }).setScrollFactor(0);
+    paintDiamondIcon(this.diamondIconGfx, r.x + 96, 36, 0.8);
+    this.diamondText = this.add.text(r.x + 110, 28, '0', { fontSize: '16px', color: '#b9f2ff', ...HUD_OUTLINE }).setScrollFactor(0);
+    this.scoreText = this.add.text(r.x + 12, 58, 'Score: 0', { fontSize: '16px', color: '#fff', ...HUD_OUTLINE }).setScrollFactor(0);
+    // P11: RIGHT zone — stage target/best + pause button (styled like the
+    // existing touch buttons; opens the pause menu, Phase 4).
+    this.progressText = this.add.text(r.x + 12, 82, '', { fontSize: '11px', color: '#fff', ...HUD_OUTLINE }).setScrollFactor(0);
+    this.pauseBtn = this.add.text(0, 0, 'II', { fontSize: '18px', color: '#fff', backgroundColor: '#2c3e50', padding: { x: 8, y: 3 } }).setOrigin(0.5).setScrollFactor(0).setDepth(20).setInteractive({ useHandCursor: true });
+    this.pauseBtn.x = this.hudRects.pauseBtn.x;
+    this.pauseBtn.y = this.hudRects.pauseBtn.y;
+    this.pauseBtn.on('pointerup', () => this.togglePauseMenu(true));
     this.speedMeterGfx = this.add.graphics().setScrollFactor(0);
     // BONUS! banner (hidden; shown briefly when a milestone is reached).
-    this.bonusBanner = this.add.text(w / 2, 120, 'BONUS!', {
+    // P11: moved below the new center milestone bar so they never overlap.
+    this.bonusBanner = this.add.text(w / 2, 140, 'BONUS!', {
       fontSize: '20px', color: '#ffd700', fontStyle: 'bold', ...HUD_OUTLINE
     }).setOrigin(0.5).setScrollFactor(0).setDepth(90);
     this.bonusBanner.setVisible(false);
-    const exitBtn = this.add.text(w - 60, 80, 'X', { fontSize: '24px', color: '#fff' }).setOrigin(0.5).setScrollFactor(0).setInteractive({ useHandCursor: true });
+    // P11: CENTER zone — compact milestone progress bar (visual only).
+    // Geometry comes from the shared hudLayout module; the fill fraction is
+    // computed in updateHUD() from the existing 275m RunProgress helpers and
+    // the existing milestonesReached guard (no second tracker is created).
+    this.milestoneBarBg = this.add.graphics().setScrollFactor(0).setDepth(19);
+    this.milestoneBarFill = this.add.graphics().setScrollFactor(0).setDepth(20);
+    const cRect = this.hudRects.center;
+    this.milestoneBarRect = { x: cRect.x + 10, y: cRect.y + 56, w: cRect.w - 20, h: 12 };
+    this.milestoneBarBg.fillStyle(0x333333, 0.85);
+    this.milestoneBarBg.fillRoundedRect(this.milestoneBarRect.x, this.milestoneBarRect.y, this.milestoneBarRect.w, this.milestoneBarRect.h, 6);
+    for (let i = 1; i < 4; i++) {
+      const tx = this.milestoneBarRect.x + (this.milestoneBarRect.w / 4) * i;
+      this.milestoneBarBg.fillStyle(0x1a1a2e, 0.9);
+      this.milestoneBarBg.fillRect(tx - 1, this.milestoneBarRect.y, 2, this.milestoneBarRect.h);
+    }
+    this.milestoneBarLabel = this.add.text(this.milestoneBarRect.x + this.milestoneBarRect.w / 2, this.milestoneBarRect.y + 16, 'NEXT BONUS 275m', { fontSize: '12px', color: '#ffd700', ...HUD_OUTLINE }).setOrigin(0.5, 0).setScrollFactor(0);
+    const exitBtn = this.add.text(w - 28, 108, 'X', { fontSize: '24px', color: '#fff' }).setOrigin(0.5).setScrollFactor(0).setInteractive({ useHandCursor: true });
     exitBtn.on('pointerup', () => {
-      this.scene.start(SCENES.MAIN_MENU);
+      // P11: mid-run X now opens the pause menu (RESUME/RESTART/EXIT);
+      // after game over/complete it is inert (results block owns navigation).
+      if (this.gameState.isGameOver || this.gameState.isComplete) return;
+      this.togglePauseMenu(true);
     });
 
     // P0 Step 6J: Ability HUD indicator — surfaces the already-resolved
@@ -318,7 +367,7 @@ export class GameScene extends Phaser.Scene {
     if (fp < 30) fc = COLORS.PRIMARY;
     else if (fp < 60) fc = COLORS.WARNING;
     this.fuelBar.fillStyle(fc, 1);
-    this.fuelBar.fillRoundedRect(70, 22, 150 * pct, 20, 10);
+    this.fuelBar.fillRoundedRect(43, 35, 134 * pct, 10, 5);
   }
 
   createControls() {
@@ -349,6 +398,9 @@ export class GameScene extends Phaser.Scene {
     if (this.abilityState.available) {
       this.input.keyboard.on('keydown-Q', () => this.activateAbility());
     }
+    // P11: pause hotkeys (ESC and P) toggle the pause menu.
+    this.input.keyboard.on('keydown-ESC', () => this.togglePauseMenu(!this.pauseMenu));
+    this.input.keyboard.on('keydown-P', () => this.togglePauseMenu(!this.pauseMenu));
     // Always create touch controls (visible on all devices for accessibility)
     this.createTouchControls();
   }
@@ -530,11 +582,13 @@ export class GameScene extends Phaser.Scene {
     this.updateMilestones();
     this.updateHUD();
     this.checkGameConditions();
-    this.terrain.generateAhead(this.cameras.main.scrollX, this.maxRunDistance);
+    // Phase 1.7: generation caps use the world-unit run end (metres x 3.6) so
+    // terrain/collectibles physically extend to every metre the HUD reports.
+    this.terrain.generateAhead(this.cameras.main.scrollX, this.runEndWorldX);
     this.terrain.cleanup(this.cameras.main.scrollX);
     // P7B: collectibles follow the same bounded window as terrain, and their
     // behind-camera cleanup is now actually wired (it existed but was never called).
-    this.collectibles.generateAhead(this.cameras.main.scrollX, this.maxRunDistance);
+    this.collectibles.generateAhead(this.cameras.main.scrollX, this.runEndWorldX);
     this.collectibles.cleanup(this.cameras.main.scrollX);
     if (this.environmentRenderer) {
       this.environmentRenderer.update(this.cameras.main.scrollX, this.cameras.main.scrollY);
@@ -585,8 +639,12 @@ export class GameScene extends Phaser.Scene {
     this.diamondText.setText(String(this.gameState.diamonds));
     this.scoreText.setText('Score: ' + this.gameState.score);
 
-    // Next-milestone progress indicator (small, unobtrusive).
-    this.milestoneText.setText('BONUS @ ' + Math.floor(nextMilestoneDistance(this.gameState.distance)).toLocaleString('en-US') + 'm');
+    // P15: the old this.milestoneText line was replaced in P11 by the center
+    // milestone bar + label (this.milestoneBarLabel, updated in
+    // updateMilestoneBar). The stale guarded read pointed at an object that
+    // is never created — removed.
+    // P11: center progress bar fill (visual only; reads the same 275m helpers).
+    if (this.milestoneBarFill) this.updateMilestoneBar();
     // New P9 HUD (target/best + speed meter) is normal-stage only; Fast Track's
     // HUD stays exactly as before.
     if (!this.isFastTrack) {
@@ -685,6 +743,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   // Compact arcade speed meter (bar reflects real velocity / vehicle max speed).
+  // Phase 1.7: cap is the vehicle's ACTUAL runtime max speed (base x character
+  // bonus x ability boost, exactly what accelerate()/reverse() clamp against),
+  // not the static raw stats value — so the meter can genuinely reach 100% and
+  // respects Saugat's +20% bonus and the Legendary ability's +40% boost.
   updateSpeedMeter() {
     const g = this.speedMeterGfx;
     if (!g) return;
@@ -693,13 +755,97 @@ export class GameScene extends Phaser.Scene {
     const y = 96;
     const w = 90;
     const h = 8;
-    const cap = (this.vehicleData && this.vehicleData.stats && this.vehicleData.stats.maxSpeed) || 300;
+    const cap = (this.vehicle && typeof this.vehicle.maxSpeed === 'number' && Number.isFinite(this.vehicle.maxSpeed) && this.vehicle.maxSpeed > 0)
+      ? this.vehicle.maxSpeed
+      : ((this.vehicleData && this.vehicleData.stats && this.vehicleData.stats.maxSpeed) || 300);
     const ratio = Math.max(0, Math.min(1, this.gameState.speed / cap));
     g.fillStyle(0x333333, 0.85);
     g.fillRoundedRect(x, y, w, h, 4);
     const col = ratio < 0.5 ? 0x2a9d8f : (ratio < 0.85 ? 0xf4a261 : 0xe63946);
     g.fillStyle(col, 1);
     g.fillRoundedRect(x, y, Math.max(4, w * ratio), h, 4);
+  }
+
+  // P11: milestone bar fill (0..1 between milestones), reading the same
+  // pure 275m helpers the banner uses — no second tracker is created. The
+  // fraction math is clamped defensively so the fill can never leave [0,1].
+  updateMilestoneBar() {
+    const g = this.milestoneBarFill;
+    if (!g || !this.milestoneBarRect) return;
+    g.clear();
+    const prev = milestoneDistanceAt(milestoneIndexAt(this.gameState.distance));
+    const next = nextMilestoneDistance(this.gameState.distance);
+    const span = Math.max(1, next - prev);
+    const t = Math.max(0, Math.min(1, (this.gameState.distance - prev) / span));
+    const r = this.milestoneBarRect;
+    const col = this.gameState.distance < this.displayTargetDistance ? COLORS.GOLD : COLORS.SUCCESS;
+    g.fillStyle(col, 1);
+    if (t > 0) g.fillRoundedRect(r.x, r.y, Math.max(4, r.w * t), r.h, 6);
+    if (this.milestoneBarLabel) {
+      this.milestoneBarLabel.setText('NEXT BONUS ' + next.toLocaleString('en-US') + 'm');
+    }
+  }
+
+  // P11: pause menu. The gameplay loop already gates on gameState.isPaused, so
+  // setting the flag fully halts physics/fuel/milestones; the Phaser update
+  // call returns immediately (no background drift). Keyboard/touch input is
+  // also disengaged so a held key cannot carry state across the pause
+  // boundary. Modal: RESUME / RESTART / EXIT. AudioSystem has no live music
+  // instance inside GameScene, so no audio pause hook is required.
+  togglePauseMenu(open) {
+    if (open && this.pauseMenu) return;
+    if (!open) {
+      if (!this.pauseMenu) return;
+      this.pauseMenu.destroy(true);
+      this.pauseMenu = null;
+      this.gameState.isPaused = false;
+      this.releaseAllInputs();
+      return;
+    }
+    this.gameState.isPaused = true;
+    this.releaseAllInputs();
+    const w = this.scale.width;
+    const h = this.scale.height;
+    const container = this.add.container(0, 0).setScrollFactor(0).setDepth(150);
+    const overlay = this.add.rectangle(w / 2, h / 2, w, h, 0x000000, 0.65).setInteractive();
+    const panel = this.add.rectangle(w / 2, h / 2, 300, 220, 0x1a1a2e, 0.95).setStrokeStyle(2, 0x457b9d);
+    const title = this.add.text(w / 2, h / 2 - 74, 'PAUSED', { fontSize: '28px', color: '#fff', fontStyle: 'bold' }).setOrigin(0.5);
+    const mkBtn = (y, label, bg, fn) => {
+      const btn = this.add.text(w / 2, y, label, { fontSize: '18px', color: '#fff', backgroundColor: bg, padding: { x: 22, y: 9 } }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+      btn.on('pointerup', fn);
+      return btn;
+    };
+    const resumeBtn = mkBtn(h / 2 - 24, 'RESUME', '#2a9d8f', () => this.togglePauseMenu(false));
+    const restartBtn = mkBtn(h / 2 + 22, 'RESTART', '#457b9d', () => {
+      this.gameState.isPaused = false;
+      this.releaseAllInputs();
+      this.scene.restart();
+    });
+    const exitBtnM = mkBtn(h / 2 + 68, 'EXIT', '#2c3e50', () => {
+      this.gameState.isPaused = false;
+      this.releaseAllInputs();
+      this.bankRunRewards();
+      this.scene.start(SCENES.STAGE_SELECT);
+    });
+    container.add([overlay, panel, title, resumeBtn, restartBtn, exitBtnM]);
+    this.pauseMenu = container;
+  }
+
+  releaseAllInputs() {
+    this.controls.accelerate = false;
+    this.controls.brake = false;
+    this.controls.jump = false;
+    this.controls.reverse = false;
+    this.controls.tiltLeft = false;
+    this.controls.tiltRight = false;
+    if (this.touchControls) {
+      this.touchControls.accelerate = false;
+      this.touchControls.brake = false;
+      this.touchControls.jump = false;
+      this.touchControls.reverse = false;
+      this.touchControls.tiltLeft = false;
+      this.touchControls.tiltRight = false;
+    }
   }
 
   checkGameConditions() {

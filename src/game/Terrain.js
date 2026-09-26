@@ -3,6 +3,10 @@
 // ============================================
 
 import { resolveStagePlan } from './StagePlan.js';
+// P12: stage visual identity (pilot: ktm_valley) may tint the ground band.
+// blendTint is defensive — a null tint is a no-op, so every non-pilot stage
+// keeps the exact pre-P12 color chain below.
+import { resolveStageVisualIdentity, blendTint } from './StageVisualIdentity.js';
 import { resolveDifficulty } from './RunProgress.js';
 
 // P8 difficulty levers for endless normal stages (data-driven via
@@ -590,7 +594,15 @@ export class Terrain {
       }
       return fallback;
     };
-    const groundColor = visual ? themeNum(visual.ground.base, 0x8b4513) : (this.theme ? parseInt(this.theme.groundColor.replace('#', '0x')) : 0x8b4513);
+    const identity = (!this.isFastTrack && this.stagePlan && this.stagePlan.stageId)
+      ? resolveStageVisualIdentity({ id: this.stagePlan.stageId, regionTheme: visual ? visual.id : undefined })
+      : null;
+    const groundColor = themeNum(
+      (identity && identity.groundTint && visual)
+        ? blendTint(visual.ground.base, identity.groundTint, 0.45)
+        : (visual ? visual.ground.base : null),
+      this.theme ? parseInt(this.theme.groundColor.replace('#', '0x')) : 0x8b4513
+    );
     const accentColor = visual ? themeNum(visual.ground.accent, 0x228b22) : (this.theme ? parseInt(this.theme.accentColor.replace('#', '0x')) : 0x228b22);
 
     // P7B: viewport culling (performance only - visuals unchanged). Every
