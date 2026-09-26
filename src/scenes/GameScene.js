@@ -581,7 +581,7 @@ export class GameScene extends Phaser.Scene {
     this.checkRecords();
     this.updateMilestones();
     this.updateHUD();
-    this.checkGameConditions();
+    this.checkGameConditions(dt);
     // Phase 1.7: generation caps use the world-unit run end (metres x 3.6) so
     // terrain/collectibles physically extend to every metre the HUD reports.
     this.terrain.generateAhead(this.cameras.main.scrollX, this.runEndWorldX);
@@ -864,9 +864,15 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  checkGameConditions() {
+  // dtSeconds: Phaser's real per-frame delta in seconds, passed from update()
+  // (the same time base as every other gameplay integrator).
+  checkGameConditions(dtSeconds = 1 / 60) {
     if (this.gameState.fuel <= 0) { this.gameOver('Out of fuel!'); return; }
-    // More forgiving flip detection - require sustained flipping for 3 seconds
+    // More forgiving flip detection - require sustained flipping for ~3 seconds.
+    // Phase 1.8d: the flip window is TIME-based, not frame-based. The old
+    // frame counter (flipTimer > 180) fired after 6s @30FPS but only 1.25s
+    // @144FPS. Elapsed seconds come from update()'s real frame delta so the
+    // window is FPS-independent; 3.0s preserves the 60 FPS behavior exactly.
     const normalizedRotation = Phaser.Math.Angle.Wrap(this.vehicle.rotation);
     const isBeyondFlipThreshold = Math.abs(normalizedRotation) > (Math.PI / 1.8);
     const previousRotation = this.previousFlipRotation;
@@ -875,11 +881,11 @@ export class GameScene extends Phaser.Scene {
     const isRotationSpike = rotationStep > Math.PI / 3;
     this.previousFlipRotation = normalizedRotation;
     if (isBeyondFlipThreshold && wasBeyondFlipThreshold && !isRotationSpike) {
-      this.flipTimer += 1;
+      this.flipTimer += dtSeconds;
     } else {
       this.flipTimer = 0;
     }
-    if (this.flipTimer > 180) {
+    if (this.flipTimer > 3) {
       this.gameOver('Vehicle flipped!');
       return;
     }

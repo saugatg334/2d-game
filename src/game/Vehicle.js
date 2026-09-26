@@ -152,7 +152,13 @@ export class Vehicle {
 
   updateRotation(delta) {
     this.rotation += this.angularVelocity * delta;
-    this.angularVelocity *= 0.98;
+    // Phase 1.8d: frame-rate-independent air damping. The old per-frame
+    // `angularVelocity *= 0.98` damped 70%/s at 60 FPS but ~94.5%/s at 144
+    // FPS (and only 45%/s at 30), making tilt authority vary ~4.8x with the
+    // display refresh rate. Exponentiating the same 60 FPS per-frame factor
+    // by the real elapsed frame count (delta seconds x 60) preserves the
+    // shipped 60 FPS behavior exactly at every frame rate.
+    this.angularVelocity *= Math.pow(0.98, delta * 60);
   }
 
   updatePosition(delta) {
