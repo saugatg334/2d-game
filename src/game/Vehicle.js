@@ -32,9 +32,6 @@ export class Vehicle {
     this.frontWheel = { x: 0, y: 0, grounded: false };
     this.rearWheel = { x: 0, y: 0, grounded: false };
 
-    this.flipped = false;
-    this.flipTimer = 0;
-    this.airTime = 0;
     // P3 Step 5: jump rising-edge tracker. Reset per instance so a fresh
     // run/Replay starts with no held-jump state.
     this.jumpPressedLast = false;
@@ -201,19 +198,7 @@ export class Vehicle {
       }
 
       this.velocityY = 0;
-      this.airTime = 0;
-    } else {
-      this.airTime += 1;
     }
-    this.checkFlipped();
-  }
-
-  checkFlipped() {
-    const normalizedAngle = Phaser.Math.Angle.Normalize(this.rotation);
-    // More forgiving flip threshold - only count as flipped beyond ~100 degrees
-    this.flipped = Math.abs(normalizedAngle) > (Math.PI / 1.8);
-    if (this.flipped) this.flipTimer += 1;
-    else this.flipTimer = 0;
   }
 
   fellOffTrack(screenHeight) {

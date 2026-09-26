@@ -42,7 +42,6 @@ export const SAVE_KEY = 'nepali_racer_save';
 export const PHYSICS = {
   GRAVITY: 980,
   FRICTION: 0.98,
-  AIR_RESISTANCE: 0.995,
   GROUND_FRICTION: 0.96,
   // P3 Step 5: reverse + jump mechanics — values scale with each vehicle's
   // own stats so they fit existing physics without altering any vehicle data.
