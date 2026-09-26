@@ -604,8 +604,8 @@ export class GameScene extends Phaser.Scene {
     this.controls.accelerate = this.cursors.right.isDown || this.wasd.accelerate.isDown || this.touchControls?.accelerate === true;
     this.controls.brake = this.cursors.left.isDown || this.wasd.brake.isDown || this.touchControls?.brake === true;
     this.controls.reverse = this.cursors.down.isDown || this.wasd.reverse.isDown || this.touchControls?.reverse === true;
-    this.controls.tiltLeft = false;
-    this.controls.tiltRight = false;
+    this.controls.tiltLeft = this.controls.brake && !this.vehicle.grounded;
+    this.controls.tiltRight = this.controls.accelerate && !this.vehicle.grounded;
   }
 
   consumeFuel(delta) {
