@@ -819,12 +819,28 @@ export class GameScene extends Phaser.Scene {
     const restartBtn = mkBtn(h / 2 + 22, 'RESTART', '#457b9d', () => {
       this.gameState.isPaused = false;
       this.releaseAllInputs();
+      // Persistence parity with gameOver(): a mid-run RESTART must not
+      // silently discard the run's economy. bankRunRewards() is guarded by
+      // hasBankedRunRewards (exact-once) and the updateBest* saves only fire
+      // on strictly-greater improvements, so neither call can double-persist.
+      this.bankRunRewards();
+      this.saveRunBests();
+      // scene.restart() keeps this scene instance, so clear the menu
+      // reference or a stale (destroyed) container makes the first
+      // subsequent ESC/P press a silent no-op (it would "close" dead UI).
+      this.pauseMenu = null;
       this.scene.restart();
     });
     const exitBtnM = mkBtn(h / 2 + 68, 'EXIT', '#2c3e50', () => {
       this.gameState.isPaused = false;
       this.releaseAllInputs();
       this.bankRunRewards();
+      // Parity fix: EXIT previously banked currency but skipped run bests, so
+      // a new best distance/milestone died with the scene. Same exact-once
+      // guards as above apply.
+      this.saveRunBests();
+      // Same stale-reference rule as RESTART (GameScene is reused on re-entry).
+      this.pauseMenu = null;
       this.scene.start(SCENES.STAGE_SELECT);
     });
     container.add([overlay, panel, title, resumeBtn, restartBtn, exitBtnM]);
