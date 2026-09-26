@@ -129,8 +129,13 @@ export class Vehicle {
     if (!this.grounded) this.velocityY += gravity * delta;
   }
 
-  applyFriction(friction, accelerating = false) {
-    if (this.grounded && !accelerating) this.velocityX *= friction;
+  applyFriction(friction, accelerating = false, dt) {
+    // Phase 1.9: frame-rate-independent ground friction. The old per-frame
+    // `velocityX *= friction` retained 0.96^FPS of velocity per second
+    // (1.2%/s @108FPS vs 55%/s @15FPS — a ~45x spread). Exponentiating the
+    // same 60 FPS per-frame factor by the real elapsed frame count (dt
+    // seconds x 60) preserves the shipped 60 FPS behavior exactly.
+    if (this.grounded && !accelerating) this.velocityX *= Math.pow(friction, dt * 60);
   }
 
   rotateAir(direction, delta) {
@@ -164,7 +169,7 @@ export class Vehicle {
     this.updateWheelPositions();
   }
 
-  checkGroundCollision(terrain, terrainAlignmentRate = 0.05) {
+  checkGroundCollision(terrain, terrainAlignmentRate = 0.05, dt = 1 / 60) {
     const frontTerrainY = terrain.getTerrainYAt(this.frontWheel.x);
     const rearTerrainY = terrain.getTerrainYAt(this.rearWheel.x);
     const frontContactY = frontTerrainY - this.wheelRadius;
@@ -189,12 +194,26 @@ export class Vehicle {
           if (hasValidTerrainAngle && hasStableAngleDifference) {
             // P0 Step 6E: alignment rate is data-driven (0.05 x suspension,
             // resolved in VehicleTuning); every guard below is unchanged.
-            this.rotation = Phaser.Math.Angle.RotateTo(this.rotation, terrainAngle, terrainAlignmentRate);
+            // Phase 1.9: Phaser.Math.Angle.RotateTo() applied `lerp` as a
+            // FIXED rad/FRAME step, so alignment speed scaled with FPS.
+            // Reproduce its exact shortest-angle semantics (snap when the
+            // wrapped difference is within the step, otherwise move toward
+            // the target by the step) with a delta-scaled step — identical
+            // at 60 FPS, FPS-independent elsewhere.
+            const alignmentStep = terrainAlignmentRate * dt * 60;
+            const angleDiff = Phaser.Math.Angle.Wrap(terrainAngle - this.rotation);
+            if (Math.abs(angleDiff) <= alignmentStep) {
+              this.rotation = terrainAngle;
+            } else {
+              this.rotation += Math.sign(angleDiff) * alignmentStep;
+            }
             this.y = (frontContactY + rearContactY) / 2 - this.height * 0.4;
             this.updateWheelPositions();
           }
         }
-        this.angularVelocity *= 0.8;
+        // Phase 1.9: delta-scaled grounded angular damping (same 60 FPS
+        // behavior as the old per-frame `*= 0.8`).
+        this.angularVelocity *= Math.pow(0.8, dt * 60);
       }
 
       this.velocityY = 0;
@@ -520,10 +539,10 @@ export class Vehicle {
     if (input.tiltRight) this.rotateAir(1, dt);
 
     this.applyGravity(gravity, dt);
-    this.applyFriction(friction, input.accelerate);
+    this.applyFriction(friction, input.accelerate, dt);
     this.updateRotation(dt);
     this.updatePosition(dt);
-    this.checkGroundCollision(terrain, terrainAlignmentRate);
+    this.checkGroundCollision(terrain, terrainAlignmentRate, dt);
     // Jump runs after ground collision so grounded state and velocityY are
     // already settled before the impulse is applied.
     this.updateJump(input.jump);
